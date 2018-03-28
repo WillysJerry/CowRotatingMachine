@@ -2,10 +2,10 @@
 #include <stdio.h>
 #include <glew.h>
 #include <freeglut.h>
+#include "mesh.h"
 
 #include "algebra.h"
 #include "shaders.h"
-#include "mesh.h"
 
 
 int screen_width = 1024;
@@ -113,29 +113,34 @@ void renderMesh(Mesh *mesh) {
 }
 
 
-
+//Detta definerar altså enbart kameran? Och enbart dess transform? Det verkar inte finnas någon matris för dess rotation!
 void display(void) {
 	Mesh *mesh;
 	
 	glClear(GL_COLOR_BUFFER_BIT);	
+	
+	
 		
 	// Assignment 1: Calculate the transform to view coordinates yourself 	
 	// The matrix V should be calculated from camera parameters
 	// Therefore, you need to replace this hard-coded transform. 
-	V.e[0] = 1.0f; V.e[4] = 0.0f; V.e[ 8] = 0.0f; V.e[12] =   0.0f;
-	V.e[1] = 0.0f; V.e[5] = 1.0f; V.e[ 9] = 0.0f; V.e[13] =   0.0f;
-	V.e[2] = 0.0f; V.e[6] = 0.0f; V.e[10] = 1.0f; V.e[14] = -cam.position.z;
-	V.e[3] = 0.0f; V.e[7] = 0.0f; V.e[11] = 0.0f; V.e[15] =   1.0f;
+	//Jag ser att detta är en identitetsmatris, plus en rotation kanske? {{1,0,0,0}, {0,1,0,0}, {0,0,1,0}, {X,Y,Z,1}}
+	V.e[0] = 1.0f; V.e[4] = 0.0f; V.e[ 8] = 0.0f; V.e[12] = -cam.position.x;
+	V.e[1] = 0.0f; V.e[5] = 1.0f; V.e[9] = 0.0f; V.e[13] = -cam.position.y;
+	V.e[2] = 0.0f; V.e[6] = 0.0f; V.e[10] = 1.0f; V.e[14] = -cam.position.z; //Detta är just nu 20.0f
+	V.e[3] = 0.0f; V.e[7] = 0.0f; V.e[11] = 0.0f; V.e[15] =   1.0f; //Inte röra, fy fy!
 
 	// Assignment 1: Calculate the projection transform yourself 	
 	// The matrix P should be calculated from camera parameters
 	// Therefore, you need to replace this hard-coded transform. 	
+	//Denna sk. Projektionsmatris innebär altså projektionsytan baserad på kamerans viewport.
 	P.e[0] = 1.299038f; P.e[4] = 0.000000f; P.e[ 8] =  0.000000f; P.e[12] =  0.0f;
 	P.e[1] = 0.000000f; P.e[5] = 1.732051f; P.e[ 9] =  0.000000f; P.e[13] =  0.0f;
 	P.e[2] = 0.000000f; P.e[6] = 0.000000f; P.e[10] = -1.000200f; P.e[14] = -2.000200f;
 	P.e[3] = 0.000000f; P.e[7] = 0.000000f; P.e[11] = -1.000000f; P.e[15] =  0.0f;
 
 	// This finds the combined view-projection matrix
+	//Det vill säga att P i detta fall agerar som en Skalär(?)
 	PV = MatMatMul(P, V);
 
 	// Select the shader program to be used during rendering 
@@ -161,18 +166,49 @@ void changeSize(int w, int h) {
 
 void keypress(unsigned char key, int x, int y) {
 	switch(key) {
-	case 'z':
-		cam.position.z -= 0.2f;
+	case 'Q':
+	case 'q':
+		//printf("%2f", cam.rotation.z); - Jag har verifierat att den roterar och translokerar, men kanske att skärmen inte uppdateras?
+		cam.position = Homogenize(MatVecMul(RotateY(0.01), cam.position));
+		//RotateMesh(meshList, 10.0);
 		break;
-	case 'Z':
+	case 'E':
+	case 'e':
+		cam.rotation.y += 0.2f;
+		break;
+	case 'W':
+	case 'w':
 		cam.position.z += 0.2f;
 		break;
-	case 'Q':
-	case 'q':		
+	case 'A':
+	case 'a':
+		cam.position.x -= 0.2f;
+		break;
+	case 'S':
+	case 's':
+		cam.position.z -= 0.2f;
+		break;
+	case 'D':
+	case 'd':
+		cam.position.x += 0.2f;
+		break;
+
+	//Det är GLUT som hanterar keypress, så kolla i deras bibliotek varför min input inte fungerar
+	//NOTE: Det funkar att förflytta sig i Z axeln, men inga andra axlar!? Är kameran låst eller?
+	case 'Z':
+	case 'z':
+		cam.position.y -= 0.2f;		
+		break;
+	case 'X':
+	case 'x':
+		cam.position.y += 0.2f;
+		break;
+	case 'L':
+	case 'l':		
 		glutLeaveMainLoop();
 		break;
 	}
-	glutPostRedisplay();
+	glutPostRedisplay(); //Säger att vi måste rita om fönstret
 }
 
 void init(void) {
@@ -238,7 +274,7 @@ int main(int argc, char **argv) {
 	// Insert the 3D models you want in your scene here in a linked list of meshes
 	// Note that "meshList" is a pointer to the first mesh and new meshes are added to the front of the list	
 	insertModel(&meshList, cow.nov, cow.verts, cow.nof, cow.faces, 20.0);
-	insertModel(&meshList, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
+	//insertModel(&meshList, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
 	//insertModel(&meshList, bunny.nov, bunny.verts, bunny.nof, bunny.faces, 60.0);	
 	//insertModel(&meshList, cube.nov, cube.verts, cube.nof, cube.faces, 5.0);
 	//insertModel(&meshList, frog.nov, frog.verts, frog.nof, frog.faces, 2.5);

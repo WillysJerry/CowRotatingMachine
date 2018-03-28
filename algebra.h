@@ -16,6 +16,17 @@ typedef struct { float x, y, z, w; } HomVector;
 ** |                  |
 ** |   3   7  11  15  |
 ** |_                _|
+							** Translate-matris!?
+							**  _                _
+							** |                  |
+							** |   1   0   0   x  |
+							** |                  |
+							** |   0   1   0   y  |
+							** |                  |
+							** |   0   0   1   z  |
+							** |                  |
+							** |   0   0   0   1  |
+							** |_                _|
 */
 typedef struct matrix { float e[16]; } Matrix;
 
@@ -32,6 +43,12 @@ Matrix MatMatMul(Matrix a, Matrix b);
 void PrintMatrix(char *name, Matrix m);
 void PrintVector(char *name, Vector v);
 void PrintHomVector(char *name, HomVector h);
+Matrix Translate(float x, float y, float z);
+Matrix Scale(float x, float y, float z);
+Matrix RotateX(float theta);
+Matrix RotateY(float theta);
+Matrix RotateZ(float theta);
+//void RotateMesh(Mesh *mesh, float rot);
 
 #endif
 

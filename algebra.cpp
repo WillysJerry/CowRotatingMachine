@@ -1,7 +1,9 @@
 #define _USE_MATH_DEFINES // To get M_PI defined
 #include <math.h>
 #include <stdio.h>
+//#include "mesh.h"
 #include "algebra.h"
+#include <string.h>
 
 Vector CrossProduct(Vector a, Vector b) {
 	Vector v = { a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x };
@@ -91,3 +93,66 @@ void PrintMatrix(char *name, Matrix a) {
 		printf("\n");
 	}
 }
+
+
+Matrix Translate(float x, float y, float z)
+{
+	Matrix m;
+	float arr[16] = { 1,0,0,0,0,1,0,0,0,0,1,0,x,y,z,1 };
+	memcpy(m.e, arr, 16 * sizeof(float));
+	return m;
+}
+
+Matrix Scale(float x, float y, float z)
+{
+	Matrix m;
+	float arr[16] = { x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, 1 };
+	memcpy(m.e, arr, 16 * sizeof(float));
+	return m;
+}
+
+Matrix RotateX(float theta)
+{
+	Matrix m;
+	float arr[16] = { 1,0,0,0,0, cos(theta), sin(theta), 0, 0, sin(-theta), cos(theta), 0,0,0,0,1 };
+	memcpy(m.e, arr, 16 * sizeof(float));
+	return m;
+}
+
+Matrix RotateY(float theta)
+{
+	Matrix m;
+	float arr[16] = { cos(theta), 0, sin(-theta), 0,0,1,0,0,sin(theta), 0, cos(theta), 0, 0, 0, 0, 1 };
+	memcpy(m.e, arr, 16 * sizeof(float));
+	return m;
+}
+
+Matrix RotateZ(float theta)
+{
+	Matrix m;
+	float arr[16] = { cos(theta), sin(theta), 0,0, sin(-theta), cos(theta), 0,0,0,0,1,0,0,0,0,1 };
+	memcpy(m.e, arr, 16 * sizeof(float));
+	return m;
+}
+
+
+////Kom ihåg att skicka tråden till GPU:n if mesh > cow
+//void RotateMesh(Mesh *mesh, float rot)
+//{
+//	Vector kossa;
+//	HomVector ret;
+//	Matrix m = RotateX(rot);
+//
+//	for (int i = 0; i < mesh->nv; i++)
+//	{
+//		kossa.x = mesh->vertices[i].x;
+//		kossa.y = mesh->vertices[i].y;
+//		kossa.z = mesh->vertices[i].z;
+//		ret = MatVecMul(m, kossa);
+//		kossa = Homogenize(ret);
+//		mesh->vertices[i].x = kossa.x;
+//		mesh->vertices[i].y = kossa.y;
+//		mesh->vertices[i].z = kossa.z;
+//
+//	}
+//}
