@@ -39,3 +39,24 @@ void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float sc
 	mesh->next = *list;
 	*list = mesh;	
 }
+
+//Kom ihåg att skicka tråden till GPU:n if mesh > cow
+void RotateMesh(Mesh *mesh, float rot)
+{
+	Vector kossa;
+	HomVector ret;
+	Matrix m = RotateX(rot);
+
+	for (int i = 0; i < mesh->nv; i++)
+	{
+		kossa.x = mesh->vertices[i].x;
+		kossa.y = mesh->vertices[i].y;
+		kossa.z = mesh->vertices[i].z;
+		ret = MatVecMul(m, kossa);
+		kossa = Homogenize(ret);
+		mesh->vertices[i].x = kossa.x;
+		mesh->vertices[i].y = kossa.y;
+		mesh->vertices[i].z = kossa.z;
+
+	}
+}

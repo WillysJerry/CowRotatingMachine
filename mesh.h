@@ -28,4 +28,6 @@ typedef struct _Camera {
 
 void insertModel(Mesh ** objlist, int nv, float * vArr, int nt, int * tArr, float scale = 1.0);
 
+void RotateMesh(Mesh *mesh, float rot);
+
 #endif
