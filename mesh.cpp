@@ -30,10 +30,11 @@ void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float sc
 	// Assignment 1: 
 	// Calculate and store suitable vertex normals for the mesh here.
 	// Replace the code below that simply sets some arbitrary normal values	
-	for (int i = 0; i < nv; i++) {
-		mesh->vnorms[i].x = rnd();
-		mesh->vnorms[i].y = rnd();
-		mesh->vnorms[i].z = rnd();
+	for (int i = 0; i < nt; i++) {
+		
+		mesh->vnorms[mesh->triangles[i].vInds[0]].x = Normalize(CrossProduct(Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[0]]), Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[0]]))).x;
+		mesh->vnorms[mesh->triangles[i].vInds[0]].y = Normalize(CrossProduct(Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[0]]), Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[0]]))).y;
+		mesh->vnorms[mesh->triangles[i].vInds[0]].z = Normalize(CrossProduct(Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[0]]), Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[0]]))).z;
 	}
 
 	mesh->next = *list;
@@ -60,3 +61,5 @@ void RotateMesh(Mesh *mesh, float rot)
 
 	}
 }
+
+

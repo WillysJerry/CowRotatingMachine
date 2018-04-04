@@ -10,12 +10,12 @@ typedef struct _Triangle {
 typedef struct _Mesh { 
 	int nv;				
 	Vector *vertices;
-	Vector *vnorms;
+	Vector *vnorms; //Förklaring från Afshin: Det är bättre att utgå från verts isf för center of mass för trianglarna pga. shaders
 	int nt;				
 	Triangle *triangles;
 	struct _Mesh *next; 
 		
-	unsigned int vbo, ibo, vao; // OpenGL handles for rendering
+	unsigned int vbo, ibo, vao; // OpenGL handles for rendering (Vi använder dem för att hantera objekt som ligger på grafikkortets minne eftersom vi inte kan peka dit)
 } Mesh;
 
 typedef struct _Camera {
