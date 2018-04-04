@@ -94,7 +94,18 @@ void renderMesh(Mesh *mesh) {
 	
 	// Assignment 1: Apply the transforms from local mesh coordinates to world coordinates here
 	// Combine it with the viewing transform that is passed to the shader below
+	Matrix t = Translate(mesh->translation.x, mesh->translation.y, mesh->translation.z);
+	Matrix rx = RotateX(-mesh->rotation.x);
+	Matrix ry = RotateY(-mesh->rotation.y);
+	Matrix rz = RotateZ(-mesh->rotation.z);
+	Matrix s = Scale(mesh->scale.x, mesh->scale.y, mesh->scale.z);
 
+	Matrix W = MatMatMul(t, MatMatMul(rx, MatMatMul(rz, ry)));
+	PV = MatMatMul(PV, W);
+
+	// TEMP TEST ROTATION AND TRANSLATION
+	mesh->translation.x += 0.1f;
+	mesh->rotation.y += 0.1f;
 
 	// Pass the viewing transform to the shader
 	GLint loc_PV = glGetUniformLocation(shprg, "PV");
