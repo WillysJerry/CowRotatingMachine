@@ -99,8 +99,8 @@ void renderMesh(Mesh *mesh) {
 	M = MatMatMul(PV, W);
 
 	// TEMP TEST ROTATION AND TRANSLATION
-	mesh->translation.x += 0.1f;
-	mesh->rotation.y += 0.1f;
+	//mesh->translation.x += 0.1f;
+	//mesh->rotation.y += 0.1f;
 
 	// Pass the viewing transform to the shader
 	//GLint loc_PV = glGetUniformLocation(shprg, "PV");
@@ -113,7 +113,7 @@ void renderMesh(Mesh *mesh) {
 	glBindVertexArray(mesh->vao);
 	
 	// To accomplish wireframe rendering (can be removed to get filled triangles)
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
 
 	// Draw all triangles
 	glDrawElements(GL_TRIANGLES, mesh->nt * 3, GL_UNSIGNED_INT, NULL); 
@@ -301,7 +301,9 @@ int main(int argc, char **argv) {
 	// Insert the 3D models you want in your scene here in a linked list of meshes
 	// Note that "meshList" is a pointer to the first mesh and new meshes are added to the front of the list	
 	insertModel(&meshList, cow.nov, cow.verts, cow.nof, cow.faces, 20.0);
-	meshList->translation = { 5, 5, 0 };
+	//meshList->translation.x = 10.0f;
+	//meshList->translation.y = 10.0f;
+	meshList->translation.z = 20.0f;
 	insertModel(&meshList, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
 	//insertModel(&meshList, bunny.nov, bunny.verts, bunny.nof, bunny.faces, 60.0);	
 	//insertModel(&meshList, cube.nov, cube.verts, cube.nof, cube.faces, 5.0);
