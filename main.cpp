@@ -94,13 +94,8 @@ void renderMesh(Mesh *mesh) {
 	
 	// Assignment 1: Apply the transforms from local mesh coordinates to world coordinates here
 	// Combine it with the viewing transform that is passed to the shader below
-	Matrix t = Translate(mesh->translation.x, mesh->translation.y, mesh->translation.z);
-	Matrix rx = RotateX(-mesh->rotation.x);
-	Matrix ry = RotateY(-mesh->rotation.y);
-	Matrix rz = RotateZ(-mesh->rotation.z);
-	Matrix s = Scale(mesh->scale.x, mesh->scale.y, mesh->scale.z);
 
-	Matrix W = MatMatMul(t, MatMatMul(rx, MatMatMul(rz, ry)));
+	Matrix W = LocalToWorld(mesh->translation, mesh->rotation, mesh->scale);
 	PV = MatMatMul(PV, W);
 
 	// TEMP TEST ROTATION AND TRANSLATION
@@ -197,7 +192,6 @@ void keypress(unsigned char key, int x, int y) {
 	switch(key) {
 	case 'Q':
 	case 'q':
-
 		cam.rotation.y -= 0.2f;
 		break;
 	case 'E':

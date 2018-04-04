@@ -45,6 +45,17 @@ void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float sc
 	*list = mesh;	
 }
 
+Matrix LocalToWorld(Vector t, Vector r, Vector s) {
+	Matrix T = Translate(t.x, t.y, t.z);
+	Matrix Rx = RotateX(r.x);
+	Matrix Ry = RotateY(r.y);
+	Matrix Rz = RotateZ(r.z);
+	Matrix S = Scale(s.x, s.y, s.z);
+
+	Matrix W = MatMatMul(T, MatMatMul(Rx, MatMatMul(Ry, MatMatMul(Rz, S))));
+	return W;
+}
+
 //Kom ihåg att skicka tråden till GPU:n if mesh > cow
 void RotateMesh(Mesh *mesh, float rot)
 {
