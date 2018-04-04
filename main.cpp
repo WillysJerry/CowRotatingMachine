@@ -125,10 +125,20 @@ void display(void) {
 	// The matrix V should be calculated from camera parameters
 	// Therefore, you need to replace this hard-coded transform. 
 	//Jag ser att detta är en identitetsmatris, plus en rotation kanske? {{1,0,0,0}, {0,1,0,0}, {0,0,1,0}, {X,Y,Z,1}}
-	V.e[0] = 1.0f; V.e[4] = 0.0f; V.e[ 8] = 0.0f; V.e[12] = -cam.position.x;
+	/*V.e[0] = 1.0f; V.e[4] = 0.0f; V.e[ 8] = 0.0f; V.e[12] = -cam.position.x;
 	V.e[1] = 0.0f; V.e[5] = 1.0f; V.e[9] = 0.0f; V.e[13] = -cam.position.y;
 	V.e[2] = 0.0f; V.e[6] = 0.0f; V.e[10] = 1.0f; V.e[14] = -cam.position.z; //Detta är just nu 20.0f
-	V.e[3] = 0.0f; V.e[7] = 0.0f; V.e[11] = 0.0f; V.e[15] =   1.0f; //Inte röra, fy fy!
+	V.e[3] = 0.0f; V.e[7] = 0.0f; V.e[11] = 0.0f; V.e[15] =   1.0f; //Inte röra, fy fy!*/
+
+	float a = cam.rotation.x, b = cam.rotation.y, c = cam.rotation.z;
+	Vector pos = { -cam.position.x, -cam.position.y, -cam.position.z };
+
+	Matrix rz = RotateZ(-c);
+	Matrix ry = RotateY(-b);
+	Matrix rx = RotateX(-a);
+	Matrix t = Translate(pos.x, pos.y, pos.z);
+
+	V = MatMatMul(t, MatMatMul(rx, MatMatMul(rz, ry)));
 
 	// Assignment 1: Calculate the projection transform yourself 	
 	// The matrix P should be calculated from camera parameters
