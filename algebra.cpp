@@ -114,7 +114,7 @@ Matrix Scale(float x, float y, float z)
 Matrix RotateX(float theta)
 {
 	Matrix m;
-	float arr[16] = { 1,0,0,0,0, cos(theta), sin(theta), 0, 0, sin(-theta), cos(theta), 0,0,0,0,1 };
+	float arr[16] = { 1,0,0,0,0, cos(theta), sin(theta), 0, 0, -sin(theta), cos(theta), 0,0,0,0,1 };
 	memcpy(m.e, arr, 16 * sizeof(float));
 	return m;
 }
@@ -122,7 +122,7 @@ Matrix RotateX(float theta)
 Matrix RotateY(float theta)
 {
 	Matrix m;
-	float arr[16] = { cos(theta), 0, sin(-theta), 0,0,1,0,0,sin(theta), 0, cos(theta), 0, 0, 0, 0, 1 };
+	float arr[16] = { cos(theta), 0, sin(theta), 0,0,1,0,0, -sin(theta), 0, cos(theta), 0, 0, 0, 0, 1 };
 	memcpy(m.e, arr, 16 * sizeof(float));
 	return m;
 }
@@ -130,7 +130,7 @@ Matrix RotateY(float theta)
 Matrix RotateZ(float theta)
 {
 	Matrix m;
-	float arr[16] = { cos(theta), sin(theta), 0,0, sin(-theta), cos(theta), 0,0,0,0,1,0,0,0,0,1 };
+	float arr[16] = { cos(theta), sin(theta), 0,0, -sin(theta), cos(theta), 0,0,0,0,1,0,0,0,0,1 };
 	memcpy(m.e, arr, 16 * sizeof(float));
 	return m;
 }
