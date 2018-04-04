@@ -162,6 +162,7 @@ void display(void) {
 		P = MatOrtho(-10, 10, -10, 10, 0, 100000);
 	}
 	else {
+		/*
 		//Column 1
 		P.e[0] = (1.0f / tan(cam.fov / 2.0f)) / (screen_width / screen_height); 
 		P.e[1] = 0.000000f;
@@ -182,6 +183,8 @@ void display(void) {
 		P.e[13] = 0.000000f;
 		P.e[14] = (2.0f * cam.farPlane * cam.nearPlane) / (cam.nearPlane - cam.farPlane); 
 		P.e[15] = 0.000000f;
+		*/
+		P = MatFrustum(-1, 1, -1, 1, 1, 100000);
 
 		PrintMatrix(NULL, P);
 	}

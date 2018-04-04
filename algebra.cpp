@@ -137,12 +137,27 @@ Matrix RotateZ(float theta)
 
 Matrix MatOrtho(float left, float right, float bottom, float top, float near, float far) {
 	Matrix m;
+
 	float arr[16] = {
 		2 / (right - left), 0, 0, 0,
 		0, 2 / (top - bottom), 0, 0,
 		0, 0, 2 / (near - far), 0,
 		-((right + left) / (right - left)), -((top + bottom) / (top - bottom)), -((far + near) / (far - near)), 1
 	};
+
+	memcpy(m.e, arr, 16 * sizeof(float));
+	return m;
+}
+
+Matrix MatFrustum(float left, float right, float bottom, float top, float near, float far) {
+	Matrix m;
+	float arr[16] = {
+		2 * near / (right - left), 0, 0, 0,
+		0, 2 * near / (top - bottom), 0, 0,
+		(right + left) / (right - left), (top + bottom) / (top - bottom), -((far + near) / (far - near)), -1,
+		0, 0, -(2 * far * near / (far - near)), 0
+	};
+
 	memcpy(m.e, arr, 16 * sizeof(float));
 	return m;
 }
