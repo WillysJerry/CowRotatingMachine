@@ -37,8 +37,24 @@ void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float sc
 		mesh->vnorms[mesh->triangles[i].vInds[0]].z = Normalize(CrossProduct(Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[0]]), Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[0]]))).z;
 	}
 
+	// Set transform parameters
+	mesh->translation = { 0, 0, 0 };
+	mesh->rotation = { 0, 0, 0 };
+	mesh->scale = { 1, 1, 1 };
+
 	mesh->next = *list;
 	*list = mesh;	
+}
+
+Matrix LocalToWorld(Vector t, Vector r, Vector s) {
+	Matrix T = Translate(t.x, t.y, t.z);
+	Matrix Rx = RotateX(r.x);
+	Matrix Ry = RotateY(r.y);
+	Matrix Rz = RotateZ(r.z);
+	Matrix S = Scale(s.x, s.y, s.z);
+
+	Matrix W = MatMatMul(T, MatMatMul(Rx, MatMatMul(Ry, MatMatMul(Rz, S))));
+	return W;
 }
 
 //Kom ihåg att skicka tråden till GPU:n if mesh > cow

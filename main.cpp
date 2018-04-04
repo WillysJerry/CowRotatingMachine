@@ -95,6 +95,12 @@ void renderMesh(Mesh *mesh) {
 	// Assignment 1: Apply the transforms from local mesh coordinates to world coordinates here
 	// Combine it with the viewing transform that is passed to the shader below
 
+	Matrix W = LocalToWorld(mesh->translation, mesh->rotation, mesh->scale);
+	PV = MatMatMul(PV, W);
+
+	// TEMP TEST ROTATION AND TRANSLATION
+	mesh->translation.x += 0.1f;
+	mesh->rotation.y += 0.1f;
 
 	// Pass the viewing transform to the shader
 	GLint loc_PV = glGetUniformLocation(shprg, "PV");
@@ -174,13 +180,19 @@ void changeSize(int w, int h) {
 
 }
 
+void CameraSettings() {
+	printf("Position: (%2f, %2f, %2f)\n", cam.position.x, cam.position.y, cam.position.z);
+	printf("Rotation: (%2f, %2f, %2f)\n", cam.rotation.x, cam.rotation.y, cam.rotation.z);
+	printf("Field of view: %2f\n", cam.fov);
+	printf("Near plane: %2f\n", cam.nearPlane);
+	printf("Far plane: %2f\n", cam.farPlane);
+}
+
 void keypress(unsigned char key, int x, int y) {
 	switch(key) {
 	case 'Q':
 	case 'q':
-		//printf("%2f", cam.rotation.z); - Jag har verifierat att den roterar och translokerar, men kanske att skärmen inte uppdateras?
-		cam.position = Homogenize(MatVecMul(RotateY(0.01), cam.position));
-		//RotateMesh(meshList, 10.0);
+		cam.rotation.y -= 0.2f;
 		break;
 	case 'E':
 	case 'e':
@@ -202,7 +214,10 @@ void keypress(unsigned char key, int x, int y) {
 	case 'd':
 		cam.position.x += 0.2f;
 		break;
-
+	case 'C':
+	case 'c':
+		CameraSettings();
+		break;
 	//Det är GLUT som hanterar keypress, så kolla i deras bibliotek varför min input inte fungerar
 	//NOTE: Det funkar att förflytta sig i Z axeln, men inga andra axlar!? Är kameran låst eller?
 	case 'Z':

@@ -15,6 +15,11 @@ typedef struct _Mesh {
 	Triangle *triangles;
 	struct _Mesh *next; 
 		
+	unsigned int vbo, ibo, vao; // OpenGL handles for rendering
+
+	Vector translation;
+	Vector rotation;
+	Vector scale;
 	unsigned int vbo, ibo, vao; // OpenGL handles for rendering (Vi använder dem för att hantera objekt som ligger på grafikkortets minne eftersom vi inte kan peka dit)
 } Mesh;
 
@@ -30,4 +35,5 @@ void insertModel(Mesh ** objlist, int nv, float * vArr, int nt, int * tArr, floa
 
 void RotateMesh(Mesh *mesh, float rot);
 
+Matrix LocalToWorld(Vector t, Vector r, Vector s);
 #endif
