@@ -36,6 +36,11 @@ void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float sc
 		mesh->vnorms[i].z = rnd();
 	}
 
+	// Set transform parameters
+	mesh->translation = { 0, 0, 0 };
+	mesh->rotation = { 0, 0, 0 };
+	mesh->scale = { 1, 1, 1 };
+
 	mesh->next = *list;
 	*list = mesh;	
 }

@@ -16,6 +16,10 @@ typedef struct _Mesh {
 	struct _Mesh *next; 
 		
 	unsigned int vbo, ibo, vao; // OpenGL handles for rendering
+
+	Vector translation;
+	Vector rotation;
+	Vector scale;
 } Mesh;
 
 typedef struct _Camera {
