@@ -159,7 +159,7 @@ void display(void) {
 		P.e[1] = 0.000000f; P.e[5] = 1.732051f; P.e[9] = 0.000000f; P.e[13] = 0.0f;
 		P.e[2] = 0.000000f; P.e[6] = 0.000000f; P.e[10] = -1.000200f; P.e[14] = -2.000200f;
 		P.e[3] = 0.000000f; P.e[7] = 0.000000f; P.e[11] = -1.000000f; P.e[15] = 0.0f;*/
-		P = MatOrtho(10, -10, 10, -10, 0, 100000);
+		P = MatOrtho(-10, 10, -10, 10, 0, 100000);
 	}
 	else {
 		//Column 1
@@ -182,6 +182,8 @@ void display(void) {
 		P.e[13] = 0.000000f;
 		P.e[14] = (2.0f * cam.farPlane * cam.nearPlane) / (cam.nearPlane - cam.farPlane); 
 		P.e[15] = 0.000000f;
+
+		PrintMatrix(NULL, P);
 	}
 
 	// This finds the combined view-projection matrix
