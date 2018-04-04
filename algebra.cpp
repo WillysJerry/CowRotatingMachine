@@ -122,7 +122,7 @@ Matrix RotateX(float theta)
 Matrix RotateY(float theta)
 {
 	Matrix m;
-	float arr[16] = { cos(theta), 0, sin(theta), 0,0,1,0,0, -sin(theta), 0, cos(theta), 0, 0, 0, 0, 1 };
+	float arr[16] = { cos(theta), 0, -sin(theta), 0,0,1,0,0, sin(theta), 0, cos(theta), 0, 0, 0, 0, 1 };
 	memcpy(m.e, arr, 16 * sizeof(float));
 	return m;
 }
