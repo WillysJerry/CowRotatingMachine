@@ -186,9 +186,8 @@ void keypress(unsigned char key, int x, int y) {
 	switch(key) {
 	case 'Q':
 	case 'q':
-		//printf("%2f", cam.rotation.z); - Jag har verifierat att den roterar och translokerar, men kanske att skärmen inte uppdateras?
-		cam.position = Homogenize(MatVecMul(RotateY(0.01), cam.position));
-		//RotateMesh(meshList, 10.0);
+
+		cam.rotation.y -= 0.2f;
 		break;
 	case 'E':
 	case 'e':
