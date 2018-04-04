@@ -2,12 +2,13 @@
 #include <stdio.h>
 #include <glew.h>
 #include <freeglut.h>
+#include <math.h>
 #include "mesh.h"
 
 #include "algebra.h"
 #include "shaders.h"
 
-
+int viewMode = 0;// toggle between predefined or dynamic perspective matrix
 int screen_width = 1024;
 int screen_height = 768;
 
@@ -152,10 +153,35 @@ void display(void) {
 	// The matrix P should be calculated from camera parameters
 	// Therefore, you need to replace this hard-coded transform. 	
 	//Denna sk. Projektionsmatris innebär altså projektionsytan baserad på kamerans viewport.
-	P.e[0] = 1.299038f; P.e[4] = 0.000000f; P.e[ 8] =  0.000000f; P.e[12] =  0.0f;
-	P.e[1] = 0.000000f; P.e[5] = 1.732051f; P.e[ 9] =  0.000000f; P.e[13] =  0.0f;
-	P.e[2] = 0.000000f; P.e[6] = 0.000000f; P.e[10] = -1.000200f; P.e[14] = -2.000200f;
-	P.e[3] = 0.000000f; P.e[7] = 0.000000f; P.e[11] = -1.000000f; P.e[15] =  0.0f;
+	
+	if (viewMode == 0) {
+		P.e[0] = 1.299038f; P.e[4] = 0.000000f; P.e[8] = 0.000000f; P.e[12] = 0.0f;
+		P.e[1] = 0.000000f; P.e[5] = 1.732051f; P.e[9] = 0.000000f; P.e[13] = 0.0f;
+		P.e[2] = 0.000000f; P.e[6] = 0.000000f; P.e[10] = -1.000200f; P.e[14] = -2.000200f;
+		P.e[3] = 0.000000f; P.e[7] = 0.000000f; P.e[11] = -1.000000f; P.e[15] = 0.0f;
+	}
+	else {
+		//Column 1
+		P.e[0] = (1.0f / tan(cam.fov / 2.0f)) / (screen_width / screen_height); 
+		P.e[1] = 0.000000f;
+		P.e[2] = 0.000000f;
+		P.e[3] = 0.000000f;
+		//Column 2
+		P.e[4] = 0.000000f;
+		P.e[5] = 1.0f / tan(cam.fov / 2.0f); 
+		P.e[6] = 0.000000f;
+		P.e[7] = 0.000000f;
+		//Column 3
+		P.e[8] = 0.000000f;
+		P.e[9] = 0.000000f;
+		P.e[10] = (cam.farPlane + cam.nearPlane) / (cam.nearPlane - cam.farPlane); 
+		P.e[11] = -1.000000f;
+		//Column 4
+		P.e[12] = 0.000000f;
+		P.e[13] = 0.000000f;
+		P.e[14] = (2.0f * cam.farPlane * cam.nearPlane) / (cam.nearPlane - cam.farPlane); 
+		P.e[15] = 0.000000f;
+	}
 
 	// This finds the combined view-projection matrix
 	//Det vill säga att P i detta fall agerar som en Skalär(?)
@@ -219,6 +245,9 @@ void keypress(unsigned char key, int x, int y) {
 	case 'C':
 	case 'c':
 		CameraSettings();
+		break;
+	case '0':
+		viewMode = (viewMode + 1) % 2;
 		break;
 	//Det är GLUT som hanterar keypress, så kolla i deras bibliotek varför min input inte fungerar
 	//NOTE: Det funkar att förflytta sig i Z axeln, men inga andra axlar!? Är kameran låst eller?
