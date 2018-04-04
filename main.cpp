@@ -25,6 +25,7 @@ GLuint shprg; // Shader program id
 // P is the projection transform
 // PV = P * V is the combined view-projection transform
 Matrix V, P, PV;
+Matrix M;
 
 
 void prepareShaderProgram(const char ** vs_src, const char ** fs_src) {
@@ -94,24 +95,25 @@ void renderMesh(Mesh *mesh) {
 	
 	// Assignment 1: Apply the transforms from local mesh coordinates to world coordinates here
 	// Combine it with the viewing transform that is passed to the shader below
-
 	Matrix W = LocalToWorld(mesh->translation, mesh->rotation, mesh->scale);
-	PV = MatMatMul(PV, W);
+	M = MatMatMul(PV, W);
 
 	// TEMP TEST ROTATION AND TRANSLATION
 	mesh->translation.x += 0.1f;
 	mesh->rotation.y += 0.1f;
 
 	// Pass the viewing transform to the shader
+	//GLint loc_PV = glGetUniformLocation(shprg, "PV");
+	//glUniformMatrix4fv(loc_PV, 1, GL_FALSE, PV.e);
 	GLint loc_PV = glGetUniformLocation(shprg, "PV");
-	glUniformMatrix4fv(loc_PV, 1, GL_FALSE, PV.e);
+	glUniformMatrix4fv(loc_PV, 1, GL_FALSE, M.e);
 
 
 	// Select current resources 
 	glBindVertexArray(mesh->vao);
 	
 	// To accomplish wireframe rendering (can be removed to get filled triangles)
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
 
 	// Draw all triangles
 	glDrawElements(GL_TRIANGLES, mesh->nt * 3, GL_UNSIGNED_INT, NULL); 
@@ -299,7 +301,8 @@ int main(int argc, char **argv) {
 	// Insert the 3D models you want in your scene here in a linked list of meshes
 	// Note that "meshList" is a pointer to the first mesh and new meshes are added to the front of the list	
 	insertModel(&meshList, cow.nov, cow.verts, cow.nof, cow.faces, 20.0);
-	//insertModel(&meshList, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
+	meshList->translation = { 5, 5, 0 };
+	insertModel(&meshList, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
 	//insertModel(&meshList, bunny.nov, bunny.verts, bunny.nof, bunny.faces, 60.0);	
 	//insertModel(&meshList, cube.nov, cube.verts, cube.nof, cube.faces, 5.0);
 	//insertModel(&meshList, frog.nov, frog.verts, frog.nof, frog.faces, 2.5);
