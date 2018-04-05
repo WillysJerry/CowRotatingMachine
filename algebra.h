@@ -52,5 +52,6 @@ Matrix RotateZ(float theta);
 Matrix MatOrtho(float left, float right, float bottom, float top, float nearPlane, float farPlane);
 Matrix MatFrustum(float left, float right, float bottom, float top, float nearPlane, float farPlane);
 
+Matrix Bounce(float a, float t);
 #endif
 

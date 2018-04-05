@@ -28,6 +28,7 @@ GLuint shprg; // Shader program id
 Matrix V, P, PV;
 Matrix M;
 
+float t = 0; // Temporary time variable for mesh bounce animation
 
 void prepareShaderProgram(const char ** vs_src, const char ** fs_src) {
 	GLint success = GL_FALSE;
@@ -96,7 +97,9 @@ void renderMesh(Mesh *mesh) {
 	
 	// Assignment 1: Apply the transforms from local mesh coordinates to world coordinates here
 	// Combine it with the viewing transform that is passed to the shader below
-	Matrix W = LocalToWorld(mesh->translation, mesh->rotation, mesh->scale);
+	Matrix W = MatMatMul(Bounce(2, t), LocalToWorld(mesh->translation, mesh->rotation, mesh->scale));
+	t += 0.05f; // Removing this will stop the bouncing animation
+
 	M = MatMatMul(PV, W);
 
 	// TEMP TEST ROTATION AND TRANSLATION

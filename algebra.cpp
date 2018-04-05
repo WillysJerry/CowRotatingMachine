@@ -162,4 +162,6 @@ Matrix MatFrustum(float left, float right, float bottom, float top, float near, 
 	return m;
 }
 
-
+Matrix Bounce(float a, float t) {
+	return Translate(0, sin(t) * a, 0);
+}
