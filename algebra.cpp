@@ -136,6 +136,8 @@ Matrix RotateZ(float theta)
 }
 
 Matrix MatOrtho(float left, float right, float bottom, float top, float near, float far) {
+	// Orthogonal projektion:
+	// Föreläsning 2.5 Viewing - s.15
 	Matrix m;
 
 	float arr[16] = {
@@ -150,6 +152,8 @@ Matrix MatOrtho(float left, float right, float bottom, float top, float near, fl
 }
 
 Matrix MatFrustum(float left, float right, float bottom, float top, float near, float far) {
+	// Frustum perspective projektion:
+	// Föreläsning 2.5 Viewing - s.21
 	Matrix m;
 	float arr[16] = {
 		2 * near / (right - left), 0, 0, 0,
