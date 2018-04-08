@@ -149,45 +149,17 @@ void display(void) {
 	// Assignment 1: Calculate the projection transform yourself 	
 	// The matrix P should be calculated from camera parameters
 	// Therefore, you need to replace this hard-coded transform. 	
-	//Denna sk. Projektionsmatris innebär altså projektionsytan baserad på kamerans viewport.
 	
 	if (viewMode == 0) {
-		/*P.e[0] = 1.299038f; P.e[4] = 0.000000f; P.e[8] = 0.000000f; P.e[12] = 0.0f;
-		P.e[1] = 0.000000f; P.e[5] = 1.732051f; P.e[9] = 0.000000f; P.e[13] = 0.0f;
-		P.e[2] = 0.000000f; P.e[6] = 0.000000f; P.e[10] = -1.000200f; P.e[14] = -2.000200f;
-		P.e[3] = 0.000000f; P.e[7] = 0.000000f; P.e[11] = -1.000000f; P.e[15] = 0.0f;*/
 		P = MatOrtho(-10, 10, -10, 10, 0, 100000);
 	}
 	else {
-		/*
-		//Column 1
-		P.e[0] = (1.0f / tan(cam.fov / 2.0f)) / (screen_width / screen_height); 
-		P.e[1] = 0.000000f;
-		P.e[2] = 0.000000f;
-		P.e[3] = 0.000000f;
-		//Column 2
-		P.e[4] = 0.000000f;
-		P.e[5] = 1.0f / tan(cam.fov / 2.0f); 
-		P.e[6] = 0.000000f;
-		P.e[7] = 0.000000f;
-		//Column 3
-		P.e[8] = 0.000000f;
-		P.e[9] = 0.000000f;
-		P.e[10] = (cam.farPlane + cam.nearPlane) / (cam.nearPlane - cam.farPlane); 
-		P.e[11] = -1.000000f;
-		//Column 4
-		P.e[12] = 0.000000f;
-		P.e[13] = 0.000000f;
-		P.e[14] = (2.0f * cam.farPlane * cam.nearPlane) / (cam.nearPlane - cam.farPlane); 
-		P.e[15] = 0.000000f;
-		*/
 		P = MatFrustum(-1, 1, -1, 1, 1, 100000);
 
 		PrintMatrix(NULL, P);
 	}
 
 	// This finds the combined view-projection matrix
-	//Det vill säga att P i detta fall agerar som en Skalär(?)
 	PV = MatMatMul(P, V);
 
 
@@ -253,8 +225,6 @@ void keypress(unsigned char key, int x, int y) {
 	case '0':
 		viewMode = (viewMode + 1) % 2;
 		break;
-	//Det är GLUT som hanterar keypress, så kolla i deras bibliotek varför min input inte fungerar
-	//NOTE: Det funkar att förflytta sig i Z axeln, men inga andra axlar!? Är kameran låst eller?
 	case 'Z':
 	case 'z':
 		cam.position.y -= 0.2f;		
