@@ -15,9 +15,9 @@ void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float sc
 	
 	// set mesh vertices
 	for (int i = 0; i < nv; i++) {
-		mesh->vertices[i].x = vArr[i*3] * scale;
-		mesh->vertices[i].y = vArr[i*3+1] * scale;
-		mesh->vertices[i].z = vArr[i*3+2] * scale;
+		mesh->vertices[i].x = vArr[i*3];
+		mesh->vertices[i].y = vArr[i*3+1];
+		mesh->vertices[i].z = vArr[i*3+2];
 	}
 
 	// set mesh triangles
@@ -32,15 +32,17 @@ void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float sc
 	// Replace the code below that simply sets some arbitrary normal values	
 	for (int i = 0; i < nt; i++) {
 		
-		mesh->vnorms[mesh->triangles[i].vInds[0]].x = Normalize(CrossProduct(Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[0]]), Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[0]]))).x;
+		mesh->vnorms[mesh->triangles[i].vInds[0]] = Normalize(CrossProduct(Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[0]]), Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[0]])));
+		/*
 		mesh->vnorms[mesh->triangles[i].vInds[0]].y = Normalize(CrossProduct(Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[0]]), Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[0]]))).y;
 		mesh->vnorms[mesh->triangles[i].vInds[0]].z = Normalize(CrossProduct(Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[0]]), Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[0]]))).z;
+		*/
 	}
 
 	// Set transform parameters
 	mesh->translation = { 0, 0, 0 };
 	mesh->rotation = { 0, 0, 0 };
-	mesh->scale = { 1, 1, 1 };
+	mesh->scale = { scale, scale, scale };
 
 	mesh->next = *list;
 	*list = mesh;	
