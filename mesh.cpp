@@ -1,5 +1,10 @@
 #include <stdlib.h>
+#include <fstream>
+#include <sstream>
+#include <string>
 #include "mesh.h"
+
+using namespace std;
 
 float rnd() {
 	return 2.0f * float(rand()) / float(RAND_MAX) - 1.0f;
@@ -78,4 +83,58 @@ void RotateMesh(Mesh *mesh, float rot)
 	}
 }
 
+int LoadObj(const char* filename, Mesh *mesh)
+{
+	mesh->nv = 0;
+	mesh->nt = 0;
+	string line;
 
+	//Open the file
+	ifstream infile(filename);
+	if (!infile){
+		printf("Cannot open %s\n", filename);
+		return -1;
+	}
+
+	//Determines the size of arrays
+	while (getline(infile, line)){
+		if (line.substr(0, 2) == "v "){
+			mesh->nv += 1;
+		}
+		else if (line.substr(0, 2) == "f "){
+			mesh->nt += 1;
+		}
+	}
+
+	//Allocates memory for arrays
+	mesh->vertices = (Vector *)malloc(mesh->nv * sizeof(Vector));
+	mesh->triangles = (Triangle *)malloc(mesh->nt * sizeof(Triangle));
+
+	//Resets stream to begining of file
+	infile.clear();
+	infile.seekg(0, ios::beg);
+
+	//Fills arrays with values
+	int i = 0, j = 0;
+	while (getline(infile, line)) {
+		if (line.substr(0, 2) == "v ") {
+			istringstream s(line.substr(2));
+			s >> mesh->vertices[i].x; 
+			s >> mesh->vertices[i].y;
+			s >> mesh->vertices[i].z;
+			i++;
+		}
+		else if (line.substr(0, 2) == "f ") {
+			istringstream s(line.substr(2));
+			s >> mesh->triangles[j].vInds[0];
+			s >> mesh->triangles[j].vInds[1];
+			s >> mesh->triangles[j].vInds[2];
+			j++;
+		}
+	}
+	mesh->next = *list;
+	*list = mesh;
+	printf("Number of vertecies: %d\n", mesh->nv);
+	printf("Number of triangles: %d\n", mesh->nt);
+	return 0;
+}
