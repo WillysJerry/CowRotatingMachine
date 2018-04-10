@@ -85,7 +85,7 @@ void RotateMesh(Mesh *mesh, float rot)
 	}
 }
 
-int LoadObj(const char* filename, Mesh *mesh)
+int LoadObj(Mesh **list, const char* filename, Mesh *mesh)
 {
 	mesh->nv = 0;
 	mesh->nt = 0;
@@ -134,9 +134,8 @@ int LoadObj(const char* filename, Mesh *mesh)
 			j++;
 		}
 	}
+
 	mesh->next = *list;
-	*list = mesh;
-	printf("Number of vertecies: %d\n", mesh->nv);
-	printf("Number of triangles: %d\n", mesh->nt);
+	//*list = mesh;
 	return 0;
 }

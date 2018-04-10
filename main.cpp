@@ -8,15 +8,17 @@
 #include "algebra.h"
 #include "shaders.h"
 
-int viewMode = 0;// toggle between predefined or dynamic perspective matrix
+int bounceMode = 0;// Toggle between predefined or dynamic perspective matrix
+int viewMode = 0;// Toggle between predefined or dynamic perspective matrix
+int shaderMode = 0;// Turn of faces
+
 int screen_width = 1024;
 int screen_height = 768;
 
-
 Mesh *meshList = NULL; // Global pointer to linked list of triangle meshes
+Mesh *selected = NULL;
 
 Camera cam = {{0,0,20}, {0,0,0}, 60, 1, 10000}; // Setup the global camera parameters, i OpenGL så tittar kameran "bakåt" så +20 z-axis används för att få lite avstånd till modellen.
-
 
 GLuint shprg; // Shader program id
 
@@ -98,7 +100,9 @@ void renderMesh(Mesh *mesh) {
 	// Assignment 1: Apply the transforms from local mesh coordinates to world coordinates here
 	// Combine it with the viewing transform that is passed to the shader below
 	Matrix W = MatMatMul(Bounce(2, t), LocalToWorld(mesh->translation, mesh->rotation, mesh->scale));
-	t += 0.05f; // Removing this will stop the bouncing animation
+	if (bounceMode == 1) {
+		t += 0.05f; // Removing this will stop the bouncing animation
+	}
 
 	M = MatMatMul(PV, W);
 
@@ -117,7 +121,9 @@ void renderMesh(Mesh *mesh) {
 	glBindVertexArray(mesh->vao);
 	
 	// To accomplish wireframe rendering (can be removed to get filled triangles)
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
+	if (shaderMode == 1) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
 
 	// Draw all triangles
 	glDrawElements(GL_TRIANGLES, mesh->nt * 3, GL_UNSIGNED_INT, NULL); 
@@ -129,8 +135,6 @@ void display(void) {
 	Mesh *mesh;
 	
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT); //Lade till DEPTH_BUFFER för att kunna rita upp polygoner
-
-
 
 	// Assignment 1: Calculate the transform to view coordinates yourself 	
 	// The matrix V should be calculated from camera parameters
@@ -155,8 +159,6 @@ void display(void) {
 	}
 	else {
 		P = MatFrustum(-1, 1, -1, 1, 1, 100000);
-
-		PrintMatrix(NULL, P);
 	}
 
 	// This finds the combined view-projection matrix
@@ -194,47 +196,90 @@ void CameraSettings() {
 
 void keypress(unsigned char key, int x, int y) {
 	switch(key) {
-	case 'Q':
+
+	// Camera controlls
+	case 'Q': // Rotate camera counter-clockwise
 	case 'q':
 		cam.rotation.y -= 0.2f;
 		break;
-	case 'E':
+	case 'E': // Rotate camera clockwise
 	case 'e':
 		cam.rotation.y += 0.2f;
 		break;
-	case 'W':
+	case 'W': // Move camera forward
 	case 'w':
 		cam.position.z += 0.2f;
 		break;
-	case 'A':
+	case 'A': // Move camera to the left
 	case 'a':
 		cam.position.x -= 0.2f;
 		break;
-	case 'S':
+	case 'S': // Move camera backwards
 	case 's':
 		cam.position.z -= 0.2f;
-		break;
-	case 'D':
+		break;  
+	case 'D': // Move camera to the right
 	case 'd':
 		cam.position.x += 0.2f;
 		break;
-	case 'C':
-	case 'c':
-		CameraSettings();
-		break;
-	case '0':
-		viewMode = (viewMode + 1) % 2;
-		break;
-	case 'Z':
+	case 'Z': // Move camera upwards
 	case 'z':
-		cam.position.y -= 0.2f;		
+		cam.position.y -= 0.2f;
 		break;
-	case 'X':
+	case 'X': // Move camera downwards
 	case 'x':
 		cam.position.y += 0.2f;
 		break;
-	case 'L':
-	case 'l':		
+
+	// Mesh controlls
+	case 'U': // Rotate Mesh counter-clockwise
+	case 'u':
+		selected->rotation.y -= 0.2f;
+		break;
+	case 'O': // Rotate Mesh clockwise
+	case 'o':
+		selected->rotation.y += 0.2f;
+		break;
+	case 'I': // Move Mesh forward
+	case 'i':
+		selected->translation.z -= 0.2f;
+		break;
+	case 'J': // Move Mesh to the left
+	case 'j':
+		selected->translation.x -= 0.2f;
+		break;
+	case 'K': // Move Mesh backwards
+	case 'k':
+		selected->translation.z += 0.2f;
+		break;
+	case 'L': // Move Mesh to the right
+	case 'l':
+		selected->translation.x += 0.2f;
+		break;
+	case '\t': // Toggle between meshes in meshList
+		if (selected->next == NULL) {
+			selected = meshList;
+		}
+		else {
+			selected = selected->next;
+		}
+		break;
+
+	// Misc options
+	case 'C': // Print camera settings in console
+	case 'c':
+		CameraSettings();
+		break;
+	case '0': // Toggle between orthographic- and perpective projection
+		viewMode = (viewMode + 1) % 2;
+		break;
+	case '8': // Toggle between bounce and static
+		bounceMode = (bounceMode + 1) % 2;
+		break;
+	case '9': // Disable faces
+		shaderMode = 1;
+		break;
+	case '§': // Quit
 		glutLeaveMainLoop();
 		break;
 	}
@@ -255,6 +300,8 @@ void init(void) {
 		prepareMesh(mesh);
 		mesh = mesh->next;
 	}	
+
+	selected = meshList;
 }
 
 void cleanUp(void) {	
@@ -279,9 +326,6 @@ void cleanUp(void) {
 
 
 int main(int argc, char **argv) {
-	
-	Mesh mesh;
-	LoadObj("./models/Goat.ObJ", &mesh);
 
 	// Setup freeGLUT	
 	glutInit(&argc, argv);
@@ -311,9 +355,8 @@ int main(int argc, char **argv) {
 	// Insert the 3D models you want in your scene here in a linked list of meshes
 	// Note that "meshList" is a pointer to the first mesh and new meshes are added to the front of the list	
 	insertModel(&meshList, cow.nov, cow.verts, cow.nof, cow.faces, 20.0);
-	//meshList->translation.x = 10.0f;
-	//meshList->translation.y = 10.0f;
-	//meshList->translation.z = 20.0f; //Vad gör detta?
+	Mesh Goat; 
+	LoadObj(&meshList, "./models/Goat.OBJ", &Goat);
 	//insertModel(&meshList, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
 	//insertModel(&meshList, bunny.nov, bunny.verts, bunny.nof, bunny.faces, 60.0);	
 	//insertModel(&meshList, cube.nov, cube.verts, cube.nof, cube.faces, 5.0);
