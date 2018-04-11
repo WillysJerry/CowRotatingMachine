@@ -10,7 +10,7 @@
 
 int bounceMode = 0;// Toggle between predefined or dynamic perspective matrix
 int projMode = 0;// Toggle between orthographic or perspective projection matrix
-int shaderMode = 0;// Turn of faces
+int shaderMode = 0;// Turn off faces
 int viewMode = 0; // Toggle between free-look view and not free-look view <:-)
 
 int screen_width = 1024;
@@ -19,7 +19,7 @@ int screen_height = 768;
 Mesh *meshList = NULL; // Global pointer to linked list of triangle meshes
 Mesh *selected = NULL;
 
-Camera cam = { {0,0,20}, {0,0,0}, 60, 1, 10000, {0,1,0}, {1,0,0}, {0,0,20}}; // Setup the global camera parameters, i OpenGL så tittar kameran "bakåt" så +20 z-axis används för att få lite avstånd till modellen.
+Camera cam = { {0,0,20}, {0,0,0}, 60, 1, 10000, {0,1,0}, {1,0,0}, {0,0,20}}; // Setup the global camera parameters, i OpenGL sï¿½ tittar kameran "bakï¿½t" sï¿½ +20 z-axis anvï¿½nds fï¿½r att fï¿½ lite avstï¿½nd till modellen.
 
 GLuint shprg; // Shader program id
 
@@ -125,6 +125,8 @@ void renderMesh(Mesh *mesh) {
 	if (shaderMode == 1) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
+	else
+		 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	// Draw all triangles
 	glDrawElements(GL_TRIANGLES, mesh->nt * 3, GL_UNSIGNED_INT, NULL); 
@@ -135,7 +137,7 @@ void renderMesh(Mesh *mesh) {
 void display(void) {
 	Mesh *mesh;
 	
-	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT); //Lade till DEPTH_BUFFER för att kunna rita upp polygoner
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT); //Lade till DEPTH_BUFFER fï¿½r att kunna rita upp polygoner
 
 	// Assignment 1: Calculate the transform to view coordinates yourself 	
 	// The matrix V should be calculated from camera parameters
@@ -315,9 +317,9 @@ void keypress(unsigned char key, int x, int y) {
 		bounceMode = (bounceMode + 1) % 2;
 		break;
 	case '9': // Disable faces
-		shaderMode = 1;
+		shaderMode = (shaderMode + 1) % 2;
 		break;
-	case '§': // Quit
+	case 'ï¿½': // Quit
 		glutLeaveMainLoop();
 		break;
 	case '+':
@@ -327,14 +329,14 @@ void keypress(unsigned char key, int x, int y) {
 		cam.fov -= 1;
 		break;
 	}
-	glutPostRedisplay(); //Säger att vi måste rita om fönstret
+	glutPostRedisplay(); //Sï¿½ger att vi mï¿½ste rita om fï¿½nstret
 }
 
 void init(void) {
 	// Compile and link the given shader program (vertex shader and fragment shader)
 	prepareShaderProgram(vs_n2c_src, fs_ci_src); 
 
-	//Vi måste använda depth_test för att hantera "hål" i kossan.
+	//Vi mï¿½ste anvï¿½nda depth_test fï¿½r att hantera "hï¿½l" i kossan.
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
