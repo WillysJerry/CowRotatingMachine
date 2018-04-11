@@ -157,10 +157,15 @@ void display(void) {
 	}
 	else {
 		// Free look
-		V = MatLookAt(cam.position, { 0, 0, 0 }, { 0, 1, 0 });
+		Matrix a = MatMatMul(rx, MatMatMul(rz, ry));
+			
+		Vector eye = cam.position;													// the cam position
+		Vector gaze = Add(cam.position, Homogenize(MatVecMul(a, { 0, 0, -1 })));	// some point directly in front of the camera
+		Vector up = Homogenize(MatVecMul(a, { 0, 1, 0 }));							// the cameras up	
+
+		V = MatLookAt(eye, gaze, up);			// Then we do this <- over there on the left
 	}
-	//Vector f = { cam.position.x, cam.position.y, cam.position.z - 1.0 };
-	//HomVector bajs = MatVecMul(MatMatMul(rx, MatMatMul(rz, ry)), f);
+
 	// Assignment 1: Calculate the projection transform yourself 	
 	// The matrix P should be calculated from camera parameters
 	// Therefore, you need to replace this hard-coded transform. 	
