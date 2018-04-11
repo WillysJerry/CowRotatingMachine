@@ -53,6 +53,7 @@ Matrix MatOrtho(float left, float right, float bottom, float top, float nearPlan
 Matrix MatPerspective(float fovy, float aspect, float nearPlane, float farPlane);
 Matrix MatFrustum(float left, float right, float bottom, float top, float nearPlane, float farPlane);
 
+float Deg2Rad(float deg);
 Matrix Bounce(float a, float t);
 #endif
 
