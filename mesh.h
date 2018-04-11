@@ -26,7 +26,10 @@ typedef struct _Camera {
 	Vector rotation;
 	double fov; 
 	double nearPlane; 
-	double farPlane; 
+	double farPlane;
+	Vector eye;
+	Vector up;
+	Vector center;
 } Camera;
 
 void insertModel(Mesh ** objlist, int nv, float * vArr, int nt, int * tArr, float scale = 1.0);

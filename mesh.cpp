@@ -61,24 +61,6 @@ void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float sc
 							Subtract(mesh->vertices[mesh->triangles[i].vInds[0]], mesh->vertices[mesh->triangles[i].vInds[2]]), //Vektor a - c 
 							Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[2]]))))); //Vektor b - c 
 
-
-		//OLD
-		/*mesh->vnorms[mesh->triangles[i].vInds[0]] = 
-			Normalize(
-				CrossProduct(
-					Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[0]]), 
-					Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[0]])));
-		mesh->vnorms[mesh->triangles[i].vInds[1]] = 
-			Normalize(
-				CrossProduct(
-					Subtract(mesh->vertices[mesh->triangles[i].vInds[0]], mesh->vertices[mesh->triangles[i].vInds[1]]), 
-					Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[1]])));
-		mesh->vnorms[mesh->triangles[i].vInds[2]] = 
-			Normalize(
-				CrossProduct(
-					Subtract(mesh->vertices[mesh->triangles[i].vInds[0]], mesh->vertices[mesh->triangles[i].vInds[2]]), 
-					Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[2]])));*/
-
 	}
 
 

@@ -18,7 +18,7 @@ int screen_height = 768;
 Mesh *meshList = NULL; // Global pointer to linked list of triangle meshes
 Mesh *selected = NULL;
 
-Camera cam = {{0,0,20}, {0,0,0}, 60, 1, 10000}; // Setup the global camera parameters, i OpenGL så tittar kameran "bakåt" så +20 z-axis används för att få lite avstånd till modellen.
+Camera cam = { {0,0,20}, {0,0,0}, 60, 1, 10000, {0,1,0}, {1,0,0}, {0,0,20}}; // Setup the global camera parameters, i OpenGL så tittar kameran "bakåt" så +20 z-axis används för att få lite avstånd till modellen.
 
 GLuint shprg; // Shader program id
 
@@ -168,7 +168,6 @@ void display(void) {
 	// This finds the combined view-projection matrix
 	PV = MatMatMul(P, V);
 
-
 	// Select the shader program to be used during rendering 
 	glUseProgram(shprg);
 
@@ -212,18 +211,26 @@ void keypress(unsigned char key, int x, int y) {
 		cam.rotation.y += 0.2f;
 		break;
 	case 'W': // Move camera forward
+		cam.rotation.x += 0.2f;
+		break;
 	case 'w':
 		cam.position.z += 0.2f;
 		break;
 	case 'A': // Move camera to the left
+		cam.rotation.z -= 0.2f;
+		break;
 	case 'a':
 		cam.position.x -= 0.2f;
 		break;
 	case 'S': // Move camera backwards
+		cam.rotation.x -= 0.2f;
+		break;
 	case 's':
 		cam.position.z -= 0.2f;
 		break;  
 	case 'D': // Move camera to the right
+		cam.rotation.z += 0.2f;
+		break;
 	case 'd':
 		cam.position.x += 0.2f;
 		break;
@@ -297,6 +304,9 @@ void init(void) {
 
 	//Vi måste använda depth_test för att hantera "hål" i kossan.
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	
 
 
 	// Setup OpenGL buffers for rendering of the meshes

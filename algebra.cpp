@@ -181,3 +181,9 @@ Matrix MatFrustum(float left, float right, float bottom, float top, float near, 
 Matrix Bounce(float a, float t) {
 	return Translate(0, sin(t) * a, 0);
 }
+
+//The lookX/Y/Z vectors are the sum of PosX + LookAtX etc.
+Matrix matLookAt(Vector pos, Vector look, Vector up)
+{
+
+}
