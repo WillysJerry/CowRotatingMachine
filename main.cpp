@@ -9,8 +9,9 @@
 #include "shaders.h"
 
 int bounceMode = 0;// Toggle between predefined or dynamic perspective matrix
-int viewMode = 0;// Toggle between predefined or dynamic perspective matrix
+int projMode = 0;// Toggle between orthographic or perspective projection matrix
 int shaderMode = 0;// Turn of faces
+int viewMode = 0; // Toggle between free-look view and not free-look view <:-)
 
 int screen_width = 1024;
 int screen_height = 768;
@@ -148,16 +149,24 @@ void display(void) {
 	Matrix rx = RotateX(-a);
 	Matrix t = Translate(pos.x, pos.y, pos.z);
 
-	V = MatMatMul(t, MatMatMul(rx, MatMatMul(rz, ry)));
 
+	if (viewMode == 0) {
+		V = MatMatMul(t, MatMatMul(rx, MatMatMul(rz, ry)));
+	}
+	else {
+		// Free look
+		V = MatLookAt(cam.position, { 0, 0, 0 }, { 0, 1, 0 });
+	}
+	//Vector f = { cam.position.x, cam.position.y, cam.position.z - 1.0 };
+	//HomVector bajs = MatVecMul(MatMatMul(rx, MatMatMul(rz, ry)), f);
 	// Assignment 1: Calculate the projection transform yourself 	
 	// The matrix P should be calculated from camera parameters
 	// Therefore, you need to replace this hard-coded transform. 	
 	
-	if (viewMode == 0) {
+	if (projMode == 0) {
 		P = MatOrtho(-10, 10, -10, 10, 0, 100000);
 	}
-	else if (viewMode == 1){
+	else if (projMode == 1){
 		P = MatPerspective(Deg2Rad(cam.fov), screen_width / screen_height, 1, 100000);
 		printf("FOV: %.2f\n", cam.fov);
 	}
@@ -295,8 +304,12 @@ void keypress(unsigned char key, int x, int y) {
 	case 'c':
 		CameraSettings();
 		break;
+	case 'V': // Toggle camera modes (free-look and not free-look)
+	case 'v':
+		viewMode = (viewMode + 1) % 2;
+		break;
 	case '0': // Toggle between orthographic- and perpective projection and frustum projection
-		viewMode = (viewMode + 1) % 3;
+		projMode = (projMode + 1) % 3;
 		break;
 	case '8': // Toggle between bounce and static
 		bounceMode = (bounceMode + 1) % 2;
