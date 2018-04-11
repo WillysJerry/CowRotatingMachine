@@ -262,6 +262,18 @@ void keypress(unsigned char key, int x, int y) {
 	case 'l':
 		selected->translation.x += 0.2f;
 		break;
+	case 'T': // Move Mesh backwards
+	case 't':
+		selected->scale.x += 0.2f;
+		selected->scale.y += 0.2f;
+		selected->scale.z += 0.2f;
+		break;
+	case 'Y': // Move Mesh backwards
+	case 'y':
+		selected->scale.x -= 0.2f;
+		selected->scale.y -= 0.2f;
+		selected->scale.z -= 0.2f;
+		break;
 	case '\t': // Toggle between meshes in meshList
 		if (selected->next == NULL) {
 			selected = meshList;
