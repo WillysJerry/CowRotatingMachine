@@ -187,7 +187,48 @@ Matrix Bounce(float a, float t) {
 }
 
 //The lookX/Y/Z vectors are the sum of PosX + LookAtX etc.
-Matrix matLookAt(Vector pos, Vector look, Vector up)
-{
+Matrix MatLookAt(Vector pos, Vector look, Vector up) {
+	Vector f = Normalize(Subtract(look, pos));			// Forward	(i.e z-axis)
+	Vector s = Normalize(CrossProduct(f, up));			// Left		(i.e x-axis)
+	Vector u = CrossProduct(s, f);						// Up		(i.e z-axis)	
 
+	// Translate to origin
+	//		-> Rotate 
+	// (T * R)
+	Matrix m;
+	float arr[16] = {
+		s.x, u.x, -f.x, 0,
+		s.y, u.y, -f.y, 0,
+		s.z, u.z, -f.z, 0,
+		-DotProduct(s, pos), -DotProduct(u, pos), DotProduct(f, pos), 1
+	};
+	memcpy(m.e, arr, sizeof(float) * 16);
+
+	return m;
+
+	// #### ALTERNATIVE #####
+	// This is basically the same as doing:
+
+	/*
+	Matrix m;
+	float arr[16] = {
+	s.x, u.x, -f.x, 0,
+	s.y, u.y, -f.y, 0,
+	s.z, u.z, -f.z, 0,
+	0, 0, 0, 1
+	};
+	memcpy(m.e, arr, sizeof(float) * 16);
+
+	Matrix m2;
+	float arr2[16] = {
+	1, 0, 0, 0,
+	0, 1, 0, 0,
+	0, 0, 1, 0,
+	-pos.x, -pos.y, -pos.z, 1
+
+	};
+	memcpy(m2.e, arr2, sizeof(float) * 16);
+
+	return MatMatMul(m, m2);
+	*/
 }
