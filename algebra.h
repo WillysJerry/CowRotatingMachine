@@ -52,7 +52,7 @@ Matrix RotateZ(float theta);
 Matrix MatOrtho(float left, float right, float bottom, float top, float nearPlane, float farPlane);
 Matrix MatPerspective(float fovy, float aspect, float nearPlane, float farPlane);
 Matrix MatFrustum(float left, float right, float bottom, float top, float nearPlane, float farPlane);
-
+Matrix MatLookAt(Vector pos, Vector look, Vector up);
 float Deg2Rad(float deg);
 Matrix Bounce(float a, float t);
 #endif

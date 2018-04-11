@@ -9,8 +9,9 @@
 #include "shaders.h"
 
 int bounceMode = 0;// Toggle between predefined or dynamic perspective matrix
-int viewMode = 0;// Toggle between predefined or dynamic perspective matrix
-int shaderMode = 0;// Turn of faces
+int projMode = 0;// Toggle between orthographic or perspective projection matrix
+int shaderMode = 0;// Turn off faces
+int viewMode = 0; // Toggle between free-look view and not free-look view <:-)
 
 int screen_width = 1024;
 int screen_height = 768;
@@ -18,7 +19,7 @@ int screen_height = 768;
 Mesh *meshList = NULL; // Global pointer to linked list of triangle meshes
 Mesh *selected = NULL;
 
-Camera cam = { {0,0,20}, {0,0,0}, 60, 1, 10000, {0,1,0}, {0,0,-1}, {0,0,0}}; // Setup the global camera parameters, i OpenGL så tittar kameran "bakåt" så +20 z-axis används för att få lite avstånd till modellen.
+Camera cam = { {0,0,20}, {0,0,0}, 60, 1, 10000, {0,1,0}, {1,0,0}, {0,0,20}}; // Setup the global camera parameters, i OpenGL sï¿½ tittar kameran "bakï¿½t" sï¿½ +20 z-axis anvï¿½nds fï¿½r att fï¿½ lite avstï¿½nd till modellen.
 
 GLuint shprg; // Shader program id
 
@@ -124,6 +125,8 @@ void renderMesh(Mesh *mesh) {
 	if (shaderMode == 1) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
+	else
+		 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	// Draw all triangles
 	glDrawElements(GL_TRIANGLES, mesh->nt * 3, GL_UNSIGNED_INT, NULL); 
@@ -134,7 +137,7 @@ void renderMesh(Mesh *mesh) {
 void display(void) {
 	Mesh *mesh;
 	
-	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT); //Lade till DEPTH_BUFFER för att kunna rita upp polygoner
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT); //Lade till DEPTH_BUFFER fï¿½r att kunna rita upp polygoner
 
 	// Assignment 1: Calculate the transform to view coordinates yourself 	
 	// The matrix V should be calculated from camera parameters
@@ -148,16 +151,24 @@ void display(void) {
 	Matrix rx = RotateX(-a);
 	Matrix t = Translate(pos.x, pos.y, pos.z);
 
-	V = MatMatMul(t, MatMatMul(rx, MatMatMul(rz, ry)));
 
+	if (viewMode == 0) {
+		V = MatMatMul(t, MatMatMul(rx, MatMatMul(rz, ry)));
+	}
+	else {
+		// Free look
+		V = MatLookAt(cam.position, { 0, 0, 0 }, { 0, 1, 0 });
+	}
+	//Vector f = { cam.position.x, cam.position.y, cam.position.z - 1.0 };
+	//HomVector bajs = MatVecMul(MatMatMul(rx, MatMatMul(rz, ry)), f);
 	// Assignment 1: Calculate the projection transform yourself 	
 	// The matrix P should be calculated from camera parameters
 	// Therefore, you need to replace this hard-coded transform. 	
 	
-	if (viewMode == 0) {
+	if (projMode == 0) {
 		P = MatOrtho(-10, 10, -10, 10, 0, 100000);
 	}
-	else if (viewMode == 1){
+	else if (projMode == 1){
 		P = MatPerspective(Deg2Rad(cam.fov), screen_width / screen_height, 1, 100000);
 		printf("FOV: %.2f\n", cam.fov);
 	}
@@ -295,16 +306,20 @@ void keypress(unsigned char key, int x, int y) {
 	case 'c':
 		CameraSettings();
 		break;
+	case 'V': // Toggle camera modes (free-look and not free-look)
+	case 'v':
+		viewMode = (viewMode + 1) % 2;
+		break;
 	case '0': // Toggle between orthographic- and perpective projection and frustum projection
-		viewMode = (viewMode + 1) % 3;
+		projMode = (projMode + 1) % 3;
 		break;
 	case '8': // Toggle between bounce and static
 		bounceMode = (bounceMode + 1) % 2;
 		break;
 	case '9': // Disable faces
-		shaderMode = 1;
+		shaderMode = (shaderMode + 1) % 2;
 		break;
-	case '§': // Quit
+	case 'ï¿½': // Quit
 		glutLeaveMainLoop();
 		break;
 	case '+':
@@ -314,14 +329,14 @@ void keypress(unsigned char key, int x, int y) {
 		cam.fov -= 1;
 		break;
 	}
-	glutPostRedisplay(); //Säger att vi måste rita om fönstret
+	glutPostRedisplay(); //Sï¿½ger att vi mï¿½ste rita om fï¿½nstret
 }
 
 void init(void) {
 	// Compile and link the given shader program (vertex shader and fragment shader)
 	prepareShaderProgram(vs_n2c_src, fs_ci_src); 
 
-	//Vi måste använda depth_test för att hantera "hål" i kossan.
+	//Vi mï¿½ste anvï¿½nda depth_test fï¿½r att hantera "hï¿½l" i kossan.
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
@@ -398,7 +413,7 @@ int main(int argc, char **argv) {
 	//insertModel(&meshList, knot.nov, knot.verts, knot.nof, knot.faces, 1.0);
 	//insertModel(&meshList, sphere.nov, sphere.verts, sphere.nof, sphere.faces, 12.0);
 	//insertModel(&meshList, teapot.nov, teapot.verts, teapot.nof, teapot.faces, 3.0);
-
+	
 	
 	init();
 	glutMainLoop();
