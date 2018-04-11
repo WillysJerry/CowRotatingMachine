@@ -187,7 +187,7 @@ Matrix Bounce(float a, float t) {
 }
 
 //The lookX/Y/Z vectors are the sum of PosX + LookAtX etc.
-Matrix matLookAt(Vector pos, Vector look, Vector up)
+Matrix matLookAt()
 {
-
+	
 }

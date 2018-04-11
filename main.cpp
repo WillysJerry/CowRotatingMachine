@@ -18,7 +18,7 @@ int screen_height = 768;
 Mesh *meshList = NULL; // Global pointer to linked list of triangle meshes
 Mesh *selected = NULL;
 
-Camera cam = { {0,0,20}, {0,0,0}, 60, 1, 10000, {0,1,0}, {1,0,0}, {0,0,20}}; // Setup the global camera parameters, i OpenGL så tittar kameran "bakåt" så +20 z-axis används för att få lite avstånd till modellen.
+Camera cam = { {0,0,20}, {0,0,0}, 60, 1, 10000, {0,1,0}, {0,0,-1}, {0,0,0}}; // Setup the global camera parameters, i OpenGL så tittar kameran "bakåt" så +20 z-axis används för att få lite avstånd till modellen.
 
 GLuint shprg; // Shader program id
 
@@ -398,7 +398,7 @@ int main(int argc, char **argv) {
 	//insertModel(&meshList, knot.nov, knot.verts, knot.nof, knot.faces, 1.0);
 	//insertModel(&meshList, sphere.nov, sphere.verts, sphere.nof, sphere.faces, 12.0);
 	//insertModel(&meshList, teapot.nov, teapot.verts, teapot.nof, teapot.faces, 3.0);
-	
+
 	
 	init();
 	glutMainLoop();
