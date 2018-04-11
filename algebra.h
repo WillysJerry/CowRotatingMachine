@@ -50,6 +50,7 @@ Matrix RotateY(float theta);
 Matrix RotateZ(float theta);
 //void RotateMesh(Mesh *mesh, float rot);
 Matrix MatOrtho(float left, float right, float bottom, float top, float nearPlane, float farPlane);
+Matrix MatPerspective(float fovy, float aspect, float nearPlane, float farPlane);
 Matrix MatFrustum(float left, float right, float bottom, float top, float nearPlane, float farPlane);
 
 Matrix Bounce(float a, float t);

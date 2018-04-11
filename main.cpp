@@ -157,8 +157,12 @@ void display(void) {
 	if (viewMode == 0) {
 		P = MatOrtho(-10, 10, -10, 10, 0, 100000);
 	}
+	else if (viewMode == 1){
+		P = MatPerspective(45, screen_width / screen_height, 1, 100000);
+	}
 	else {
 		P = MatFrustum(-1, 1, -1, 1, 1, 100000);
+
 	}
 
 	// This finds the combined view-projection matrix
@@ -270,8 +274,8 @@ void keypress(unsigned char key, int x, int y) {
 	case 'c':
 		CameraSettings();
 		break;
-	case '0': // Toggle between orthographic- and perpective projection
-		viewMode = (viewMode + 1) % 2;
+	case '0': // Toggle between orthographic- and perpective projection and frustum projection
+		viewMode = (viewMode + 1) % 3;
 		break;
 	case '8': // Toggle between bounce and static
 		bounceMode = (bounceMode + 1) % 2;
@@ -356,7 +360,7 @@ int main(int argc, char **argv) {
 	// Note that "meshList" is a pointer to the first mesh and new meshes are added to the front of the list	
 	insertModel(&meshList, cow.nov, cow.verts, cow.nof, cow.faces, 20.0);
 	Mesh Goat; 
-	LoadObj(&meshList, "./models/Goat.OBJ", &Goat);
+	//LoadObj(&meshList, "./models/Goat.OBJ", &Goat);
 	//insertModel(&meshList, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
 	//insertModel(&meshList, bunny.nov, bunny.verts, bunny.nof, bunny.faces, 60.0);	
 	//insertModel(&meshList, cube.nov, cube.verts, cube.nof, cube.faces, 5.0);

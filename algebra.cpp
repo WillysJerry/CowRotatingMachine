@@ -151,6 +151,18 @@ Matrix MatOrtho(float left, float right, float bottom, float top, float near, fl
 	return m;
 }
 
+Matrix MatPerspective(float fovy, float aspect, float near, float far) {
+	Matrix m;
+	float arr[16] = {
+		(1 / tan(fovy / 2.0)) / aspect, 0, 0, 0,
+		0, 1 / tan(fovy / 2.0), 0, 0,
+		0, 0, (far + near) / (far - near), (2.0 * far * near) / (near - far),
+		0, 0, -1, 0
+	};
+	memcpy(m.e, arr, 16 * sizeof(float));
+	return m;
+}
+
 Matrix MatFrustum(float left, float right, float bottom, float top, float near, float far) {
 	// Frustum perspective projektion:
 	// Föreläsning 2.5 Viewing - s.21
