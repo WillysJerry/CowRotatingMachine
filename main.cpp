@@ -10,7 +10,7 @@
 
 int bounceMode = 0;// Toggle between predefined or dynamic perspective matrix
 int viewMode = 0;// Toggle between predefined or dynamic perspective matrix
-int shaderMode = 0;// Turn of faces
+int shaderMode = 0;// Turn off faces
 
 int screen_width = 1024;
 int screen_height = 768;
@@ -124,6 +124,8 @@ void renderMesh(Mesh *mesh) {
 	if (shaderMode == 1) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
+	else
+		 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	// Draw all triangles
 	glDrawElements(GL_TRIANGLES, mesh->nt * 3, GL_UNSIGNED_INT, NULL); 
@@ -302,7 +304,7 @@ void keypress(unsigned char key, int x, int y) {
 		bounceMode = (bounceMode + 1) % 2;
 		break;
 	case '9': // Disable faces
-		shaderMode = 1;
+		shaderMode = (shaderMode + 1) % 2;
 		break;
 	case '§': // Quit
 		glutLeaveMainLoop();
