@@ -158,7 +158,8 @@ void display(void) {
 		P = MatOrtho(-10, 10, -10, 10, 0, 100000);
 	}
 	else if (viewMode == 1){
-		P = MatPerspective(45, screen_width / screen_height, 1, 100000);
+		P = MatPerspective(Deg2Rad(cam.fov), screen_width / screen_height, 1, 100000);
+		printf("FOV: %.2f\n", cam.fov);
 	}
 	else {
 		P = MatFrustum(-1, 1, -1, 1, 1, 100000);
@@ -286,6 +287,12 @@ void keypress(unsigned char key, int x, int y) {
 		break;
 	case '§': // Quit
 		glutLeaveMainLoop();
+		break;
+	case '+':
+		cam.fov += 1;
+		break;
+	case '-':
+		cam.fov -= 1;
 		break;
 	}
 	glutPostRedisplay(); //Säger att vi måste rita om fönstret

@@ -178,6 +178,10 @@ Matrix MatFrustum(float left, float right, float bottom, float top, float near, 
 	return m;
 }
 
+float Deg2Rad(float deg) {
+	return M_PI / 180.0 * deg;
+}
+
 Matrix Bounce(float a, float t) {
 	return Translate(0, sin(t) * a, 0);
 }
