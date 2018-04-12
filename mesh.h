@@ -38,4 +38,5 @@ void RotateMesh(Mesh *mesh, float rot);
 
 Matrix LocalToWorld(Vector t, Vector r, Vector s);
 int LoadObj(Mesh **list, const char* filename, Mesh *mesh);
+int LoadObj2(Mesh **list, const char* filename);
 #endif

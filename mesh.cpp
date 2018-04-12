@@ -140,6 +140,7 @@ int LoadObj(Mesh **list, const char* filename, Mesh *mesh)
 
 	//Fills arrays with values
 	int i = 0, j = 0;
+
 	while (getline(infile, line)) {
 		if (line.substr(0, 2) == "v ") {
 			istringstream s(line.substr(2));
@@ -159,5 +160,80 @@ int LoadObj(Mesh **list, const char* filename, Mesh *mesh)
 
 	mesh->next = *list;
 	//*list = mesh;
+	return 0;
+}
+
+int LoadObj2(Mesh **list, const char* filename)
+{
+	Mesh* mesh;
+	mesh = (Mesh*) malloc(sizeof(Mesh));
+
+	mesh->nv = 0;
+	mesh->nt = 0;
+	string line;
+
+	//Open the file
+	ifstream infile(filename);
+	if (!infile) {
+		printf("Cannot open %s\n", filename);
+		return -1;
+	}
+
+	//Determines the size of arrays
+	while (getline(infile, line)) {
+		if (line.substr(0, 2) == "v ") {
+			mesh->nv += 1;
+		}
+		else if (line.substr(0, 2) == "f ") {
+			mesh->nt += 1;
+		}
+	}
+
+	//Allocates memory for arrays
+	mesh->vertices = (Vector *)malloc(mesh->nv * sizeof(Vector));
+	mesh->triangles = (Triangle *)malloc(mesh->nt * sizeof(Triangle));
+
+	//Resets stream to begining of file
+	infile.clear();
+	infile.seekg(0, ios::beg);
+
+	
+	
+	
+	//Fills arrays with values
+	int i = 0, j = 0;
+	std::size_t posA, posB;
+	while (getline(infile, line)) {
+		if (line.substr(0, 2) == "v ") {
+			istringstream s(line.substr(2));
+			s >> mesh->vertices[i].x;
+			s >> mesh->vertices[i].y;
+			s >> mesh->vertices[i].z;
+			i++;
+		}
+		else if (line.substr(0, 2) == "f ") {
+			//fulhack
+			//f 4059/1/1 4050/2/1 4054/3/1
+			//Vi vill gå från position 2 till pos för första '/' och efter det vill vi gå till första whitespace
+			//Efter whitespace vill vi läsa in till första '/' igen och efter det vill vi gå till första whitespace
+			//Efter whitespace vill vi läsa in till första '/' och sedan är det slut.
+			posA = line.find("/");
+			istringstream a(line.substr(2, posA));
+			a >> mesh->triangles[j].vInds[0];
+			posB = line.find(" ", posA + 1);
+			posA = line.find("/", posB + 1);
+			istringstream b(line.substr(posB + 1, posA));
+			b >> mesh->triangles[j].vInds[1];
+			posB = line.find(" ", posA + 1);
+			posA = line.find("/", posB + 1);
+			istringstream c(line.substr(posB + 1, posA));
+			c >> mesh->triangles[j].vInds[2];
+			j++;
+		}
+	}
+
+	//fixa till resten av datat för mesh och lägg in i listan korrekt
+	mesh->next = NULL;
+	*list = mesh;
 	return 0;
 }
