@@ -157,13 +157,13 @@ void display(void) {
 	}
 	else {
 		// Free look
-		Matrix a = MatMatMul(rx, MatMatMul(rz, ry));
-			
-		Vector eye = cam.position;													// the cam position
-		Vector gaze = Add(cam.position, Homogenize(MatVecMul(a, { 0, 0, -1 })));	// some point directly in front of the camera
-		Vector up = Homogenize(MatVecMul(a, { 0, 1, 0 }));							// the cameras up	
+		Matrix a = MatMatMul(ry, rx);	// Pls note we only rotate around the x- and y-axes when we determine the gaze direction
+		
+		Vector eye = cam.position;											// the cam position
+		Vector gaze = Homogenize(MatVecMul(a, { 0, 0, -1 }));				// Gaze is any direction the viewer looks at
+		Vector up = Normalize(Homogenize(MatVecMul(rz, { 0, 1, 0 })));		// Direction pointing up from the viewer
 
-		V = MatLookAt(eye, gaze, up);			// Then we do this <- over there on the left
+		V = MatLookAt2(eye, gaze, up);		// Then we do this <- over there on the left
 	}
 
 	// Assignment 1: Calculate the projection transform yourself 	

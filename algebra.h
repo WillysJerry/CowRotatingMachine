@@ -55,5 +55,7 @@ Matrix MatFrustum(float left, float right, float bottom, float top, float nearPl
 Matrix MatLookAt(Vector pos, Vector look, Vector up);
 float Deg2Rad(float deg);
 Matrix Bounce(float a, float t);
+
+Matrix MatLookAt2(Vector eye, Vector gaze, Vector viewUp);
 #endif
 
