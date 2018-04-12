@@ -1,6 +1,5 @@
 #include <stdlib.h>
-#include <fstream>
-#include <sstream>
+#include <errno.h>
 #include <string>
 #include "mesh.h"
 
@@ -107,56 +106,105 @@ void RotateMesh(Mesh *mesh, float rot)
 	}
 }
 
-int LoadObj(Mesh **list, const char* filename, Mesh *mesh)
-{
-	mesh->nv = 0;
-	mesh->nt = 0;
-	string line;
-
+void LoadObj(Mesh **list, const char* filename, float scale) {
 	//Open the file
-	ifstream infile(filename);
-	if (!infile){
-		printf("Cannot open %s\n", filename);
-		return -1;
+	FILE * file;
+	errno_t err;
+	err = fopen_s(&file, filename, "r");
+	if (err != 0) {
+		printf("Impossible to open the file !\n");
+		return;
 	}
+
+	Mesh * mesh = (Mesh *)malloc(sizeof(Mesh));
 
 	//Determines the size of arrays
-	while (getline(infile, line)){
-		if (line.substr(0, 2) == "v "){
-			mesh->nv += 1;
+	mesh->nv = 0; mesh->nt = 0;
+	while (1) {
+		char lineHeader[128];
+		int res = fscanf_s(file, "%s", lineHeader);
+		if (res == EOF) {
+			break;
 		}
-		else if (line.substr(0, 2) == "f "){
-			mesh->nt += 1;
+		else {
+			if (strcmp(lineHeader, "v") == 0) {
+				mesh->nv++;
+			}
+			else if (strcmp(lineHeader, "f") == 0) {
+				mesh->nt++;
+			}
 		}
 	}
 
-	//Allocates memory for arrays
+	//Allocate memory for the arrays
 	mesh->vertices = (Vector *)malloc(mesh->nv * sizeof(Vector));
+	mesh->vnorms = (Vector *)calloc(mesh->nv, sizeof(Vector));
 	mesh->triangles = (Triangle *)malloc(mesh->nt * sizeof(Triangle));
 
-	//Resets stream to begining of file
-	infile.clear();
-	infile.seekg(0, ios::beg);
+	//Resets file pointer
+	fseek(file, 0L, SEEK_SET);
 
-	//Fills arrays with values
 	int i = 0, j = 0;
+	while (1) {
+		char lineHeader[128];
+		int res = fscanf_s(file, "%s", lineHeader);// Read the first word of the line
 
-	while (getline(infile, line)) {
-		if (line.substr(0, 2) == "v ") {
-			istringstream s(line.substr(2));
-			s >> mesh->vertices[i].x; 
-			s >> mesh->vertices[i].y;
-			s >> mesh->vertices[i].z;
-			i++;
+		if (res == EOF) {
+			break;
 		}
-		else if (line.substr(0, 2) == "f ") {
-			istringstream s(line.substr(2));
-			s >> mesh->triangles[j].vInds[0];
-			s >> mesh->triangles[j].vInds[1];
-			s >> mesh->triangles[j].vInds[2];
-			j++;
+		else { //Load vertices and vertex indecies from OBJ
+			if (strcmp(lineHeader, "v") == 0) {
+				fscanf_s(file, "%f %f %f\n", &mesh->vertices[i].x, &mesh->vertices[i].y, &mesh->vertices[i].z);
+				i++;
+			}
+			else if (strcmp(lineHeader, "f") == 0) {
+				unsigned int vInds[3], temp;
+				int matches = fscanf_s(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n",
+					&vInds[0], &temp, &temp,
+					&vInds[1], &temp, &temp,
+					&vInds[2], &temp, &temp);
+
+				if (matches != 9) {
+					printf("Nope! I can't read that\n");
+					return;
+				}
+
+				mesh->triangles[j].vInds[0] = vInds[0] - 1;
+				mesh->triangles[j].vInds[1] = vInds[1] - 1;
+				mesh->triangles[j].vInds[2] = vInds[2] - 1;
+				j++;
+			}
 		}
 	}
+
+	//Calculate normals (same as in insertModel)
+	for (i = 0; i < mesh->nt; i++) {
+		mesh->vnorms[mesh->triangles[i].vInds[0]] =
+			Normalize(
+				Add(mesh->vnorms[mesh->triangles[i].vInds[0]],
+					Normalize(
+						CrossProduct(
+							Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[0]]), //Vektor b - a 
+							Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[0]]))))); //Vektor c - a 
+		mesh->vnorms[mesh->triangles[i].vInds[1]] =
+			Normalize(
+				Add(mesh->vnorms[mesh->triangles[i].vInds[1]],
+					Normalize(
+						CrossProduct(
+							Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[1]]), //Vektor a - b 
+							Subtract(mesh->vertices[mesh->triangles[i].vInds[0]], mesh->vertices[mesh->triangles[i].vInds[1]]))))); //Vektor c - b 
+		mesh->vnorms[mesh->triangles[i].vInds[2]] =
+			Normalize(
+				Add(mesh->vnorms[mesh->triangles[i].vInds[2]],
+					Normalize(
+						CrossProduct(
+							Subtract(mesh->vertices[mesh->triangles[i].vInds[0]], mesh->vertices[mesh->triangles[i].vInds[2]]), //Vektor a - c 
+							Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[2]]))))); //Vektor b - c 
+	}
+
+	mesh->translation = { 0, 0, 0 };
+	mesh->rotation = { 0, 0, 0 };
+	mesh->scale = { scale, scale, scale };
 
 	mesh->next = *list;
 	//*list = mesh;
@@ -236,4 +284,6 @@ int LoadObj2(Mesh **list, const char* filename)
 	mesh->next = NULL;
 	*list = mesh;
 	return 0;
+}
+	*list = mesh;
 }
