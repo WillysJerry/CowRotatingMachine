@@ -116,7 +116,7 @@ int LoadObj(Mesh **list, const char* filename, float scale) {
 	err = fopen_s(&file, filename, "r");
 	if (err != 0) {
 		printf("Impossible to open the file !\n");
-		return 1;
+		return -1;
 	}
 
 	Mesh * mesh = (Mesh *)malloc(sizeof(Mesh));
@@ -169,7 +169,7 @@ int LoadObj(Mesh **list, const char* filename, float scale) {
 
 				if (matches != 9) {
 					printf("Nope! I can't read that\n");
-					return 1;
+					return -1;
 				}
 
 				mesh->triangles[j].vInds[0] = vInds[0] - 1;
@@ -214,10 +214,9 @@ int LoadObj(Mesh **list, const char* filename, float scale) {
 	return 0;
 }
 
-int LoadObj2(Mesh **list, const char* filename)
-{
+int LoadObj2(Mesh **list, const char* filename) {
 	Mesh* mesh;
-	mesh = (Mesh*) malloc(sizeof(Mesh));
+	mesh = (Mesh*)malloc(sizeof(Mesh));
 
 	mesh->nv = 0;
 	mesh->nt = 0;
@@ -242,15 +241,13 @@ int LoadObj2(Mesh **list, const char* filename)
 
 	//Allocates memory for arrays
 	mesh->vertices = (Vector *)malloc(mesh->nv * sizeof(Vector));
+	mesh->vnorms = (Vector *)calloc(mesh->nv, sizeof(Vector));
 	mesh->triangles = (Triangle *)malloc(mesh->nt * sizeof(Triangle));
 
 	//Resets stream to begining of file
 	infile.clear();
 	infile.seekg(0, ios::beg);
 
-	
-	
-	
 	//Fills arrays with values
 	int i = 0, j = 0;
 	std::size_t posA, posB;
@@ -279,12 +276,45 @@ int LoadObj2(Mesh **list, const char* filename)
 			posA = line.find("/", posB + 1);
 			istringstream c(line.substr(posB + 1, posA));
 			c >> mesh->triangles[j].vInds[2];
+
+			mesh->triangles[j].vInds[0]--;
+			mesh->triangles[j].vInds[1]--;
+			mesh->triangles[j].vInds[2]--;
 			j++;
 		}
 	}
 
+	//Calculate normals (same as in insertModel)
+	for (i = 0; i < mesh->nt; i++) {
+		mesh->vnorms[mesh->triangles[i].vInds[0]] =
+			Normalize(
+				Add(mesh->vnorms[mesh->triangles[i].vInds[0]],
+					Normalize(
+						CrossProduct(
+							Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[0]]), //Vektor b - a 
+							Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[0]]))))); //Vektor c - a 
+		mesh->vnorms[mesh->triangles[i].vInds[1]] =
+			Normalize(
+				Add(mesh->vnorms[mesh->triangles[i].vInds[1]],
+					Normalize(
+						CrossProduct(
+							Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[1]]), //Vektor a - b 
+							Subtract(mesh->vertices[mesh->triangles[i].vInds[0]], mesh->vertices[mesh->triangles[i].vInds[1]]))))); //Vektor c - b 
+		mesh->vnorms[mesh->triangles[i].vInds[2]] =
+			Normalize(
+				Add(mesh->vnorms[mesh->triangles[i].vInds[2]],
+					Normalize(
+						CrossProduct(
+							Subtract(mesh->vertices[mesh->triangles[i].vInds[0]], mesh->vertices[mesh->triangles[i].vInds[2]]), //Vektor a - c 
+							Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[2]]))))); //Vektor b - c 
+	}
+
+	mesh->translation = { 0, 0, 0 };
+	mesh->rotation = { 0, 0, 0 };
+	mesh->scale = { 1, 1, 1 };
+
 	//fixa till resten av datat för mesh och lägg in i listan korrekt
-	mesh->next = NULL;
+	mesh->next = *list;
 	*list = mesh;
 	return 0;
 }
