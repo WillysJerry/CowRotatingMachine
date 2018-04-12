@@ -37,6 +37,6 @@ void insertModel(Mesh ** objlist, int nv, float * vArr, int nt, int * tArr, floa
 void RotateMesh(Mesh *mesh, float rot);
 
 Matrix LocalToWorld(Vector t, Vector r, Vector s);
-int LoadObj(Mesh **list, const char* filename, Mesh *mesh);
+int LoadObj(Mesh **list, const char* filename, float scale);
 int LoadObj2(Mesh **list, const char* filename);
 #endif

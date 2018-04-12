@@ -3,6 +3,9 @@
 #include <string>
 #include "mesh.h"
 
+#include <fstream>
+#include <sstream>
+
 using namespace std;
 
 float rnd() {
@@ -106,14 +109,14 @@ void RotateMesh(Mesh *mesh, float rot)
 	}
 }
 
-void LoadObj(Mesh **list, const char* filename, float scale) {
+int LoadObj(Mesh **list, const char* filename, float scale) {
 	//Open the file
 	FILE * file;
 	errno_t err;
 	err = fopen_s(&file, filename, "r");
 	if (err != 0) {
 		printf("Impossible to open the file !\n");
-		return;
+		return 1;
 	}
 
 	Mesh * mesh = (Mesh *)malloc(sizeof(Mesh));
@@ -166,7 +169,7 @@ void LoadObj(Mesh **list, const char* filename, float scale) {
 
 				if (matches != 9) {
 					printf("Nope! I can't read that\n");
-					return;
+					return 1;
 				}
 
 				mesh->triangles[j].vInds[0] = vInds[0] - 1;
@@ -207,7 +210,7 @@ void LoadObj(Mesh **list, const char* filename, float scale) {
 	mesh->scale = { scale, scale, scale };
 
 	mesh->next = *list;
-	//*list = mesh;
+	*list = mesh;
 	return 0;
 }
 
@@ -284,6 +287,4 @@ int LoadObj2(Mesh **list, const char* filename)
 	mesh->next = NULL;
 	*list = mesh;
 	return 0;
-}
-	*list = mesh;
 }
