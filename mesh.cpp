@@ -283,7 +283,7 @@ int LoadObj2(Mesh **list, const char* filename) {
 			j++;
 		}
 	}
-
+	
 	//Calculate normals (same as in insertModel)
 	for (i = 0; i < mesh->nt; i++) {
 		mesh->vnorms[mesh->triangles[i].vInds[0]] =
@@ -308,12 +308,12 @@ int LoadObj2(Mesh **list, const char* filename) {
 							Subtract(mesh->vertices[mesh->triangles[i].vInds[0]], mesh->vertices[mesh->triangles[i].vInds[2]]), //Vektor a - c 
 							Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[2]]))))); //Vektor b - c 
 	}
+	
 
 	mesh->translation = { 0, 0, 0 };
 	mesh->rotation = { 0, 0, 0 };
-	mesh->scale = { 1, 1, 1 };
+	mesh->scale = { 5, 5, 5 };
 
-	//fixa till resten av datat för mesh och lägg in i listan korrekt
 	mesh->next = *list;
 	*list = mesh;
 	return 0;

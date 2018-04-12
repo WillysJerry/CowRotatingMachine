@@ -379,6 +379,7 @@ void cleanUp(void) {
 #include "./models/mesh_triceratops.h"
 
 
+
 int main(int argc, char **argv) {
 
 	// Setup freeGLUT	
@@ -408,7 +409,8 @@ int main(int argc, char **argv) {
 	// Insert the 3D models you want in your scene here in a linked list of meshes
 	// Note that "meshList" is a pointer to the first mesh and new meshes are added to the front of the list	
 	insertModel(&meshList, cow.nov, cow.verts, cow.nof, cow.faces, 20.0);
-	LoadObj(&meshList, "./models/Goat.OBJ", 5.0f);
+	//LoadObj(&meshList, "./models/Goat.OBJ", 5.0f);
+	LoadObj2(&meshList, "./models/Goat.OBJ");
 	//insertModel(&meshList, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
 	//insertModel(&meshList, bunny.nov, bunny.verts, bunny.nof, bunny.faces, 60.0);	
 	//insertModel(&meshList, cube.nov, cube.verts, cube.nof, cube.faces, 5.0);
