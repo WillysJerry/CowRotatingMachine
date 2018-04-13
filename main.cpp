@@ -143,7 +143,7 @@ void display(void) {
 	// The matrix V should be calculated from camera parameters
 	// Therefore, you need to replace this hard-coded transform. 
 
-	float a = cam.rotation.x, b = cam.rotation.y, c = cam.rotation.z;
+	float a = Deg2Rad(cam.rotation.x), b = Deg2Rad(cam.rotation.y), c = Deg2Rad(cam.rotation.z);
 	Vector pos = { -cam.position.x, -cam.position.y, -cam.position.z };
 
 	Matrix rz = RotateZ(-c);
@@ -221,32 +221,32 @@ void keypress(unsigned char key, int x, int y) {
 	// Camera controlls
 	case 'Q': // Rotate camera counter-clockwise
 	case 'q':
-		cam.rotation.y -= 0.2f;
+		cam.rotation.y -= 1.0f;
 		break;
 	case 'E': // Rotate camera clockwise
 	case 'e':
-		cam.rotation.y += 0.2f;
+		cam.rotation.y += 1.0f;
 		break;
 	case 'W': // Move camera forward
-		cam.rotation.x += 0.2f;
+		cam.rotation.x += 1.0f;
 		break;
 	case 'w':
 		cam.position.z += 0.2f;
 		break;
 	case 'A': // Move camera to the left
-		cam.rotation.z -= 0.2f;
+		cam.rotation.z -= 1.0f;
 		break;
 	case 'a':
 		cam.position.x -= 0.2f;
 		break;
 	case 'S': // Move camera backwards
-		cam.rotation.x -= 0.2f;
+		cam.rotation.x -= 1.0f;
 		break;
 	case 's':
 		cam.position.z -= 0.2f;
 		break;  
 	case 'D': // Move camera to the right
-		cam.rotation.z += 0.2f;
+		cam.rotation.z += 1.0;
 		break;
 	case 'd':
 		cam.position.x += 0.2f;
