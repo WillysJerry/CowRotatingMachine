@@ -161,8 +161,8 @@ void display(void) {
 		
 		Vector eye = cam.position;											// the cam position
 		Vector gaze = Homogenize(MatVecMul(a, { 0, 0, -1 }));				// Gaze is any direction the viewer looks at
-		Vector up = { 0, 1, 0 };											// Screen up is always up
-		//Vector up = Normalize(Homogenize(MatVecMul(rz, { 0, 1, 0 })));	// Direction pointing up from the viewer
+		//Vector up = { 0, 1, 0 };											// Screen up is always up
+		Vector up = Normalize(Homogenize(MatVecMul(rz, { 0, 1, 0 })));	// Direction pointing up from the viewer
 
 		V = MatLookAt2(eye, gaze, up);		// Then we do this <- over there on the left
 	}
@@ -184,7 +184,7 @@ void display(void) {
 	}
 
 	// This finds the combined view-projection matrix
-	PV = MatMatMul(MatMatMul(P, V), rz); //Rotate everything in z
+	PV = MatMatMul(P, V); //Rotate everything in z
 
 	// Select the shader program to be used during rendering 
 	glUseProgram(shprg);
@@ -215,6 +215,52 @@ void CameraSettings() {
 	printf("Far plane: %2f\n", cam.farPlane);
 }
 
+// Enter axis to rotate around as char and true or false
+void RotateCamera(char i, bool d) {
+
+	//View stuff from display function
+	Matrix a = MatMatMul(RotateY(Deg2Rad(cam.rotation.y)), RotateX(Deg2Rad(cam.rotation.x)));
+	Vector gaze = Homogenize(MatVecMul(a, { 0, 0, -1 }));
+	Vector up = Normalize(Homogenize(MatVecMul(RotateZ(Deg2Rad(cam.rotation.z)), { 0, 1, 0 })));
+
+	//From LookAt
+	Vector f = Normalize(Subtract(Homogenize(MatVecMul(a, { 0, 0, -1 })), cam.position));			// Forward	(i.e z-axis)
+	Vector s = Normalize(CrossProduct(f, up));														// Left		(i.e x-axis)
+	Vector u = CrossProduct(s, f);																	// Up		(i.e y-axis)
+	Vector axis;
+
+	switch (i) {
+	case 'x':
+		axis = CrossProduct(u, f); // Y x Z = X
+		if (d) {
+			cam.rotation = Subtract(cam.rotation, axis);
+		}
+		else {
+			cam.rotation = Add(axis, cam.rotation);
+		}
+		break;
+	case 'y':
+		axis = CrossProduct(s, f); // X x Z = Y
+		if (d) {
+			cam.rotation = Subtract(cam.rotation, axis);
+		}
+		else {
+			cam.rotation = Add(axis, cam.rotation);
+		}
+		break;
+	case 'z':
+		axis = CrossProduct(u, s); // Y x X = Z
+		if (d) {
+			cam.rotation = Subtract(cam.rotation, axis);
+		}
+		else {
+			cam.rotation = Add(axis, cam.rotation);
+		}
+		break;
+	}
+
+}
+
 
 void keypress(unsigned char key, int x, int y) {
 	switch(key) {
@@ -222,32 +268,38 @@ void keypress(unsigned char key, int x, int y) {
 	// Camera controlls
 	case 'Q': // Rotate camera counter-clockwise
 	case 'q':
-		cam.rotation.y -= 1.0f;
+		//cam.rotation.y -= 1.0f;
+		RotateCamera('y', true);
 		break;
 	case 'E': // Rotate camera clockwise
 	case 'e':
-		cam.rotation.y += 1.0f;
+		//cam.rotation.y += 1.0f;
+		RotateCamera('y', false);
 		break;
 	case 'W': // Move camera forward
-		cam.rotation.x += 1.0f;
+		//cam.rotation.x += 1.0f;
+		RotateCamera('x', false);
 		break;
 	case 'w':
 		cam.position.z += 0.2f;
 		break;
 	case 'A': // Move camera to the left
-		cam.rotation.z -= 1.0f;
+		//cam.rotation.z -= 1.0f;
+		RotateCamera('z', true);
 		break;
 	case 'a':
 		cam.position.x -= 0.2f;
 		break;
 	case 'S': // Move camera backwards
-		cam.rotation.x -= 1.0f;
+		//cam.rotation.x -= 1.0f;
+		RotateCamera('x', true);
 		break;
 	case 's':
 		cam.position.z -= 0.2f;
 		break;  
 	case 'D': // Move camera to the right
-		cam.rotation.z += 1.0;
+		//cam.rotation.z += 1.0;
+		RotateCamera('z', false);
 		break;
 	case 'd':
 		cam.position.x += 0.2f;
