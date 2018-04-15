@@ -146,7 +146,7 @@ void display(void) {
 	float a = Deg2Rad(cam.rotation.x), b = Deg2Rad(cam.rotation.y), c = Deg2Rad(cam.rotation.z);
 	Vector pos = { -cam.position.x, -cam.position.y, -cam.position.z };
 
-	Matrix rz = RotateZ(-c);
+	Matrix rz = RotateZ(c);
 	Matrix ry = RotateY(-b);
 	Matrix rx = RotateX(-a);
 	Matrix t = Translate(pos.x, pos.y, pos.z);
@@ -161,7 +161,8 @@ void display(void) {
 		
 		Vector eye = cam.position;											// the cam position
 		Vector gaze = Homogenize(MatVecMul(a, { 0, 0, -1 }));				// Gaze is any direction the viewer looks at
-		Vector up = Normalize(Homogenize(MatVecMul(rz, { 0, 1, 0 })));		// Direction pointing up from the viewer
+		Vector up = { 0, 1, 0 };											// Screen up is always up
+		//Vector up = Normalize(Homogenize(MatVecMul(rz, { 0, 1, 0 })));	// Direction pointing up from the viewer
 
 		V = MatLookAt2(eye, gaze, up);		// Then we do this <- over there on the left
 	}
@@ -183,7 +184,7 @@ void display(void) {
 	}
 
 	// This finds the combined view-projection matrix
-	PV = MatMatMul(P, V);
+	PV = MatMatMul(MatMatMul(P, V), rz); //Rotate everything in z
 
 	// Select the shader program to be used during rendering 
 	glUseProgram(shprg);
