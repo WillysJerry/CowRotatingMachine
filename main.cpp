@@ -412,11 +412,19 @@ int main(int argc, char **argv) {
 	insertModel(&meshList, cow.nov, cow.verts, cow.nof, cow.faces, 20.0);
 	//LoadObj(&meshList, "./models/Goat.OBJ", 5.0f);
 	LoadObj2(&meshList, "./models/Goat.OBJ");
-	//insertModel(&meshList, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
-	//insertModel(&meshList, bunny.nov, bunny.verts, bunny.nof, bunny.faces, 60.0);	
+
+	insertModel(&meshList, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
+	meshList->translation = { -20, 0, 20 };
+
+
+	insertModel(&meshList, bunny.nov, bunny.verts, bunny.nof, bunny.faces, 60.0);	
+	meshList->translation = { 0, 0, 40 };
+
 	//insertModel(&meshList, cube.nov, cube.verts, cube.nof, cube.faces, 5.0);
-	//insertModel(&meshList, frog.nov, frog.verts, frog.nof, frog.faces, 2.5);
-	//insertModel(&meshList, knot.nov, knot.verts, knot.nof, knot.faces, 1.0);
+	insertModel(&meshList, frog.nov, frog.verts, frog.nof, frog.faces, 1.0);
+	meshList->translation = { 20, 0, 20 };
+
+	//insertModel(&meshList, knot.nov, knot.verts, knot.nof, knot.faces, 0.5);
 	//insertModel(&meshList, sphere.nov, sphere.verts, sphere.nof, sphere.faces, 12.0);
 	//insertModel(&meshList, teapot.nov, teapot.verts, teapot.nof, teapot.faces, 3.0);
 	
