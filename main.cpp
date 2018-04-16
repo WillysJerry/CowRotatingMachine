@@ -19,7 +19,7 @@ int screen_height = 768;
 Mesh *meshList = NULL; // Global pointer to linked list of triangle meshes
 Mesh *selected = NULL;
 
-Camera cam = { {0,0,20}, {0,0,0}, 60, 1, 10000, {0,1,0}, {1,0,0}, {0,0,20}}; // Setup the global camera parameters, i OpenGL s� tittar kameran "bak�t" s� +20 z-axis anv�nds f�r att f� lite avst�nd till modellen.
+Camera cam = { {0,0,20}, {0,0,0}, 30, 1, 10000, {0,1,0}, {1,0,0}, {0,0,20}}; // Setup the global camera parameters, i OpenGL s� tittar kameran "bak�t" s� +20 z-axis anv�nds f�r att f� lite avst�nd till modellen.
 
 GLuint shprg; // Shader program id
 
