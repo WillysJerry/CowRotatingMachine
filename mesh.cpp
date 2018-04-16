@@ -12,6 +12,32 @@ float rnd() {
 	return 2.0f * float(rand()) / float(RAND_MAX) - 1.0f;
 }
 
+void calculateMeshNormals(Mesh* mesh) {
+	for (int i = 0; i < mesh->nt; i++) {
+		mesh->vnorms[mesh->triangles[i].vInds[0]] =
+			Normalize(
+				Add(mesh->vnorms[mesh->triangles[i].vInds[0]],
+					Normalize(
+						CrossProduct(
+							Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[0]]), // a -> b
+							Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[0]]))))); // a -> c
+		mesh->vnorms[mesh->triangles[i].vInds[1]] =
+			Normalize(
+				Add(mesh->vnorms[mesh->triangles[i].vInds[1]],
+					Normalize(
+						CrossProduct(
+							Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[1]]), //Vektor b -> a
+							Subtract(mesh->vertices[mesh->triangles[i].vInds[0]], mesh->vertices[mesh->triangles[i].vInds[1]]))))); //Vektor b -> c
+		mesh->vnorms[mesh->triangles[i].vInds[2]] =
+			Normalize(
+				Add(mesh->vnorms[mesh->triangles[i].vInds[2]],
+					Normalize(
+						CrossProduct(
+							Subtract(mesh->vertices[mesh->triangles[i].vInds[0]], mesh->vertices[mesh->triangles[i].vInds[2]]), //Vektor c -> a
+							Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[2]]))))); //Vektor c -> b
+	}
+}
+
 void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float scale) {
 	Mesh * mesh = (Mesh *) malloc(sizeof(Mesh));
 	mesh->nv = nv;
@@ -37,36 +63,7 @@ void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float sc
 	// Assignment 1: 
 	// Calculate and store suitable vertex normals for the mesh here.
 	// Replace the code below that simply sets some arbitrary normal values
-	
-	for (int i = 0; i < nt; i++) {
-		
-
-		mesh->vnorms[mesh->triangles[i].vInds[0]] =
-			Normalize(
-				Add(mesh->vnorms[mesh->triangles[i].vInds[0]],
-					Normalize(
-						CrossProduct(
-							Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[0]]), //Vektor b - a 
-							Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[0]]))))); //Vektor c - a 
-		mesh->vnorms[mesh->triangles[i].vInds[1]] =
-			Normalize(
-				Add(mesh->vnorms[mesh->triangles[i].vInds[1]],
-					Normalize(
-						CrossProduct(
-							Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[1]]), //Vektor a - b 
-							Subtract(mesh->vertices[mesh->triangles[i].vInds[0]], mesh->vertices[mesh->triangles[i].vInds[1]]))))); //Vektor c - b 
-		mesh->vnorms[mesh->triangles[i].vInds[2]] =
-			Normalize(
-				Add(mesh->vnorms[mesh->triangles[i].vInds[2]],
-					Normalize(
-						CrossProduct(
-							Subtract(mesh->vertices[mesh->triangles[i].vInds[0]], mesh->vertices[mesh->triangles[i].vInds[2]]), //Vektor a - c 
-							Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[2]]))))); //Vektor b - c 
-
-	}
-
-
-
+	calculateMeshNormals(mesh);
 
 	// Set transform parameters
 	mesh->translation = { 0, 0, 0 };
@@ -180,30 +177,7 @@ int LoadObj(Mesh **list, const char* filename, float scale) {
 		}
 	}
 
-	//Calculate normals (same as in insertModel)
-	for (i = 0; i < mesh->nt; i++) {
-		mesh->vnorms[mesh->triangles[i].vInds[0]] =
-			Normalize(
-				Add(mesh->vnorms[mesh->triangles[i].vInds[0]],
-					Normalize(
-						CrossProduct(
-							Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[0]]), //Vektor b - a 
-							Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[0]]))))); //Vektor c - a 
-		mesh->vnorms[mesh->triangles[i].vInds[1]] =
-			Normalize(
-				Add(mesh->vnorms[mesh->triangles[i].vInds[1]],
-					Normalize(
-						CrossProduct(
-							Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[1]]), //Vektor a - b 
-							Subtract(mesh->vertices[mesh->triangles[i].vInds[0]], mesh->vertices[mesh->triangles[i].vInds[1]]))))); //Vektor c - b 
-		mesh->vnorms[mesh->triangles[i].vInds[2]] =
-			Normalize(
-				Add(mesh->vnorms[mesh->triangles[i].vInds[2]],
-					Normalize(
-						CrossProduct(
-							Subtract(mesh->vertices[mesh->triangles[i].vInds[0]], mesh->vertices[mesh->triangles[i].vInds[2]]), //Vektor a - c 
-							Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[2]]))))); //Vektor b - c 
-	}
+	calculateMeshNormals(mesh);
 
 	mesh->translation = { 0, 0, 0 };
 	mesh->rotation = { 0, 0, 0 };
