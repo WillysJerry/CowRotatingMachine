@@ -100,16 +100,13 @@ void renderMesh(Mesh *mesh) {
 	
 	// Assignment 1: Apply the transforms from local mesh coordinates to world coordinates here
 	// Combine it with the viewing transform that is passed to the shader below
-	Matrix W = MatMatMul(Bounce(2, t), LocalToWorld(mesh->translation, mesh->rotation, mesh->scale));
+	Vector radRotation = { Deg2Rad(mesh->rotation.x), Deg2Rad(mesh->rotation.y), Deg2Rad(mesh->rotation.z) };
+	Matrix W = MatMatMul(Bounce(2, t), LocalToWorld(mesh->translation, radRotation, mesh->scale));
 	if (bounceMode == 1) {
 		t += 0.05f; // Removing this will stop the bouncing animation
 	}
 
 	M = MatMatMul(PV, W);
-
-	// TEMP TEST ROTATION AND TRANSLATION
-	//mesh->translation.x += 0.1f;
-	//mesh->rotation.y += 0.1f;
 
 	// Pass the viewing transform to the shader
 	//GLint loc_PV = glGetUniformLocation(shprg, "PV");
@@ -415,14 +412,17 @@ int main(int argc, char **argv) {
 
 	insertModel(&meshList, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
 	meshList->translation = { -20, 0, 20 };
+	meshList->rotation = { 0, 25, 0 };
 
 
 	insertModel(&meshList, bunny.nov, bunny.verts, bunny.nof, bunny.faces, 60.0);	
 	meshList->translation = { 0, 0, 40 };
+	meshList->rotation = { 0, 180, 0 };
 
 	//insertModel(&meshList, cube.nov, cube.verts, cube.nof, cube.faces, 5.0);
 	insertModel(&meshList, frog.nov, frog.verts, frog.nof, frog.faces, 1.0);
 	meshList->translation = { 20, 0, 20 };
+	meshList->rotation = { 0, -60, 0 };
 
 	//insertModel(&meshList, knot.nov, knot.verts, knot.nof, knot.faces, 0.5);
 	//insertModel(&meshList, sphere.nov, sphere.verts, sphere.nof, sphere.faces, 12.0);
