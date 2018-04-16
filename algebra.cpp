@@ -98,7 +98,12 @@ void PrintMatrix(char *name, Matrix a) {
 Matrix Translate(float x, float y, float z)
 {
 	Matrix m;
-	float arr[16] = { 1,0,0,0,0,1,0,0,0,0,1,0,x,y,z,1 };
+	float arr[16] = { 
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		x, y, z, 1 
+	};
 	memcpy(m.e, arr, 16 * sizeof(float));
 	return m;
 }
@@ -106,7 +111,12 @@ Matrix Translate(float x, float y, float z)
 Matrix Scale(float x, float y, float z)
 {
 	Matrix m;
-	float arr[16] = { x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, 1 };
+	float arr[16] = { 
+		x, 0, 0, 0, 
+		0, y, 0, 0, 
+		0, 0, z, 0, 
+		0, 0, 0, 1 
+	};
 	memcpy(m.e, arr, 16 * sizeof(float));
 	return m;
 }
@@ -114,7 +124,12 @@ Matrix Scale(float x, float y, float z)
 Matrix RotateX(float theta)
 {
 	Matrix m;
-	float arr[16] = { 1,0,0,0,0, cos(theta), sin(theta), 0, 0, -sin(theta), cos(theta), 0,0,0,0,1 };
+	float arr[16] = { 
+		1, 0, 0, 0,
+		0, cos(theta), sin(theta), 0, 
+		0, -sin(theta), cos(theta), 0,
+		0, 0, 0, 1 
+	};
 	memcpy(m.e, arr, 16 * sizeof(float));
 	return m;
 }
@@ -122,7 +137,12 @@ Matrix RotateX(float theta)
 Matrix RotateY(float theta)
 {
 	Matrix m;
-	float arr[16] = { cos(theta), 0, -sin(theta), 0,0,1,0,0, sin(theta), 0, cos(theta), 0, 0, 0, 0, 1 };
+	float arr[16] = { 
+		cos(theta), 0, -sin(theta), 0,
+		0, 1, 0, 0, 
+		sin(theta), 0, cos(theta), 0, 
+		0, 0, 0, 1 
+	};
 	memcpy(m.e, arr, 16 * sizeof(float));
 	return m;
 }
@@ -130,14 +150,18 @@ Matrix RotateY(float theta)
 Matrix RotateZ(float theta)
 {
 	Matrix m;
-	float arr[16] = { cos(theta), sin(theta), 0,0, -sin(theta), cos(theta), 0,0,0,0,1,0,0,0,0,1 };
+	float arr[16] = { 
+		cos(theta), sin(theta), 0, 0, 
+		-sin(theta), cos(theta), 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1 
+	};
 	memcpy(m.e, arr, 16 * sizeof(float));
 	return m;
 }
 
+// Returns a orthogonal projection matrix
 Matrix MatOrtho(float left, float right, float bottom, float top, float near, float far) {
-	// Orthogonal projektion:
-	// Föreläsning 2.5 Viewing - s.15
 	Matrix m;
 
 	float arr[16] = {
@@ -151,6 +175,7 @@ Matrix MatOrtho(float left, float right, float bottom, float top, float near, fl
 	return m;
 }
 
+// Returns a perspective projection matrix
 Matrix MatPerspective(float fovy, float aspect, float near, float far) {
 	Matrix m;
 	float arr[16] = {
@@ -163,9 +188,8 @@ Matrix MatPerspective(float fovy, float aspect, float near, float far) {
 	return m;
 }
 
+// Returns a frustum perspective projection matrix
 Matrix MatFrustum(float left, float right, float bottom, float top, float near, float far) {
-	// Frustum perspective projektion:
-	// Föreläsning 2.5 Viewing - s.21
 	Matrix m;
 	float arr[16] = {
 		2 * near / (right - left), 0, 0, 0,
@@ -187,14 +211,12 @@ Matrix Bounce(float a, float t) {
 }
 
 //The lookX/Y/Z vectors are the sum of PosX + LookAtX etc.
+// LookAt implementation based on web sources
 Matrix MatLookAt(Vector pos, Vector look, Vector up) {
 	Vector f = Normalize(Subtract(look, pos));			// Forward	(i.e z-axis)
 	Vector s = Normalize(CrossProduct(f, up));			// Left		(i.e x-axis)
 	Vector u = CrossProduct(s, f);						// Up		(i.e z-axis)	
 
-	// Translate to origin
-	//		-> Rotate 
-	// (T * R)
 	Matrix m;
 	float arr[16] = {
 		s.x, u.x, -f.x, 0,
@@ -205,61 +227,36 @@ Matrix MatLookAt(Vector pos, Vector look, Vector up) {
 	memcpy(m.e, arr, sizeof(float) * 16);
 
 	return m;
-
-	// #### ALTERNATIVE #####
-	// This is basically the same as doing:
-
-	/*
-	Matrix m;
-	float arr[16] = {
-	s.x, u.x, -f.x, 0,
-	s.y, u.y, -f.y, 0,
-	s.z, u.z, -f.z, 0,
-	0, 0, 0, 1
-	};
-	memcpy(m.e, arr, sizeof(float) * 16);
-
-	Matrix m2;
-	float arr2[16] = {
-	1, 0, 0, 0,
-	0, 1, 0, 0,
-	0, 0, 1, 0,
-	-pos.x, -pos.y, -pos.z, 1
-
-	};
-	memcpy(m2.e, arr2, sizeof(float) * 16);
-
-	return MatMatMul(m, m2);
-	*/
 }
 
+// LookAt implementation based on the book
 Matrix MatLookAt2(Vector eye, Vector gaze, Vector viewUp) {
-	// CAMERA TRANSFORM FROM THE BOOOK
-	// PAGE 144!!!!
 
-	Vector w = ScalarVecMul(-1.0, Normalize(gaze));	// Back
-	Vector u = Normalize(CrossProduct(viewUp, w));	// Right
-	Vector v = CrossProduct(w, u);					// Up
+	Vector w = ScalarVecMul(-1.0, Normalize(gaze));	// Z
+	Vector u = Normalize(CrossProduct(viewUp, w));	// X
+	Vector v = CrossProduct(w, u);					// Y
 
 	Matrix m;
 	float arr[16] = {
 		u.x, v.x, w.x, 0,
 		u.y, v.y, w.y, 0,
 		u.z, v.z, w.z, 0,
-		0, 0, 0, 1
+		-DotProduct(u, eye), -DotProduct(v, eye), -DotProduct(w, eye), 1
 	};
+	/*
+		We can use the dot product of the columns and eye in the last row
+		as that is what we get when we multiply the rotation with
+		the translation to origin matrix: 
+		 _							   _
+		|								|
+		|	1		0		0		0	|
+		|	0		1		0		0	|
+		|	0		0		1		0	|
+		| -eye.x  -eye.y -eye.z		1	|	
+		|_							   _|
+	*/
+
 	memcpy(m.e, arr, sizeof(float) * 16);
- 
-	Matrix m2;
-	float arr2[16] = {
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
-		-eye.x, -eye.y, -eye.z, 1
-
-	};
-	memcpy(m2.e, arr2, sizeof(float) * 16);
-
-	return MatMatMul(m, m2);
+	return m;
 
 }
