@@ -433,8 +433,13 @@ int main(int argc, char **argv) {
 	// Insert the 3D models you want in your scene here in a linked list of meshes
 	// Note that "meshList" is a pointer to the first mesh and new meshes are added to the front of the list	
 	insertModel(&meshList, cow.nov, cow.verts, cow.nof, cow.faces, 20.0);
+	meshList->rotation = { 0, 0, 80 };
+	meshList->translation = { -2, 0, 0 };
 	//LoadObj(&meshList, "./models/Goat.OBJ", 5.0f);
-	LoadObj2(&meshList, "./models/Goat.OBJ");
+	//LoadObj2(&meshList, "./models/Goat.OBJ");
+	LoadObj2(&meshList, "./models/m16.OBJ");
+	meshList->scale = { 1.25f, 1.25f, 1.25f };
+	meshList->translation = { 7, 2, 1.75f };
 
 	insertModel(&meshList, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
 	meshList->translation = { -20, 0, 20 };
