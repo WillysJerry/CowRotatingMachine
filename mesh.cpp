@@ -154,36 +154,13 @@ int insertModelFromFile(Mesh **list, const char* filename) {
 			j++;
 		}
 	}
-	
-	//Calculate normals (same as in insertModel)
-	for (i = 0; i < mesh->nt; i++) {
-		mesh->vnorms[mesh->triangles[i].vInds[0]] =
-			Normalize(
-				Add(mesh->vnorms[mesh->triangles[i].vInds[0]],
-					Normalize(
-						CrossProduct(
-							Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[0]]), //Vektor b - a 
-							Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[0]]))))); //Vektor c - a 
-		mesh->vnorms[mesh->triangles[i].vInds[1]] =
-			Normalize(
-				Add(mesh->vnorms[mesh->triangles[i].vInds[1]],
-					Normalize(
-						CrossProduct(
-							Subtract(mesh->vertices[mesh->triangles[i].vInds[2]], mesh->vertices[mesh->triangles[i].vInds[1]]), //Vektor a - b 
-							Subtract(mesh->vertices[mesh->triangles[i].vInds[0]], mesh->vertices[mesh->triangles[i].vInds[1]]))))); //Vektor c - b 
-		mesh->vnorms[mesh->triangles[i].vInds[2]] =
-			Normalize(
-				Add(mesh->vnorms[mesh->triangles[i].vInds[2]],
-					Normalize(
-						CrossProduct(
-							Subtract(mesh->vertices[mesh->triangles[i].vInds[0]], mesh->vertices[mesh->triangles[i].vInds[2]]), //Vektor a - c 
-							Subtract(mesh->vertices[mesh->triangles[i].vInds[1]], mesh->vertices[mesh->triangles[i].vInds[2]]))))); //Vektor b - c 
-	}
+
+	calculateMeshNormals(mesh);
 	
 
 	mesh->translation = { 0, 0, 0 };
 	mesh->rotation = { 0, 0, 0 };
-	mesh->scale = { 5, 5, 5 };
+	mesh->scale = { 1, 1, 1 };
 
 	mesh->next = *list;
 	*list = mesh;
