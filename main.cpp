@@ -161,7 +161,7 @@ void display(void) {
 		//Vector up = { 0, 1, 0 };											// Screen up is always up
 		Vector up = Normalize(Homogenize(MatVecMul(rz, { 0, 1, 0 })));	// Direction pointing up from the viewer
 
-		V = MatLookAt2(eye, gaze, up);		// Then we do this <- over there on the left
+		V = MatLookAt(eye, gaze, up);		// Then we do this <- over there on the left
 	}
 
 	// Assignment 1: Calculate the projection transform yourself 	
@@ -173,7 +173,6 @@ void display(void) {
 	}
 	else if (projMode == 1){
 		P = MatPerspective(Deg2Rad(cam.fov), screen_width / screen_height, 1, 100000);
-		printf("FOV: %.2f\n", cam.fov);
 	}
 	else {
 		P = MatFrustum(-1, 1, -1, 1, 1, 100000);
@@ -216,7 +215,7 @@ void CameraSettings() {
 void keypress(unsigned char key, int x, int y) {
 	switch(key) {
 
-	// Camera controlls
+	// Camera controls
 	case 'Q': // Rotate camera counter-clockwise
 	case 'q':
 		cam.rotation.y -= 1.0f;
@@ -365,7 +364,6 @@ void init(void) {
 	// Compile and link the given shader program (vertex shader and fragment shader)
 	prepareShaderProgram(vs_n2c_src, fs_ci_src); 
 
-	//Vi m�ste anv�nda depth_test f�r att hantera "h�l" i kossan.
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
@@ -435,9 +433,8 @@ int main(int argc, char **argv) {
 	insertModel(&meshList, cow.nov, cow.verts, cow.nof, cow.faces, 20.0);
 	meshList->rotation = { 0, 0, 80 };
 	meshList->translation = { -2, 0, 0 };
-	//LoadObj(&meshList, "./models/Goat.OBJ", 5.0f);
-	//LoadObj2(&meshList, "./models/Goat.OBJ");
-	LoadObj2(&meshList, "./models/m16.OBJ");
+	//insertModelFromFile(&meshList, "./models/Goat.OBJ");
+	insertModelFromFile(&meshList, "./models/m16.OBJ");
 	meshList->scale = { 1.25f, 1.25f, 1.25f };
 	meshList->translation = { 7, 2, 1.75f };
 

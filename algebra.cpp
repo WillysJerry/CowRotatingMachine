@@ -210,27 +210,8 @@ Matrix Bounce(float a, float t) {
 	return Translate(0, sin(t) * a, 0);
 }
 
-//The lookX/Y/Z vectors are the sum of PosX + LookAtX etc.
-// LookAt implementation based on web sources
-Matrix MatLookAt(Vector pos, Vector look, Vector up) {
-	Vector f = Normalize(Subtract(look, pos));			// Forward	(i.e z-axis)
-	Vector s = Normalize(CrossProduct(f, up));			// Left		(i.e x-axis)
-	Vector u = CrossProduct(s, f);						// Up		(i.e z-axis)	
-
-	Matrix m;
-	float arr[16] = {
-		s.x, u.x, -f.x, 0,
-		s.y, u.y, -f.y, 0,
-		s.z, u.z, -f.z, 0,
-		-DotProduct(s, pos), -DotProduct(u, pos), DotProduct(f, pos), 1
-	};
-	memcpy(m.e, arr, sizeof(float) * 16);
-
-	return m;
-}
-
 // LookAt implementation based on the book
-Matrix MatLookAt2(Vector eye, Vector gaze, Vector viewUp) {
+Matrix MatLookAt(Vector eye, Vector gaze, Vector viewUp) {
 
 	Vector w = ScalarVecMul(-1.0, Normalize(gaze));	// Z
 	Vector u = Normalize(CrossProduct(viewUp, w));	// X
