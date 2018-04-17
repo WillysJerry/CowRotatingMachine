@@ -54,5 +54,8 @@
     <None Include="cartoon_vertex.glsl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="stupid_fragment.glsl">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
