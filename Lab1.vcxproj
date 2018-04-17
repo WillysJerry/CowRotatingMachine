@@ -168,8 +168,12 @@
     <ClCompile Include="mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="fragment_shader.txt" />
-    <Text Include="vertex_shader.txt" />
+    <Text Include="default_fragment.glsl" />
+    <Text Include="default_vertex.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cartoon_fragment.glsl" />
+    <None Include="cartoon_vertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
