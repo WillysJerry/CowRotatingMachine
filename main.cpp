@@ -1,12 +1,14 @@
 //#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <glew.h>
 #include <freeglut.h>
 #include <math.h>
 #include "mesh.h"
 
 #include "algebra.h"
-#include "shaders.h"
+//#include "shaders.h"
 
 int bounceMode = 0;// Toggle between predefined or dynamic perspective matrix
 int projMode = 0;// Toggle between orthographic or perspective projection matrix
@@ -335,7 +337,33 @@ void keypress(unsigned char key, int x, int y) {
 	glutPostRedisplay(); //S�ger att vi m�ste rita om f�nstret
 }
 
+void readShaderFile(char file[], const char *shader[]) {
+	int i = 0, bufblock = 128, buflen = bufblock;
+	char *buffer = (char*)malloc(buflen);
+	int ch;
+	FILE *fp;
+	fp = fopen(file, "r");
+	while ((ch = fgetc(fp)) != EOF) {
+		buffer[i++] = ch;
+		if (i >= buflen) {
+			buflen += bufblock;							// Get another block
+			buffer = (char*)realloc(buffer, buflen);	// to save stuff
+		}
+	}
+	fclose(fp);
+	buffer[i] = '\0';
+	buffer = (char*)realloc(buffer, i + 1);				//Remove unused space, save that memory
+	shader[0] = buffer;
+}
+
 void init(void) {
+	char vertex[] = "vertex_shader.txt";
+	char fragment[] = "fragment_shader.txt";
+	static const char * vs_n2c_src[1];
+	static const char * fs_ci_src[1];
+	readShaderFile(vertex, vs_n2c_src);
+	readShaderFile(fragment, fs_ci_src);
+
 	// Compile and link the given shader program (vertex shader and fragment shader)
 	prepareShaderProgram(vs_n2c_src, fs_ci_src); 
 

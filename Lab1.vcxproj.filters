@@ -39,4 +39,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="vertex_shader.txt">
+      <Filter>Header Files</Filter>
+    </Text>
+    <Text Include="fragment_shader.txt">
+      <Filter>Header Files</Filter>
+    </Text>
+  </ItemGroup>
 </Project>
