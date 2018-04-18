@@ -9,6 +9,7 @@ uniform vec3 viewPos;
 uniform vec3 lightColor;
 uniform vec3 objectColor;
 uniform float lightIntensity;
+uniform float lightAttenuation;
 
 void main()
 {
@@ -29,7 +30,7 @@ void main()
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
     vec3 specular = specularStrength * spec * vec3(1, 1, 1);
 
-	float attenuation = 1.0 / (1.0 + 0.2f * pow(distance(FragPos, lightPos), 2));
+	float attenuation = 1.0 / (1.0 + lightAttenuation * pow(distance(FragPos, lightPos), 2));
 	vec3 linearColor = ambient + attenuation*(diffuse + specular);
     vec3 gamma = vec3(1.0/2.2, 1.0/2.2, 1.0/2.2);
 	vec3 finalColor = vec3(pow(linearColor.r, gamma.r), pow(linearColor.g, gamma.g), pow(linearColor.b, gamma.b));

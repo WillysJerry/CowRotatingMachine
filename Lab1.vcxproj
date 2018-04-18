@@ -169,17 +169,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mesh.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="default_fragment.glsl" />
-    <Text Include="default_vertex.glsl" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cartoon_fragment.glsl" />
-    <None Include="cartoon_vertex.glsl" />
-    <None Include="light_fragment.glsl" />
-    <None Include="light_vertex.glsl" />
-    <None Include="stupid_fragment.glsl" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

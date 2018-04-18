@@ -7,7 +7,7 @@
 typedef struct {
 	Vector pos;
 	float intensity;
-	float radius;
+	float attenuation;
 	Vector color;
 } PointLight;
 
