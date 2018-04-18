@@ -372,8 +372,8 @@ void readShaderFile(const char file[], const char *shader[]) {
 }
 
 void init(void) {
-	const char * vertex[] = { "default_vertex.glsl", "cartoon_vertex.glsl", "light_vertex.glsl" };
-	const char * fragment[] = { "default_fragment.glsl", "cartoon_fragment.glsl", "stupid_fragment.glsl", "light_fragment.glsl" };
+	const char * vertex[] = { "shaders/default_vertex.glsl", "shaders/cartoon_vertex.glsl", "shaders/light_vertex.glsl" };
+	const char * fragment[] = { "shaders/default_fragment.glsl", "shaders/cartoon_fragment.glsl", "shaders/stupid_fragment.glsl", "shaders/light_fragment.glsl" };
 	static const char * vs_n2c_src[1];
 	static const char * fs_ci_src[1];
 	readShaderFile(vertex[2], vs_n2c_src);
