@@ -24,7 +24,7 @@ Camera cam = { {0,0,20}, {0,0,0}, 30, 1, 10000, {0,1,0}, {1,0,0}, {0,0,20}}; // 
 
 GLuint shprg; // Shader program id
 
-PointLight light = {{ 0, 10, 0 }, 1};
+PointLight light = { { 0, 10, 0 }, 1, 0, {0.0f, 1.0f, 0.0f} };
 
 
 // Global transform matrices
@@ -124,7 +124,7 @@ void renderMesh(Mesh *mesh) {
 	GLint loc_OC = glGetUniformLocation(shprg, "objectColor");
 	glUniform3f(loc_OC, 1.0f, 1.0f, 1.0f);
 	GLint loc_LC = glGetUniformLocation(shprg, "lightColor");
-	glUniform3f(loc_LC, 1.0f, 0.3f, 0.3f);
+	glUniform3f(loc_LC, light.color.x, light.color.y, light.color.z);
 	GLint loc_LP = glGetUniformLocation(shprg, "lightPos");
 	glUniform3f(loc_LP, light.pos.x, light.pos.y, light.pos.z);
 	GLint loc_VP = glGetUniformLocation(shprg, "viewPos");
@@ -366,7 +366,7 @@ void readShaderFile(const char file[], const char *shader[]) {
 		}
 	}
 	fclose(fp);
-	buffer[i] = '\0';
+	//buffer[i] = '\0';
 	buffer = (char*)realloc(buffer, i + 1);				//Remove unused space, save that memory
 	shader[0] = buffer;
 }
