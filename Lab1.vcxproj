@@ -176,6 +176,8 @@
   <ItemGroup>
     <None Include="cartoon_fragment.glsl" />
     <None Include="cartoon_vertex.glsl" />
+    <None Include="light_fragment.glsl" />
+    <None Include="light_vertex.glsl" />
     <None Include="stupid_fragment.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

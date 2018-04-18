@@ -6,6 +6,7 @@
 #include "mesh.h"
 
 #include "algebra.h"
+#include "light.h"
 //#include "shaders.h"
 
 int bounceMode = 0;// Toggle between predefined or dynamic perspective matrix
@@ -22,6 +23,8 @@ Mesh *selected = NULL;
 Camera cam = { {0,0,20}, {0,0,0}, 30, 1, 10000, {0,1,0}, {1,0,0}, {0,0,20}}; // Setup the global camera parameters, i OpenGL s� tittar kameran "bak�t" s� +20 z-axis anv�nds f�r att f� lite avst�nd till modellen.
 
 GLuint shprg; // Shader program id
+
+PointLight light = {{ 0, 10, 0 }, 1};
 
 
 // Global transform matrices
@@ -111,8 +114,21 @@ void renderMesh(Mesh *mesh) {
 	// Pass the viewing transform to the shader
 	//GLint loc_PV = glGetUniformLocation(shprg, "PV");
 	//glUniformMatrix4fv(loc_PV, 1, GL_FALSE, PV.e);
-	GLint loc_PV = glGetUniformLocation(shprg, "PV");
-	glUniformMatrix4fv(loc_PV, 1, GL_FALSE, M.e);
+	GLint loc_Mod = glGetUniformLocation(shprg, "model");
+	glUniformMatrix4fv(loc_Mod, 1, GL_FALSE, M.e);
+	GLint loc_Vie = glGetUniformLocation(shprg, "view");
+	glUniformMatrix4fv(loc_Vie, 1, GL_FALSE, V.e);
+	GLint loc_Pro = glGetUniformLocation(shprg, "projection");
+	glUniformMatrix4fv(loc_Pro, 1, GL_FALSE, P.e);
+
+	GLint loc_OC = glGetUniformLocation(shprg, "objectColor");
+	glUniform3f(loc_OC, 1.0f, 1.0f, 1.0f);
+	GLint loc_LC = glGetUniformLocation(shprg, "lightColor");
+	glUniform3f(loc_LC, 1.0f, 1.0f, 1.0f);
+	GLint loc_LP = glGetUniformLocation(shprg, "lightPos");
+	glUniform3f(loc_LP, light.pos.x, light.pos.y, light.pos.z);
+	GLint loc_VP = glGetUniformLocation(shprg, "viewPos");
+	glUniform3f(loc_VP, cam.position.x, cam.position.y, cam.position.z);
 
 
 	// Select current resources 
@@ -354,12 +370,12 @@ void readShaderFile(const char file[], const char *shader[]) {
 }
 
 void init(void) {
-	const char * vertex[] = { "default_vertex.glsl", "cartoon_vertex.glsl" };
-	const char * fragment[] = { "default_fragment.glsl", "cartoon_fragment.glsl", "stupid_fragment.glsl" };
+	const char * vertex[] = { "default_vertex.glsl", "cartoon_vertex.glsl", "light_vertex.glsl" };
+	const char * fragment[] = { "default_fragment.glsl", "cartoon_fragment.glsl", "stupid_fragment.glsl", "light_fragment.glsl" };
 	static const char * vs_n2c_src[1];
 	static const char * fs_ci_src[1];
-	readShaderFile(vertex[1], vs_n2c_src);
-	readShaderFile(fragment[2], fs_ci_src);
+	readShaderFile(vertex[2], vs_n2c_src);
+	readShaderFile(fragment[3], fs_ci_src);
 
 	// Compile and link the given shader program (vertex shader and fragment shader)
 	prepareShaderProgram(vs_n2c_src, fs_ci_src); 
