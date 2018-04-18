@@ -24,7 +24,7 @@ Camera cam = { {0,0,20}, {0,0,0}, 30, 1, 10000, {0,1,0}, {1,0,0}, {0,0,20}}; // 
 
 GLuint shprg; // Shader program id
 
-PointLight light = { { 0, 10, 0 }, 1, 0.8f, {0.0f, 1.0f, 0.0f} };
+PointLight light = { { 0, 5, 2 }, 1, 0.02f, 0.002f, {0.0f, 1.0f, 0.0f} };
 
 
 // Global transform matrices
@@ -133,6 +133,8 @@ void renderMesh(Mesh *mesh) {
 	glUniform1f(loc_LI, light.intensity);
 	GLint loc_LA = glGetUniformLocation(shprg, "lightAttenuation");
 	glUniform1f(loc_LA, light.attenuation);
+	GLint loc_LAM = glGetUniformLocation(shprg, "lightAmbient");
+	glUniform1f(loc_LAM, light.ambient);
 
 
 	// Select current resources 

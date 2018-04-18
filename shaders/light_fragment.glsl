@@ -10,12 +10,12 @@ uniform vec3 lightColor;
 uniform vec3 objectColor;
 uniform float lightIntensity;
 uniform float lightAttenuation;
+uniform float lightAmbient;
 
 void main()
 {
     // ambient
-    float ambientStrength = 0.1f;
-    vec3 ambient = ambientStrength * lightColor;
+    vec3 ambient = lightAmbient * lightColor;
   	
     // diffuse 
     vec3 norm = normalize(Normal);
