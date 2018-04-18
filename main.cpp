@@ -215,16 +215,16 @@ void keypress(unsigned char key, int x, int y) {
 		break;
 	case 'V': // Toggle camera modes (free-look and not free-look)
 	case 'v':
-		renderer.viewMode = (viewMode + 1) % 2;
+		renderer.viewMode = (renderer.viewMode + 1) % 2;
 		break;
 	case '0': // Toggle between orthographic- and perpective projection and frustum projection
-		renderer.projMode = (projMode + 1) % 3;
+		renderer.projMode = (renderer.projMode + 1) % 3;
 		break;
 	case '8': // Toggle between bounce and static
 		bounceMode = (bounceMode + 1) % 2;
 		break;
 	case '9': // Disable faces
-		renderer.shaderMode = (shaderMode + 1) % 2;
+		renderer.shaderMode = (renderer.shaderMode + 1) % 2;
 		break;
 	case '�': // Quit
 		glutLeaveMainLoop();
