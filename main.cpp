@@ -282,11 +282,11 @@ void keypress(unsigned char key, int x, int y) {
 	// Mesh controlls
 	case 'U': // Rotate Mesh counter-clockwise
 	case 'u':
-		selected->rotation.y -= 0.2f;
+		selected->rotation.y -= 1.0f;
 		break;
 	case 'O': // Rotate Mesh clockwise
 	case 'o':
-		selected->rotation.y += 0.2f;
+		selected->rotation.y += 1.0f;
 		break;
 	case 'I': // Move Mesh forward
 	case 'i':
