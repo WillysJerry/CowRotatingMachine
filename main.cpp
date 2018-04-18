@@ -24,7 +24,7 @@ Camera cam = { {0,0,20}, {0,0,0}, 30, 1, 10000, {0,1,0}, {1,0,0}, {0,0,20}}; // 
 
 GLuint shprg; // Shader program id
 
-PointLight light = { { 0, 5, 2 }, 1, 0.02f, 0.002f, {0.0f, 1.0f, 0.0f} };
+PointLight light = { { 3, 10, 5 }, 2, 0.02f, 0.002f, {0.0f, 1.0f, 0.0f} };
 
 
 // Global transform matrices
@@ -475,8 +475,11 @@ int main(int argc, char **argv) {
 	meshList->rotation = { 0, -60, 0 };
 
 	//insertModel(&meshList, knot.nov, knot.verts, knot.nof, knot.faces, 0.5);
-	//insertModel(&meshList, sphere.nov, sphere.verts, sphere.nof, sphere.faces, 12.0);
-	//insertModel(&meshList, teapot.nov, teapot.verts, teapot.nof, teapot.faces, 3.0);
+	insertModel(&meshList, sphere.nov, sphere.verts, sphere.nof, sphere.faces, 1.0);
+	meshList->translation = light.pos;
+	meshList->scale = ScalarVecMul(-light.intensity, {1, 1, 1});
+	
+	//insertModel(&meshList, teapot.nov, teapot.verts, teapot.nof, teapot.faces, 1.0);
 	
 	
 	init();
