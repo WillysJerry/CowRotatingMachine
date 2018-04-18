@@ -7,6 +7,6 @@
 typedef struct {
 	Vector pos;
 	float intensity;
-} pointLight;
+} PointLight;
 
 #endif
