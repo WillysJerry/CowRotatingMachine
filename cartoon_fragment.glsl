@@ -3,16 +3,19 @@
 in float intensity;
 in vec4 color;
 
+float limit(float x) {
+	if(x > 0.8)
+		return 1.0;
+	else if(x > 0.75)
+		return 0.6;
+	else if(x > 0)
+		return 0;
+
+	return 0;
+}
+
 void main()
 {
-	vec4 newCol;
-	if (intensity > 0.95)
-		newCol = vec4(color.x,1.0,1.0,1.0);
-	else if (intensity > 0.5)
-		newCol = vec4(color.x,0.6,0.6,1.0);
-	else if (intensity > 0.25)
-		newCol = vec4(color.x,0.4,0.4,1.0);
-	else
-		newCol = vec4(color.x,0.2,0.2,0.2);
+	vec4 newCol = vec4(limit(color.r), limit(color.g), limit(color.b), 1.0);
 	gl_FragColor = newCol;
 }

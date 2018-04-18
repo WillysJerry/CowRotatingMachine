@@ -115,7 +115,7 @@ void renderMesh(Mesh *mesh) {
 	//GLint loc_PV = glGetUniformLocation(shprg, "PV");
 	//glUniformMatrix4fv(loc_PV, 1, GL_FALSE, PV.e);
 	GLint loc_Mod = glGetUniformLocation(shprg, "model");
-	glUniformMatrix4fv(loc_Mod, 1, GL_FALSE, M.e);
+	glUniformMatrix4fv(loc_Mod, 1, GL_FALSE, W.e);
 	GLint loc_Vie = glGetUniformLocation(shprg, "view");
 	glUniformMatrix4fv(loc_Vie, 1, GL_FALSE, V.e);
 	GLint loc_Pro = glGetUniformLocation(shprg, "projection");
@@ -124,11 +124,13 @@ void renderMesh(Mesh *mesh) {
 	GLint loc_OC = glGetUniformLocation(shprg, "objectColor");
 	glUniform3f(loc_OC, 1.0f, 1.0f, 1.0f);
 	GLint loc_LC = glGetUniformLocation(shprg, "lightColor");
-	glUniform3f(loc_LC, 1.0f, 1.0f, 1.0f);
+	glUniform3f(loc_LC, 1.0f, 0.3f, 0.3f);
 	GLint loc_LP = glGetUniformLocation(shprg, "lightPos");
 	glUniform3f(loc_LP, light.pos.x, light.pos.y, light.pos.z);
 	GLint loc_VP = glGetUniformLocation(shprg, "viewPos");
 	glUniform3f(loc_VP, cam.position.x, cam.position.y, cam.position.z);
+	GLint loc_LI = glGetUniformLocation(shprg, "lightIntensity");
+	glUniform1f(loc_LI, light.intensity);
 
 
 	// Select current resources 
