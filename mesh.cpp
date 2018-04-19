@@ -41,7 +41,7 @@ void calculateMeshNormals(Mesh* mesh) {
 	}
 }
 
-void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float scale) {
+void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, Material material, float scale) {
 	Mesh * mesh = (Mesh *) malloc(sizeof(Mesh));
 	mesh->nv = nv;
 	mesh->nt = nt;	
@@ -73,6 +73,8 @@ void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, float sc
 	mesh->rotation = { 0, 0, 0 };
 	mesh->scale = { scale, scale, scale };
 
+	mesh->material = material;
+
 	mesh->next = *list;
 	*list = mesh;	
 }
@@ -88,7 +90,7 @@ Matrix LocalToWorld(Vector t, Vector r, Vector s) {
 	return W;
 }
 
-int insertModelFromFile(Mesh **list, const char* filename) {
+int insertModelFromFile(Mesh **list, const char* filename, Material material) {
 	Mesh* mesh;
 	mesh = (Mesh*)malloc(sizeof(Mesh));
 
@@ -164,6 +166,8 @@ int insertModelFromFile(Mesh **list, const char* filename) {
 	mesh->translation = { 0, 0, 0 };
 	mesh->rotation = { 0, 0, 0 };
 	mesh->scale = { 1, 1, 1 };
+
+	mesh->material = material;
 
 	mesh->next = *list;
 	*list = mesh;

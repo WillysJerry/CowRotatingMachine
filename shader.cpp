@@ -97,12 +97,14 @@ void renderMesh(Mesh *mesh, Matrix V, Matrix P, Matrix PV) {
 	M = MatMatMul(PV, W);
 
 	// TODO: REPLACE WITH DIFFERENT MATERIALS PER MESH ?
-	Material mat = {
+	/*Material mat = {
 		{ 0.1f, 0.1f, 0.1f },	// Ambient
 		{ 0.7f, 0.1f, 0.1f },	// Diffuse
 		{ 1.0f, 1.0f, 1.0f },	// Specular
 		0.8f					// Shininess
-	};
+	};*/
+
+	Material mat = mesh->material;
 
 	PointLight light = *(scene->pointLights);
 

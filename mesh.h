@@ -3,6 +3,7 @@
 
 #include "algebra.h"
 #include "light.h"
+#include "material.h"
 
 typedef struct _Triangle {
 	int vInds[3];
@@ -20,6 +21,8 @@ typedef struct _Mesh {
 	Vector rotation;
 	Vector scale;
 	unsigned int vbo, ibo, vao;
+
+	Material material;
 } Mesh;
 
 typedef struct _Scene {
@@ -30,7 +33,7 @@ typedef struct _Scene {
 extern Scene *scene;
 extern Mesh *activeMesh;
 
-void insertModel(Mesh ** objlist, int nv, float * vArr, int nt, int * tArr, float scale = 1.0);
+void insertModel(Mesh ** objlist, int nv, float * vArr, int nt, int * tArr, Material mat, float scale = 1.0);
 Matrix LocalToWorld(Vector t, Vector r, Vector s);
-int insertModelFromFile(Mesh **list, const char* filename);
+int insertModelFromFile(Mesh **list, const char* filename, Material mat);
 #endif

@@ -109,7 +109,28 @@ int main(int argc, char **argv) {
 
 	// Insert the 3D models you want in your scene here in a linked list of meshes
 	// Note that "meshList" is a pointer to the first mesh and new meshes are added to the front of the list
-	insertModel(&scene->meshes, cow.nov, cow.verts, cow.nof, cow.faces, 20.0);
+	Material matRed = {
+		{ 0.1f, 0.1f, 0.1f },	// Ambient
+		{ 0.7f, 0.1f, 0.1f },	// Diffuse
+		{ 1.0f, 1.0f, 1.0f },	// Specular
+		0.8f					// Shininess
+	};
+
+	Material matBlue = {
+		{ 0.1f, 0.1f, 0.1f },	// Ambient
+		{ 0.1f, 0.1f, 0.7f },	// Diffuse
+		{ 1.0f, 1.0f, 1.0f },	// Specular
+		0.8f					// Shininess
+	};
+
+	Material matWhite = {
+		{ 0.1f, 0.1f, 0.1f },	// Ambient
+		{ 1.0f, 1.0f, 1.0f },	// Diffuse
+		{ 1.0f, 1.0f, 1.0f },	// Specular
+		1.0f					// Shininess
+	};
+
+	insertModel(&scene->meshes, cow.nov, cow.verts, cow.nof, cow.faces, matRed, 20.0);
 	scene->meshes->rotation = { 0, 0, 80 };
 	scene->meshes->translation = { -2, 0, 0 };
 	//insertModelFromFile(&meshList, "./models/Goat.OBJ");
@@ -117,17 +138,17 @@ int main(int argc, char **argv) {
 	//scene->meshes->scale = { 1.25f, 1.25f, 1.25f };
 	//scene->meshes->translation = { 7, 2, 1.75f };
 
-	insertModel(&scene->meshes, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, 3.0);
+	insertModel(&scene->meshes, triceratops.nov, triceratops.verts, triceratops.nof, triceratops.faces, matRed, 3.0);
 	scene->meshes->translation = { -20, 0, 20 };
 	scene->meshes->rotation = { 0, 25, 0 };
 
 
-	insertModel(&scene->meshes, bunny.nov, bunny.verts, bunny.nof, bunny.faces, 60.0);
+	insertModel(&scene->meshes, bunny.nov, bunny.verts, bunny.nof, bunny.faces, matBlue, 60.0);
 	scene->meshes->translation = { 0, 0, 40 };
 	scene->meshes->rotation = { 0, 180, 0 };
 
 	//insertModel(&meshList, cube.nov, cube.verts, cube.nof, cube.faces, 5.0);
-	insertModel(&scene->meshes, frog.nov, frog.verts, frog.nof, frog.faces, 1.0);
+	insertModel(&scene->meshes, frog.nov, frog.verts, frog.nof, frog.faces, matBlue, 1.0);
 	scene->meshes->translation = { 20, 0, 20 };
 	scene->meshes->rotation = { 0, -60, 0 };
 
@@ -142,7 +163,7 @@ int main(int argc, char **argv) {
 		NULL
 	};
 	scene->pointLights = &pl;
-	insertModel(&scene->meshes, sphere.nov, sphere.verts, sphere.nof, sphere.faces, 1.0);
+	insertModel(&scene->meshes, sphere.nov, sphere.verts, sphere.nof, sphere.faces, matWhite, 1.0);
 	scene->meshes->translation = scene->pointLights->pos;
 	scene->meshes->scale = ScalarVecMul(-scene->pointLights->intensity, {1, 1, 1});
 	
