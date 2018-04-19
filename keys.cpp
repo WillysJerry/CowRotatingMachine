@@ -1,4 +1,5 @@
 ﻿#include "keys.h"
+#include <stdio.h>
 
 void keypress(unsigned char key, int x, int y) {
 	Camera *cam = player->cam;
@@ -99,6 +100,9 @@ void keypress(unsigned char key, int x, int y) {
 		break;
 	case '0': // Toggle between orthographic- and perpective projection and frustum projection
 		player->projMode = (player->projMode + 1) % 3;
+		break;
+	case '7':
+		player->shader = player->shader->next;
 		break;
 	//case '8': // Toggle between bounce and static
 	//	bounceMode = (bounceMode + 1) % 2;
