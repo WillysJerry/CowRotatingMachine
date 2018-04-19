@@ -1,7 +1,6 @@
 #define _USE_MATH_DEFINES // To get M_PI defined
 #include <math.h>
 #include <stdio.h>
-//#include "mesh.h"
 #include "algebra.h"
 #include <string.h>
 

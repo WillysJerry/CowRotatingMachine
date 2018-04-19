@@ -97,7 +97,7 @@ void readShaderFile(const char file[], const char *shader[]) {
 		}
 	}
 	fclose(fp);
-	//buffer[i] = '\0';
+	buffer[i] = '\0';
 	buffer = (char*)realloc(buffer, i + 1);				//Remove unused space, save that memory
 	shader[0] = buffer;
 }

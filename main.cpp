@@ -22,7 +22,8 @@ void changeSize(int w, int h) {
 void init(void) {
 	const char * shprgs[][2] = {{ "shaders/default_vertex.glsl", "shaders/default_fragment.glsl" }, //Default
 								{ "shaders/default_vertex.glsl", "shaders/cartoon_fragment.glsl" }, //Cartoon
-								{ "shaders/light_vertex.glsl", "shaders/light_fragment.glsl" }		//Light
+								{ "shaders/light_vertex.glsl", "shaders/light_fragment.glsl" },		//Light
+								{ "shaders/gourad_vertex.glsl", "shaders/gourad_fragment.glsl"}		//Gourad
 							   };
 	static const char * vs[1];
 	static const char * fs[1];
@@ -43,12 +44,6 @@ void init(void) {
 		player->shader = player->shader->next;
 		i++;
 	} while (i < slen);
-	
-
-	//player->shader->program = prepareShaderProgram(vs, fs);
-
-	// Compile and link the given shader program (vertex shader and fragment shader)
-	//player->shader = prepareShaderProgram(vs, fs);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);

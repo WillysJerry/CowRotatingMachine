@@ -22,7 +22,7 @@ typedef struct _Shader {
 typedef struct _Player {
 	Camera *cam;
 	int screen_width, screen_height;
-	_Shader* shader;
+	_Shader *shader;
 	int shaderMode = 0, viewMode = 0, projMode = 0;
 } Player;
 
