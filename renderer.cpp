@@ -1,6 +1,6 @@
 ﻿#include "renderer.h"
 #include "algebra.h"
-
+#include "material.h"
 
 Renderer* activeRenderer;
 
@@ -36,6 +36,15 @@ void renderMesh(Mesh *mesh, Matrix V, Matrix P, Matrix PV) {
 	W = LocalToWorld(mesh->translation, radRotation, mesh->scale);
 	M = MatMatMul(PV, W);
 
+	// TODO: REPLACE WITH DIFFERENT MATERIALS PER MESH ?
+	Material mat = {
+		{ 0.1f, 0.1f, 0.1f },	// Ambient
+		{ 0.7f, 0.1f, 0.1f },	// Diffuse
+		{ 1.0f, 1.0f, 1.0f },	// Specular
+		0.8f					// Shininess
+	};
+
+
 	// Pass the viewing transform to the shader
 	//GLint loc_PV = glGetUniformLocation(shprg, "PV");
 	//glUniformMatrix4fv(loc_PV, 1, GL_FALSE, PV.e);
@@ -46,20 +55,29 @@ void renderMesh(Mesh *mesh, Matrix V, Matrix P, Matrix PV) {
 	GLint loc_Pro = glGetUniformLocation(shprg, "projection");
 	glUniformMatrix4fv(loc_Pro, 1, GL_FALSE, P.e);
 
-	GLint loc_OC = glGetUniformLocation(shprg, "objectColor");
-	glUniform3f(loc_OC, 1.0f, 1.0f, 1.0f);
-	GLint loc_LC = glGetUniformLocation(shprg, "lightColor");
+
+	GLint loc_MA = glGetUniformLocation(shprg, "material.ambient");
+	glUniform3f(loc_MA, mat.ambient.x, mat.ambient.y, mat.ambient.z);
+	GLint loc_MD = glGetUniformLocation(shprg, "material.diffuse");
+	glUniform3f(loc_MD, mat.diffuse.x, mat.diffuse.y, mat.diffuse.z);
+	GLint loc_MS = glGetUniformLocation(shprg, "material.specular");
+	glUniform3f(loc_MS, mat.specular.x, mat.specular.y, mat.specular.z);
+	GLint loc_MSH = glGetUniformLocation(shprg, "material.shininess");
+	glUniform1f(loc_MSH, mat.shininess);
+	GLint loc_LC = glGetUniformLocation(shprg, "light.color");
 	glUniform3f(loc_LC, light.color.x, light.color.y, light.color.z);
-	GLint loc_LP = glGetUniformLocation(shprg, "lightPos");
+	GLint loc_LP = glGetUniformLocation(shprg, "light.pos");
 	glUniform3f(loc_LP, light.pos.x, light.pos.y, light.pos.z);
 	GLint loc_VP = glGetUniformLocation(shprg, "viewPos");
 	glUniform3f(loc_VP, cam.position.x, cam.position.y, cam.position.z);
-	GLint loc_LI = glGetUniformLocation(shprg, "lightIntensity");
+	GLint loc_LI = glGetUniformLocation(shprg, "light.intensity");
 	glUniform1f(loc_LI, light.intensity);
-	GLint loc_LA = glGetUniformLocation(shprg, "lightAttenuation");
+	GLint loc_LA = glGetUniformLocation(shprg, "light.attenuation");
 	glUniform1f(loc_LA, light.attenuation);
-	GLint loc_LAM = glGetUniformLocation(shprg, "lightAmbient");
+	GLint loc_LAM = glGetUniformLocation(shprg, "light.ambient");
 	glUniform1f(loc_LAM, light.ambient);
+	GLint loc_LST = glGetUniformLocation(shprg, "light.specularStrength");
+	glUniform1f(loc_LST, 80.0f);
 
 
 	// Select current resources 
