@@ -8,6 +8,9 @@
 
 using namespace std;
 
+Scene *scene = (Scene*)calloc(1, sizeof(Scene));
+Mesh *activeMesh = (Mesh*)calloc(1, sizeof(Mesh));
+
 float rnd() {
 	return 2.0f * float(rand()) / float(RAND_MAX) - 1.0f;
 }

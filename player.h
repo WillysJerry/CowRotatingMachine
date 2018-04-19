@@ -1,25 +1,28 @@
 #pragma once
-#ifndef _RENDERER_H_
-#define _RENDERER_H_
+#ifndef _PLAYER_H_
+#define _PLAYER_H_
 
 #include <glew.h>
 #include <freeglut.h>
-#include <math.h>
 #include "mesh.h"
-#include "light.h"
 
-typedef struct {
+typedef struct _Camera {
+	Vector position;
+	Vector rotation;
+	double fov;
+	double nearPlane;
+	double farPlane;
+} Camera;
+
+typedef struct _Player {
 	Camera* cam;
 	int screen_width, screen_height;
-	Mesh* meshList;
-	PointLight* light;
 	GLuint shprg; // Shader program id MAYBE REMOVE THIS LATER
 	int shaderMode = 0, viewMode = 0, projMode = 0;
+} Player;
 
-} Renderer;
+extern Player *player;
 
-Renderer initRenderer(Camera* cam, int screen_width, int screen_height, Mesh* meshList, PointLight* light, GLuint shprg);
-void setActiveRenderer(Renderer* renderer);
 void renderMesh(Mesh *mesh, Matrix V, Matrix P, Matrix PV);
 void display(void);
 #endif
