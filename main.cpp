@@ -20,8 +20,8 @@ void changeSize(int w, int h) {
 }
 
 void init(void) {
-	const char * vertex[] = { "shaders/default_vertex.glsl", "shaders/cartoon_vertex.glsl", "shaders/light_vertex.glsl" };
-	const char * fragment[] = { "shaders/default_fragment.glsl", "shaders/cartoon_fragment.glsl", "shaders/stupid_fragment.glsl", "shaders/light_fragment.glsl" };
+	const char * vertex[] = { "shaders/default_vertex.glsl", "shaders/cartoon_vertex.glsl", "shaders/light_vertex.glsl", "shaders/gourad_vertex.glsl" };
+	const char * fragment[] = { "shaders/default_fragment.glsl", "shaders/cartoon_fragment.glsl", "shaders/stupid_fragment.glsl", "shaders/light_fragment.glsl", "shaders/gourad_fragment.glsl" };
 	static const char * vs_n2c_src[1];
 	static const char * fs_ci_src[1];
 	readShaderFile(vertex[2], vs_n2c_src);
@@ -153,6 +153,7 @@ int main(int argc, char **argv) {
 	scene->meshes->rotation = { 0, -60, 0 };
 
 	//insertModel(&meshList, knot.nov, knot.verts, knot.nof, knot.faces, 0.5);
+
 	PointLight pl =
 	{
 		{ 5, 10, 3 },
@@ -162,11 +163,28 @@ int main(int argc, char **argv) {
 		{ 1, 1, 1 },
 		NULL
 	};
+
+	PointLight pl2 =
+	{
+		{ -8, 7, 3 },
+		1,
+		0.2f,
+		0.002f,
+		{ 0, 1, 0 },
+		NULL
+	};
+
+	pl.next = &pl2;
+
 	scene->pointLights = &pl;
 	insertModel(&scene->meshes, sphere.nov, sphere.verts, sphere.nof, sphere.faces, matWhite, 1.0);
 	scene->meshes->translation = scene->pointLights->pos;
 	scene->meshes->scale = ScalarVecMul(-scene->pointLights->intensity, {1, 1, 1});
 	
+	insertModel(&scene->meshes, sphere.nov, sphere.verts, sphere.nof, sphere.faces, matWhite, 1.0);
+	scene->meshes->translation = scene->pointLights->next->pos;
+	scene->meshes->scale = ScalarVecMul(-scene->pointLights->next->intensity, { 1, 1, 1 });
+
 	//insertModel(&meshList, teapot.nov, teapot.verts, teapot.nof, teapot.faces, 1.0);
 	
 	

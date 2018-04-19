@@ -123,7 +123,7 @@ void renderMesh(Mesh *mesh, Matrix V, Matrix P, Matrix PV) {
 
 	Material mat = mesh->material;
 
-	PointLight light = *(scene->pointLights);
+	PointLight* light = scene->pointLights;
 
 	Camera cam = *(player->cam);
 
@@ -150,19 +150,31 @@ void renderMesh(Mesh *mesh, Matrix V, Matrix P, Matrix PV) {
 	GLint loc_MSH = glGetUniformLocation(player->shprg, "material.shininess");
 	glUniform1f(loc_MSH, mat.shininess);
 
-	// Light properties passed to shader
-	GLint loc_LC = glGetUniformLocation(player->shprg, "light.color");
-	glUniform3f(loc_LC, light.color.x, light.color.y, light.color.z);
-	GLint loc_LP = glGetUniformLocation(player->shprg, "light.pos");
-	glUniform3f(loc_LP, light.pos.x, light.pos.y, light.pos.z);
-	GLint loc_LI = glGetUniformLocation(player->shprg, "light.intensity");
-	glUniform1f(loc_LI, light.intensity);
-	GLint loc_LA = glGetUniformLocation(player->shprg, "light.attenuation");
-	glUniform1f(loc_LA, light.attenuation);
-	GLint loc_LAM = glGetUniformLocation(player->shprg, "light.ambient");
-	glUniform1f(loc_LAM, light.ambient);
-	GLint loc_LST = glGetUniformLocation(player->shprg, "light.specularStrength");
-	glUniform1f(loc_LST, 80.0f);
+
+	char buff[27];
+	for (int i = 0; i < 2; i++) {
+		// Light properties passed to shader
+		sprintf(buff, "lights[%d].color", i);
+		GLint loc_LC = glGetUniformLocation(player->shprg, buff);
+		glUniform3f(loc_LC, light->color.x, light->color.y, light->color.z);
+		sprintf(buff, "lights[%d].pos", i);
+		GLint loc_LP = glGetUniformLocation(player->shprg, buff);
+		glUniform3f(loc_LP, light->pos.x, light->pos.y, light->pos.z);
+		sprintf(buff, "lights[%d].intensity", i);
+		GLint loc_LI = glGetUniformLocation(player->shprg, buff);
+		glUniform1f(loc_LI, light->intensity);
+		sprintf(buff, "lights[%d].attenuation", i);
+		GLint loc_LA = glGetUniformLocation(player->shprg, buff);
+		glUniform1f(loc_LA, light->attenuation);
+		sprintf(buff, "lights[%d].ambient", i);
+		GLint loc_LAM = glGetUniformLocation(player->shprg, buff);
+		glUniform1f(loc_LAM, light->ambient);
+		sprintf(buff, "lights[%d].specularStrength", i);
+		GLint loc_LST = glGetUniformLocation(player->shprg, buff);
+		glUniform1f(loc_LST, 80.0f);
+
+		light = light->next;
+	}
 
 
 	// Select current resources 
