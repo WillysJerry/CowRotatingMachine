@@ -56,6 +56,6 @@ Matrix MatLookAt(Vector pos, Vector look, Vector up);
 float Deg2Rad(float deg);
 Matrix Bounce(float a, float t);
 
-Matrix MatLookAt2(Vector eye, Vector gaze, Vector viewUp);
+Matrix MatLookAt(Vector eye, Vector gaze, Vector viewUp);
 #endif
 

@@ -4,12 +4,13 @@
 
 #include "algebra.h"
 
-typedef struct {
+typedef struct _PointLight{
 	Vector pos;
 	float intensity;
 	float attenuation;
 	float ambient;
 	Vector color;
+	_PointLight *next;
 } PointLight;
 
 #endif
