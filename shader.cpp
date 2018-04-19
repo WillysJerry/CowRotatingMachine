@@ -128,40 +128,40 @@ void renderMesh(Mesh *mesh, Matrix V, Matrix P, Matrix PV) {
 	Camera cam = *(player->cam);
 
 	// Pass the viewing transform to the shader
-	//GLint loc_PV = glGetUniformLocation(player->shprg, "PV");
-	//glUniformMatrix4fv(loc_PV, 1, GL_FALSE, M.e);
-	GLint loc_Mod = glGetUniformLocation(player->shprg, "model");
+	GLint loc_PV = glGetUniformLocation(player->shader->program, "PV");
+	glUniformMatrix4fv(loc_PV, 1, GL_FALSE, M.e);
+	GLint loc_Mod = glGetUniformLocation(player->shader->program, "model");
 	glUniformMatrix4fv(loc_Mod, 1, GL_FALSE, W.e);
-	GLint loc_Vie = glGetUniformLocation(player->shprg, "view");
+	GLint loc_Vie = glGetUniformLocation(player->shader->program, "view");
 	glUniformMatrix4fv(loc_Vie, 1, GL_FALSE, V.e);
-	GLint loc_Pro = glGetUniformLocation(player->shprg, "projection");
-	glUniformMatrix4fv(loc_Pro, 1, GL_FALSE, P.e);
+	GLint loc_Pro = glGetUniformLocation(player->shader->program, "projection");
+	glUniformMatrix4fv(loc_Pro, 1, GL_FALSE, P.e);//48
 
-	GLint loc_VP = glGetUniformLocation(player->shprg, "viewPos");
+	GLint loc_VP = glGetUniformLocation(player->shader->program, "viewPos");
 	glUniform3f(loc_VP, cam.position.x, cam.position.y, cam.position.z);
 
 	// Material properties passed to shader
-	GLint loc_MA = glGetUniformLocation(player->shprg, "material.ambient");
+	GLint loc_MA = glGetUniformLocation(player->shader->program, "material.ambient");
 	glUniform3f(loc_MA, mat.ambient.x, mat.ambient.y, mat.ambient.z);
-	GLint loc_MD = glGetUniformLocation(player->shprg, "material.diffuse");
+	GLint loc_MD = glGetUniformLocation(player->shader->program, "material.diffuse");
 	glUniform3f(loc_MD, mat.diffuse.x, mat.diffuse.y, mat.diffuse.z);
-	GLint loc_MS = glGetUniformLocation(player->shprg, "material.specular");
+	GLint loc_MS = glGetUniformLocation(player->shader->program, "material.specular");
 	glUniform3f(loc_MS, mat.specular.x, mat.specular.y, mat.specular.z);
-	GLint loc_MSH = glGetUniformLocation(player->shprg, "material.shininess");
+	GLint loc_MSH = glGetUniformLocation(player->shader->program, "material.shininess");
 	glUniform1f(loc_MSH, mat.shininess);
 
 	// Light properties passed to shader
-	GLint loc_LC = glGetUniformLocation(player->shprg, "light.color");
+	GLint loc_LC = glGetUniformLocation(player->shader->program, "light.color");
 	glUniform3f(loc_LC, light.color.x, light.color.y, light.color.z);
-	GLint loc_LP = glGetUniformLocation(player->shprg, "light.pos");
+	GLint loc_LP = glGetUniformLocation(player->shader->program, "light.pos");
 	glUniform3f(loc_LP, light.pos.x, light.pos.y, light.pos.z);
-	GLint loc_LI = glGetUniformLocation(player->shprg, "light.intensity");
+	GLint loc_LI = glGetUniformLocation(player->shader->program, "light.intensity");
 	glUniform1f(loc_LI, light.intensity);
-	GLint loc_LA = glGetUniformLocation(player->shprg, "light.attenuation");
+	GLint loc_LA = glGetUniformLocation(player->shader->program, "light.attenuation");
 	glUniform1f(loc_LA, light.attenuation);
-	GLint loc_LAM = glGetUniformLocation(player->shprg, "light.ambient");
+	GLint loc_LAM = glGetUniformLocation(player->shader->program, "light.ambient");
 	glUniform1f(loc_LAM, light.ambient);
-	GLint loc_LST = glGetUniformLocation(player->shprg, "light.specularStrength");
+	GLint loc_LST = glGetUniformLocation(player->shader->program, "light.specularStrength");
 	glUniform1f(loc_LST, 80.0f);
 
 

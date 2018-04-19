@@ -54,7 +54,7 @@ void display(void) {
 	PV = MatMatMul(P, V);
 
 	// Select the shader program to be used during rendering 
-	glUseProgram(player->shprg);
+	glUseProgram(player->shader->program);
 
 	// Render all meshes in the scene
 	mesh = scene->meshes;

@@ -20,15 +20,35 @@ void changeSize(int w, int h) {
 }
 
 void init(void) {
-	const char * vertex[] = { "shaders/default_vertex.glsl", "shaders/cartoon_vertex.glsl", "shaders/light_vertex.glsl" };
-	const char * fragment[] = { "shaders/default_fragment.glsl", "shaders/cartoon_fragment.glsl", "shaders/stupid_fragment.glsl", "shaders/light_fragment.glsl" };
-	static const char * vs_n2c_src[1];
-	static const char * fs_ci_src[1];
-	readShaderFile(vertex[2], vs_n2c_src);
-	readShaderFile(fragment[3], fs_ci_src);
+	const char * shprgs[][2] = {{ "shaders/default_vertex.glsl", "shaders/default_fragment.glsl" }, //Default
+								{ "shaders/default_vertex.glsl", "shaders/cartoon_fragment.glsl" }, //Cartoon
+								{ "shaders/light_vertex.glsl", "shaders/light_fragment.glsl" }		//Light
+							   };
+	static const char * vs[1];
+	static const char * fs[1];
+	int i = 0, slen = sizeof(shprgs) / sizeof(shprgs[0]);
+
+	Shader *head = NULL;
+	player->shader = (Shader*)malloc(sizeof(Shader));
+	do {
+		readShaderFile(shprgs[i][0], vs);
+		readShaderFile(shprgs[i][1], fs);
+		if (i == 0)
+			head = player->shader;
+		player->shader->program = prepareShaderProgram(vs, fs);
+		if (i == slen - 1)
+			player->shader->next = head;
+		else
+			player->shader->next = (Shader*)malloc(sizeof(Shader));
+		player->shader = player->shader->next;
+		i++;
+	} while (i < slen);
+	
+
+	//player->shader->program = prepareShaderProgram(vs, fs);
 
 	// Compile and link the given shader program (vertex shader and fragment shader)
-	player->shprg = prepareShaderProgram(vs_n2c_src, fs_ci_src); 
+	//player->shader = prepareShaderProgram(vs, fs);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -37,7 +57,7 @@ void init(void) {
 	// Setup OpenGL buffers for rendering of the meshes
 	Mesh *mesh = scene->meshes;
 	while (mesh != NULL) {
-		prepareMesh(mesh, player->shprg);
+		prepareMesh(mesh, player->shader->program);
 		mesh = mesh->next;
 	}	
 
@@ -81,7 +101,7 @@ int main(int argc, char **argv) {
 	player->cam = &camera;
 	player->screen_width = 1024;
 	player->screen_height = 768;
-	player->shprg = 0;
+	player->shader = NULL;
 
 	// Setup freeGLUT	
 	glutInit(&argc, argv);

@@ -14,10 +14,15 @@ typedef struct _Camera {
 	double farPlane;
 } Camera;
 
+typedef struct _Shader {
+	GLuint program;
+	_Shader *next;
+} Shader;
+
 typedef struct _Player {
-	Camera* cam;
+	Camera *cam;
 	int screen_width, screen_height;
-	GLuint shprg; // Shader program id MAYBE REMOVE THIS LATER
+	_Shader* shader;
 	int shaderMode = 0, viewMode = 0, projMode = 0;
 } Player;
 
