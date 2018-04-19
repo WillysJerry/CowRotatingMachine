@@ -2,6 +2,20 @@
 #include "material.h"
 #include "light.h"
 
+void printShaderCompileResult(GLuint id, GLint success, const char* type) {
+	if (!success) {
+		printf("Error in %s shader!\n", type);
+		int length;
+		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);			// Get length of error message
+		char* errorMessage = (char *)malloc(length * sizeof(char));	// Allocate memory for error message
+		glGetShaderInfoLog(id, length, &length, errorMessage);		// Get error message
+		printf("%s\n", errorMessage);					// Print error message
+	}
+	else {
+		printf("%s shader compiled successfully!\n", type);
+	}
+}
+
 GLuint prepareShaderProgram(const char ** vs_src, const char ** fs_src) {
 	GLint success = GL_FALSE;
 	GLuint shprg = glCreateProgram();
@@ -10,15 +24,18 @@ GLuint prepareShaderProgram(const char ** vs_src, const char ** fs_src) {
 	glShaderSource(vs, 1, vs_src, NULL);
 	glCompileShader(vs);
 	glGetShaderiv(vs, GL_COMPILE_STATUS, &success);
-	if (!success) printf("Error in vertex shader!\n");
-	else printf("Vertex shader compiled successfully!\n");
+
+	printShaderCompileResult(vs, success, "vertex");
+	/*if (!success) printf("Error in vertex shader!\n");
+	else printf("Vertex shader compiled successfully!\n");*/
 
 	GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fs, 1, fs_src, NULL);
 	glCompileShader(fs);
 	glGetShaderiv(fs, GL_COMPILE_STATUS, &success);
-	if (!success) printf("Error in fragment shader!\n");
-	else printf("Fragment shader compiled successfully!\n");
+	printShaderCompileResult(fs, success, "fragment");
+	/*if (!success) printf("Error in fragment shader!\n");
+	else printf("Fragment shader compiled successfully!\n");*/
 
 	glAttachShader(shprg, vs);
 	glAttachShader(shprg, fs);
