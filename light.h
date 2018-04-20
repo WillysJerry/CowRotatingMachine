@@ -6,10 +6,10 @@
 
 typedef struct _PointLight{
 	Vector pos;
-	float intensity;
+	Vector ambient;
+	Vector diffuse;
+	Vector specular;
 	float attenuation;
-	float ambient;
-	Vector color;
 	_PointLight *next;
 } PointLight;
 

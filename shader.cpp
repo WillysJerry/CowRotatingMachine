@@ -159,25 +159,21 @@ void renderMesh(Mesh *mesh, Matrix V, Matrix P, Matrix PV) {
 	char buff[27];
 	for (int i = 0; i < 2; i++) {
 		// Light properties passed to shader
-		sprintf(buff, "lights[%d].color", i);
-		GLint loc_LC = glGetUniformLocation(player->shader->program, buff);
-		glUniform3f(loc_LC, light->color.x, light->color.y, light->color.z);
 		sprintf(buff, "lights[%d].pos", i);
-		GLint loc_LP = glGetUniformLocation(player->shader->program, buff);
-		glUniform3f(loc_LP, light->pos.x, light->pos.y, light->pos.z);
-		sprintf(buff, "lights[%d].intensity", i);
-		GLint loc_LI = glGetUniformLocation(player->shader->program, buff);
-		glUniform1f(loc_LI, light->intensity);
-		sprintf(buff, "lights[%d].attenuation", i);
-		GLint loc_LA = glGetUniformLocation(player->shader->program, buff);
-		glUniform1f(loc_LA, light->attenuation);
+		GLint loc_LPOS = glGetUniformLocation(player->shader->program, buff);
+		glUniform3f(loc_LPOS, light->pos.x, light->pos.y, light->pos.z);
+		sprintf(buff, "lights[%d].diffuse", i);
+		GLint loc_LDIF = glGetUniformLocation(player->shader->program, buff);
+		glUniform3f(loc_LDIF, light->diffuse.x, light->diffuse.y, light->diffuse.z);
 		sprintf(buff, "lights[%d].ambient", i);
-		GLint loc_LAM = glGetUniformLocation(player->shader->program, buff);
-		glUniform1f(loc_LAM, light->ambient);
-		sprintf(buff, "lights[%d].specularStrength", i);
-		GLint loc_LST = glGetUniformLocation(player->shader->program, buff);
-		glUniform1f(loc_LST, 80.0f);
-
+		GLint loc_LAMB = glGetUniformLocation(player->shader->program, buff);
+		glUniform3f(loc_LAMB, light->ambient.x, light->ambient.y, light->ambient.z);
+		sprintf(buff, "lights[%d].specular", i);
+		GLint loc_LSPE = glGetUniformLocation(player->shader->program, buff);
+		glUniform3f(loc_LSPE, light->specular.x, light->specular.y, light->specular.z);
+		sprintf(buff, "lights[%d].attenuation", i);
+		GLint loc_LATT = glGetUniformLocation(player->shader->program, buff);
+		glUniform1f(loc_LATT, light->attenuation);
 		light = light->next;
 	}
 

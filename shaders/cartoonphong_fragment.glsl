@@ -11,12 +11,10 @@ struct Material {
 
 struct Light {
     vec3 pos;
-    vec3 color;
-    float intensity;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
     float attenuation;
-    float ambient;
-
-    float specularStrength;
 };
 
 out vec4 FragColor;
@@ -57,24 +55,30 @@ vec3 v_cartoonize(vec3 color, int n) { // 0.7, 2
 
 vec3 calcPointLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     // ambient
-    vec3 ambient = light.ambient * light.color;
+    vec3 ambient = light.ambient * material.ambient;
   	
     // diffuse 
     vec3 lightDir = normalize(light.pos - fragPos);
     float diff = max(dot(normal, lightDir), 0.0f);
-    vec3 diffuse = diff * light.color;
+    vec3 diffuse = light.diffuse * material.diffuse * diff;
     
     // specular
     vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-    vec3 specular = light.specularStrength * spec * vec3(1, 1, 1);
+    float spec = pow(max(dot(reflectDir, viewDir), 0.0f), material.shininess);
+    vec3 specular = light.specular * material.specular * spec;
 
-	float attenuation = 1.0 / (1.0 + light.attenuation * pow(distance(fragPos, light.pos), 2));
-	vec3 linearColor = ambient + attenuation*(diffuse + specular);
+    float attenuation = 1.0 / (1.0 + light.attenuation * pow(distance(fragPos, light.pos), 2));
+
+	/*
+    float attenuation = 1.0 / (1.0 + light.attenuation * pow(distance(fragPos, light.pos), 2));
+    vec3 linearColor = ambient + attenuation*(diffuse + specular);
     vec3 gamma = vec3(1.0/2.2, 1.0/2.2, 1.0/2.2);
 	vec3 finalColor = vec3(pow(linearColor.r, gamma.r), pow(linearColor.g, gamma.g), pow(linearColor.b, gamma.b));
+    */
 
-	return clamp(finalColor * material.diffuse * light.intensity, 0, 1);
+    vec3 finalColor = attenuation * (ambient + diffuse + specular);
+	return clamp(finalColor, 0, 1);
+
 }
 
 void main()

@@ -133,7 +133,7 @@ int main(int argc, char **argv) {
 		{ 0.1f, 0.1f, 0.1f },	// Ambient
 		{ 0.7f, 0.1f, 0.1f },	// Diffuse
 		{ 1.0f, 1.0f, 1.0f },	// Specular
-		0.8f					// Shininess
+		20.0f					// Shininess
 	};
 
 	Material matBlue = {
@@ -177,21 +177,20 @@ int main(int argc, char **argv) {
 	PointLight pl =
 	{
 		{ 5, 10, 3 },
-		1,
-		0.2f,
-		//0.002f,
-		0.01f,
-		{ 1, 1, 1 },
+		{0.1f, 0.02f, 0.02f},
+		{0.7f, 0, 0},
+		{1, 1, 1},
+		0.002f,
 		NULL
 	};
 
 	PointLight pl2 =
 	{
 		{ -8, 7, 3 },
-		1.5f,
-		0.02f,
+		{ 0.02f, 0.1f, 0.02f},
+		{0, 0.7f, 0},
+		{1, 1, 1},
 		0.002f,
-		{ 0, 1, 0 },
 		NULL
 	};
 
@@ -200,11 +199,11 @@ int main(int argc, char **argv) {
 	scene->pointLights = &pl;
 	insertModel(&scene->meshes, sphere.nov, sphere.verts, sphere.nof, sphere.faces, matWhite, 1.0);
 	scene->meshes->translation = scene->pointLights->pos;
-	scene->meshes->scale = ScalarVecMul(-scene->pointLights->intensity, {1, 1, 1});
+	scene->meshes->scale = { -1, -1, -1 };
 	
 	insertModel(&scene->meshes, sphere.nov, sphere.verts, sphere.nof, sphere.faces, matWhite, 1.0);
 	scene->meshes->translation = scene->pointLights->next->pos;
-	scene->meshes->scale = ScalarVecMul(-scene->pointLights->next->intensity, { 1, 1, 1 });
+	scene->meshes->scale = { -1, -1, -1 };
 
 	//insertModel(&meshList, teapot.nov, teapot.verts, teapot.nof, teapot.faces, 1.0);
 	
