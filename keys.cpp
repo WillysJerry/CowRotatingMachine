@@ -1,9 +1,12 @@
 ﻿#include "keys.h"
+#include "shader.h"
+#include "player.h"
 #include <stdio.h>
 
 void keypress(unsigned char key, int x, int y) {
 	Camera *cam = player->cam;
-
+	static const char * vs[1];
+	static const char * fs[1];
 	switch (key) {
 		// Camera controls
 	case 'Q': // Rotate camera counter-clockwise
@@ -103,6 +106,9 @@ void keypress(unsigned char key, int x, int y) {
 		break;
 	case '7':
 		player->shader = player->shader->next;
+		readShaderFile(player->shader->shaderFiles[0], vs);
+		readShaderFile(player->shader->shaderFiles[1], fs);
+		prepareShaderProgram(vs, fs);
 		break;
 	//case '8': // Toggle between bounce and static
 	//	bounceMode = (bounceMode + 1) % 2;

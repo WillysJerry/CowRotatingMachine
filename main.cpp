@@ -32,6 +32,8 @@ void init(void) {
 	Shader *head = NULL;
 	player->shader = (Shader*)malloc(sizeof(Shader));
 	do {
+		player->shader->shaderFiles[0] = shprgs[i][0];
+		player->shader->shaderFiles[1] = shprgs[i][1];
 		readShaderFile(shprgs[i][0], vs);
 		readShaderFile(shprgs[i][1], fs);
 		if (i == 0)

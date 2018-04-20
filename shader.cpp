@@ -135,7 +135,7 @@ void renderMesh(Mesh *mesh, Matrix V, Matrix P, Matrix PV) {
 	GLint loc_Vie = glGetUniformLocation(player->shader->program, "view");
 	glUniformMatrix4fv(loc_Vie, 1, GL_FALSE, V.e);
 	GLint loc_Pro = glGetUniformLocation(player->shader->program, "projection");
-	glUniformMatrix4fv(loc_Pro, 1, GL_FALSE, P.e);//48
+	glUniformMatrix4fv(loc_Pro, 1, GL_FALSE, P.e);
 
 	GLint loc_VP = glGetUniformLocation(player->shader->program, "viewPos");
 	glUniform3f(loc_VP, cam.position.x, cam.position.y, cam.position.z);
