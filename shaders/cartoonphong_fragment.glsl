@@ -81,10 +81,15 @@ void main()
 {
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 norm = normalize(Normal);
-
+    
     vec3 result = vec3(0, 0, 0);
-    for(int i = 0; i < NR_LIGHTS; i++) {
-        result += calcPointLight(lights[i], norm, FragPos, viewDir);
+
+    if(dot(norm, viewDir) <= 0.2) 
+        result = vec3(1,1,1);
+    else {
+        for(int i = 0; i < NR_LIGHTS; i++) {
+            result += calcPointLight(lights[i], norm, FragPos, viewDir);
+        }
     }
     FragColor = normalize(vec4( f_cartoonize(result.x * 3), f_cartoonize(result.y * 3), f_cartoonize(result.z * 3), 1.0));
 } 
