@@ -16,6 +16,24 @@ void printShaderCompileResult(GLuint id, GLint success, const char* type) {
 	}
 }
 
+void changeShader(void) {
+	static const char * vs[1];
+	static const char * fs[1];
+	Mesh *mesh = scene->meshes;
+
+	glUseProgram(0);
+	glDeleteProgram(player->shader->program);
+	player->shader = player->shader->next;
+	readShaderFile(player->shader->shaderFiles[0], vs);
+	readShaderFile(player->shader->shaderFiles[1], fs);
+	player->shader->program = prepareShaderProgram(vs, fs);
+	glUseProgram(player->shader->program);
+	while (mesh != NULL) {
+		prepareMesh(mesh, player->shader->program);
+		mesh = mesh->next;
+	}
+}
+
 GLuint prepareShaderProgram(const char ** vs_src, const char ** fs_src) {
 	GLint success = GL_FALSE;
 	GLuint shprg = glCreateProgram();

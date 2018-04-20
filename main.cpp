@@ -140,7 +140,7 @@ int main(int argc, char **argv) {
 		{ 0.1f, 0.1f, 0.1f },	// Ambient
 		{ 0.1f, 0.1f, 0.7f },	// Diffuse
 		{ 1.0f, 1.0f, 1.0f },	// Specular
-		0.8f					// Shininess
+		20.8f					// Shininess
 	};
 
 	Material matWhite = {
@@ -178,7 +178,7 @@ int main(int argc, char **argv) {
 	{
 		{ 5, 10, 3 },
 		{0.1f, 0.02f, 0.02f},
-		{0.7f, 0, 0},
+		{0.7f, 0.7f, 0.7f},
 		{1, 1, 1},
 		0.002f,
 		NULL
@@ -188,7 +188,7 @@ int main(int argc, char **argv) {
 	{
 		{ -8, 7, 3 },
 		{ 0.02f, 0.1f, 0.02f},
-		{0, 0.7f, 0},
+		{0.7f, 0.7f, 0.7f},
 		{1, 1, 1},
 		0.002f,
 		NULL

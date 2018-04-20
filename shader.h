@@ -10,6 +10,7 @@
 #include "mesh.h"
 #include "player.h"
 
+void changeShader(void);
 GLuint prepareShaderProgram(const char ** vs_src, const char ** fs_src);
 void prepareMesh(Mesh *mesh, GLuint shader);
 void readShaderFile(const char file[], const char *shader[]);
