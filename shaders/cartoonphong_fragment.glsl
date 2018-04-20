@@ -19,24 +19,20 @@ struct Light {
 
 out vec4 FragColor;
 
-in vec3 Normal;  
-in vec3 FragPos; 
+in vec3 Normal;
+in vec3 FragPos;
 
 uniform Material material;
 uniform Light lights[NR_LIGHTS];
 uniform vec3 viewPos; 
 
 float f_cartoonize(float x) {
-	if(x > 0.8)
+	if(x > 0.95)
 		return 1.0;
-	else if(x > 0.75)
-		return 0.6;
-    else if(x > 0.2)
-        return 0.4;
-    else if(x > 0.1)
-        return 0.2;
-	else if(x > 0.05)
-        return 0.1;
+    else if(x > 0.5)
+        return 0.6;
+	else if(x > 0.0)
+        return 0.05;
 
 	return 0;
 
@@ -86,10 +82,9 @@ void main()
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 norm = normalize(Normal);
 
-
     vec3 result = vec3(0, 0, 0);
     for(int i = 0; i < NR_LIGHTS; i++) {
         result += calcPointLight(lights[i], norm, FragPos, viewDir);
     }
-    FragColor = vec4( f_cartoonize(result.x), f_cartoonize(result.y), f_cartoonize(result.z), 1.0);
+    FragColor = normalize(vec4( f_cartoonize(result.x * 3), f_cartoonize(result.y * 3), f_cartoonize(result.z * 3), 1.0));
 } 
