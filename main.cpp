@@ -22,6 +22,7 @@ void changeSize(int w, int h) {
 void init(void) {
 	const char * shprgs[][2] = {{ "shaders/default_vertex.glsl", "shaders/default_fragment.glsl" }, //Default
 								{ "shaders/default_vertex.glsl", "shaders/cartoon_fragment.glsl" }, //Cartoon
+								{ "shaders/cartoonphong_vertex.glsl", "shaders/cartoonphong_fragment.glsl" },	// Lit cartoon 420 blaze it
 								{ "shaders/light_vertex.glsl", "shaders/light_fragment.glsl" },		//Light
 								{ "shaders/gourad_vertex.glsl", "shaders/gourad_fragment.glsl"}		//Gourad
 							   };
@@ -174,7 +175,8 @@ int main(int argc, char **argv) {
 		{ 5, 10, 3 },
 		1,
 		0.2f,
-		0.002f,
+		//0.002f,
+		0.01f,
 		{ 1, 1, 1 },
 		NULL
 	};
@@ -182,8 +184,8 @@ int main(int argc, char **argv) {
 	PointLight pl2 =
 	{
 		{ -8, 7, 3 },
-		1,
-		0.2f,
+		1.5f,
+		0.02f,
 		0.002f,
 		{ 0, 1, 0 },
 		NULL
