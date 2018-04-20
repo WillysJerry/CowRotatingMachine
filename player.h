@@ -16,6 +16,7 @@ typedef struct _Camera {
 
 typedef struct _Shader {
 	GLuint program;
+	const char * shaderFiles[2];
 	_Shader *next;
 } Shader;
 
