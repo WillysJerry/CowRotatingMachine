@@ -45,6 +45,11 @@ GLuint prepareShaderProgram(const char ** vs_src, const char ** fs_src) {
 	if (!isLinked) printf("Link error in shader program!\n");
 	else printf("Shader program linked successfully!\n");
 
+	glDetachShader(shprg, vs);
+	glDetachShader(shprg, fs);
+	glDeleteShader(vs);
+	glDeleteShader(fs);
+
 	return shprg;
 }
 

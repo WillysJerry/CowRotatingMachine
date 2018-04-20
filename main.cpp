@@ -34,11 +34,13 @@ void init(void) {
 	do {
 		player->shader->shaderFiles[0] = shprgs[i][0];
 		player->shader->shaderFiles[1] = shprgs[i][1];
-		readShaderFile(shprgs[i][0], vs);
-		readShaderFile(shprgs[i][1], fs);
-		if (i == 0)
+		
+		if (i == 0) {
+			readShaderFile(shprgs[i][0], vs);
+			readShaderFile(shprgs[i][1], fs);
 			head = player->shader;
-		player->shader->program = prepareShaderProgram(vs, fs);
+			player->shader->program = prepareShaderProgram(vs, fs);
+		}
 		if (i == slen - 1)
 			player->shader->next = head;
 		else

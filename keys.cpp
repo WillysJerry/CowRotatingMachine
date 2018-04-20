@@ -105,10 +105,12 @@ void keypress(unsigned char key, int x, int y) {
 		player->projMode = (player->projMode + 1) % 3;
 		break;
 	case '7':
+		glUseProgram(0);
+		glDeleteProgram(player->shader->program);
 		player->shader = player->shader->next;
 		readShaderFile(player->shader->shaderFiles[0], vs);
 		readShaderFile(player->shader->shaderFiles[1], fs);
-		prepareShaderProgram(vs, fs);
+		player->shader->program = prepareShaderProgram(vs, fs);
 		break;
 	//case '8': // Toggle between bounce and static
 	//	bounceMode = (bounceMode + 1) % 2;
