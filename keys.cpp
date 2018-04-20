@@ -1,6 +1,26 @@
 ﻿#include "keys.h"
 #include "shader.h"
+#include "algebra.h"
 #include <stdio.h>
+
+void passiveMouseMotion(int x, int y) {
+	static int centerX = player->screen_width / 2;
+	static int centerY = player->screen_height / 2;
+	Vector rotation;
+	float speed = 0.1;
+
+	rotation.x = (y - centerY) * speed;
+	rotation.y = (x - centerX) * speed;
+
+	if (rotation.x != 0.0f || rotation.y != 0.0f) {
+		player->cam->rotation.x += rotation.x;
+		player->cam->rotation.y += rotation.y;
+		glutPostRedisplay();
+
+		if (x != centerX || y != centerY)
+			glutWarpPointer(centerX, centerY);
+	}
+}
 
 void keypress(unsigned char key, int x, int y) {
 	Camera *cam = player->cam;
@@ -101,6 +121,16 @@ void keypress(unsigned char key, int x, int y) {
 		break;
 	case '0': // Toggle between orthographic- and perpective projection and frustum projection
 		player->projMode = (player->projMode + 1) % 3;
+		break;
+	case '6':
+		if (!player->passMouse) {
+			player->passMouse = 1;
+			glutPassiveMotionFunc(passiveMouseMotion);
+		}
+		else {
+			player->passMouse = 0;
+			glutPassiveMotionFunc(NULL);
+		}
 		break;
 	case '7':
 		changeShader();

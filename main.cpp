@@ -111,6 +111,7 @@ int main(int argc, char **argv) {
 	glutDisplayFunc(display);
 	glutReshapeFunc(changeSize);
 	glutKeyboardFunc(keypress);
+	glutPassiveMotionFunc(NULL);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 
 	// Specify your preferred OpenGL version and profile
