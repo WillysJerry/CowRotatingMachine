@@ -9,7 +9,7 @@
 #include "player.h"
 #include "keys.h"
 #include "shader.h"
-
+#include "loader.h"
 
 float t = 0; // Temporary time variable for mesh bounce animation
 
@@ -130,10 +130,13 @@ int main(int argc, char **argv) {
 
 	// Insert the 3D models you want in your scene here in a linked list of meshes
 	// Note that "meshList" is a pointer to the first mesh and new meshes are added to the front of the list
+	GLint texture = loadBMP("resources/bump.bmp");
+
 	Material matRed = {
 		{ 0.1f, 0.1f, 0.1f },	// Ambient
 		{ 0.7f, 0.1f, 0.1f },	// Diffuse
 		{ 1.0f, 1.0f, 1.0f },	// Specular
+		texture,
 		20.0f					// Shininess
 	};
 
@@ -141,6 +144,7 @@ int main(int argc, char **argv) {
 		{ 0.1f, 0.1f, 0.1f },	// Ambient
 		{ 0.1f, 0.1f, 0.7f },	// Diffuse
 		{ 1.0f, 1.0f, 1.0f },	// Specular
+		texture,
 		20.8f					// Shininess
 	};
 
@@ -148,6 +152,7 @@ int main(int argc, char **argv) {
 		{ 0.1f, 0.1f, 0.1f },	// Ambient
 		{ 1.0f, 1.0f, 1.0f },	// Diffuse
 		{ 1.0f, 1.0f, 1.0f },	// Specular
+		0,
 		1.0f					// Shininess
 	};
 
