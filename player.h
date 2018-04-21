@@ -24,7 +24,7 @@ typedef struct _Player {
 	Camera *cam;
 	int screen_width, screen_height;
 	_Shader *shader;
-	int shaderMode = 0, viewMode = 0, projMode = 0;
+	int shaderMode = 0, viewMode = 0, projMode = 0, passMouse = 0;
 } Player;
 
 extern Player *player;

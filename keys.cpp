@@ -1,6 +1,26 @@
 ﻿#include "keys.h"
 #include "shader.h"
+#include "algebra.h"
 #include <stdio.h>
+
+void passiveMouseMotion(int x, int y) {
+	static int centerX = player->screen_width / 2;
+	static int centerY = player->screen_height / 2;
+	Vector rotation;
+	float speed = 0.1;
+
+	rotation.x = (y - centerY) * speed;
+	rotation.y = (x - centerX) * speed;
+
+	if (rotation.x != 0.0f || rotation.y != 0.0f) {
+		player->cam->rotation.x += rotation.x;
+		player->cam->rotation.y += rotation.y;
+		glutPostRedisplay();
+
+		if (x != centerX || y != centerY)
+			glutWarpPointer(centerX, centerY);
+	}
+}
 
 void keypress(unsigned char key, int x, int y) {
 	Camera *cam = player->cam;
@@ -19,25 +39,37 @@ void keypress(unsigned char key, int x, int y) {
 		cam->rotation.x += 1.0f;
 		break;
 	case 'w':
-		cam->position.z += 0.2f;
+		if (!player->passMouse)
+			cam->position.z += 0.2f;
+		else
+			cam->position = Add(cam->position, ScalarVecMul(0.2f, Normalize(Homogenize(MatVecMul(MatMatMul(RotateY(Deg2Rad(-cam->rotation.y)), RotateX(Deg2Rad(-cam->rotation.x))), { 0, 0, -1 })))));
 		break;
 	case 'A': // Move camera to the left
 		cam->rotation.z -= 1.0f;
 		break;
 	case 'a':
-		cam->position.x -= 0.2f;
+		if (!player->passMouse)
+			cam->position.x -= 0.2f;
+		else
+			cam->position = Subtract(cam->position, ScalarVecMul(0.2f, CrossProduct(Normalize(Homogenize(MatVecMul(MatMatMul(RotateY(Deg2Rad(-cam->rotation.y)), RotateX(Deg2Rad(-cam->rotation.x))), { 0, 0, -1 }))), Normalize(Homogenize(MatVecMul(RotateZ(Deg2Rad(-cam->rotation.z)), { 0, 1, 0 }))))));
 		break;
 	case 'S': // Move camera backwards
 		cam->rotation.x -= 1.0f;
 		break;
 	case 's':
-		cam->position.z -= 0.2f;
+		if (!player->passMouse)
+			cam->position.z -= 0.2f;
+		else
+			cam->position = Subtract(cam->position, ScalarVecMul(0.2f, Normalize(Homogenize(MatVecMul(MatMatMul(RotateY(Deg2Rad(-cam->rotation.y)), RotateX(Deg2Rad(-cam->rotation.x))), { 0, 0, -1 })))));
 		break;
 	case 'D': // Move camera to the right
 		cam->rotation.z += 1.0;
 		break;
 	case 'd':
-		cam->position.x += 0.2f;
+		if (!player->passMouse)
+			cam->position.x += 0.2f;
+		else
+			cam->position = Add(cam->position, ScalarVecMul(0.2f, CrossProduct(Normalize(Homogenize(MatVecMul(MatMatMul(RotateY(Deg2Rad(-cam->rotation.y)), RotateX(Deg2Rad(-cam->rotation.x))), { 0, 0, -1 }))), Normalize(Homogenize(MatVecMul(RotateZ(Deg2Rad(-cam->rotation.z)), { 0, 1, 0 }))))));
 		break;
 	case 'Z': // Move camera upwards
 	case 'z':
@@ -101,6 +133,16 @@ void keypress(unsigned char key, int x, int y) {
 		break;
 	case '0': // Toggle between orthographic- and perpective projection and frustum projection
 		player->projMode = (player->projMode + 1) % 3;
+		break;
+	case '6':
+		if (!player->passMouse) {
+			player->passMouse = 1;
+			glutPassiveMotionFunc(passiveMouseMotion);
+		}
+		else {
+			player->passMouse = 0;
+			glutPassiveMotionFunc(NULL);
+		}
 		break;
 	case '7':
 		changeShader();
