@@ -81,9 +81,10 @@ Mesh* loadObj(const char* filepath) {
 	char buff[200];
 	int v = 0, vt = 0, vn = 0, f = 0;
 	float a, b, c;
-	int f1x, f1y, f1z, f2x, f2y, f2z, f3x, f3y, f3z;
+	int f1v, f1t, f1n, f2v, f2t, f2n, f3v, f3t, f3n;
 
 	Vector* norms = NULL;
+	Vector* uvs = NULL;
 
 	while (!feof(fp)) {
 		fgets(buff, 200, fp);
@@ -101,8 +102,10 @@ Mesh* loadObj(const char* filepath) {
 			vt++;
 			sscanf(&buff[2], "%f %f", &a, &b);
 
+			uvs = (Vector*)realloc(uvs, sizeof(Vector) * vt);
+			uvs[vt - 1] = { a, b, 0 };
+
 			m->uvs = (Vector*)realloc(m->uvs, sizeof(Vector) * vt);
-			m->uvs[vt - 1] = { a, b, 0};
 		}
 		else if (buff[0] == 'v' && buff[1] == 'n') {
 			// Vertex normal
@@ -120,14 +123,18 @@ Mesh* loadObj(const char* filepath) {
 			f++;
 
 			// FORMAT: vert index/uv index/normal index x3
-			sscanf(&buff[2], "%d/%d/%d %d/%d/%d %d/%d/%d", &f1x, &f1y, &f1z, &f2x, &f2y, &f2z, &f3x, &f3y, &f3z);
+			sscanf(&buff[2], "%d/%d/%d %d/%d/%d %d/%d/%d", &f1v, &f1t, &f1n, &f2v, &f2t, &f2n, &f3v, &f3t, &f3n);
 
 			m->triangles = (Triangle*)realloc(m->triangles, sizeof(Triangle) * f);
-			m->triangles[f - 1] = { {f1x - 1, f2x - 1, f3x - 1} };
+			m->triangles[f - 1] = { {f1v - 1, f2v - 1, f3v - 1} };
 
-			m->vnorms[f1x - 1] = norms[f1z - 1];
-			m->vnorms[f2x - 1] = norms[f2z - 1];
-			m->vnorms[f3x - 1] = norms[f3z - 1];
+			m->vnorms[f1v - 1] = norms[f1n - 1];
+			m->vnorms[f2v - 1] = norms[f2n - 1];
+			m->vnorms[f3v - 1] = norms[f3n - 1];
+
+			m->uvs[f1v - 1] = uvs[f1t - 1];
+			m->uvs[f2v - 1] = uvs[f2t - 1];
+			m->uvs[f3v - 1] = uvs[f3t - 1];
 		}
 	}
 
