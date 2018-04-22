@@ -102,9 +102,6 @@ Mesh* loadObj(const char* filepath) {
 
 			sscanf(&buff[2], "%f %f %f", &a, &b, &c);
 
-			//m->vertices = (Vector*)realloc(m->vertices, sizeof(Vector) * v);
-
-
 			m->vertices[v - 1] = { a, b, c };
 		}
 		else if (buff[0] == 'v' && buff[1] == 't') {
@@ -118,12 +115,7 @@ Mesh* loadObj(const char* filepath) {
 
 			sscanf(&buff[2], "%f %f", &a, &b);
 
-			//uvs = (Vector*)realloc(uvs, sizeof(Vector) * vt);
 			uvs[vt - 1] = { a, b, 0 };
-
-			//m->uvs = (Vector*)realloc(m->uvs, sizeof(Vector) * vt);
-
-
 		}
 		else if (buff[0] == 'v' && buff[1] == 'n') {
 			// Vertex normal
@@ -137,11 +129,7 @@ Mesh* loadObj(const char* filepath) {
 
 			sscanf(&buff[2], "%f %f %f", &a, &b, &c);
 
-
-
 			norms[vn - 1] = { a, b, c };
-
-
 		}
 		else if (buff[0] == 'f' && buff[1] == ' ') {
 			// Face
