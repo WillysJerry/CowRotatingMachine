@@ -92,40 +92,71 @@ Mesh* loadObj(const char* filepath) {
 		if (buff[0] == 'v' && buff[1] == ' ') {
 			// Vertex
 			v++;
-			sscanf(&buff[2], "%f %f %f", &a, &b, &c);
-
-			m->vertices = (Vector*)realloc(m->vertices, sizeof(Vector) * v);
-			m->vertices[v - 1] = { a, b, c };
 		}
 		else if (buff[0] == 'v' && buff[1] == 't') {
 			// UV coord
 			vt++;
+		}
+		else if (buff[0] == 'v' && buff[1] == 'n') {
+			// Vertex normal
+			vn++;
+		}
+		else if (buff[0] == 'f' && buff[1] == ' ') {
+			// Face
+			f++;
+		}
+	}
+
+	fseek(fp, 0, SEEK_SET);
+
+	m->vertices = (Vector*)malloc(sizeof(Vector) * v);
+	m->vnorms = (Vector*)malloc(sizeof(Vector) * vn);
+	m->uvs = (Vector*)malloc(sizeof(Vector) * vt);
+	m->triangles = (Triangle*)malloc(sizeof(Triangle) * f);
+
+	norms = (Vector*)malloc(sizeof(Vector) * vn);
+	uvs = (Vector*)malloc(sizeof(Vector) * vt);
+
+	while (!feof(fp)) {
+		fgets(buff, 200, fp);
+
+		if (buff[0] == 'v' && buff[1] == ' ') {
+			// Vertex
+			//v++;
+			sscanf(&buff[2], "%f %f %f", &a, &b, &c);
+
+			//m->vertices = (Vector*)realloc(m->vertices, sizeof(Vector) * v);
+			m->vertices[v - 1] = { a, b, c };
+		}
+		else if (buff[0] == 'v' && buff[1] == 't') {
+			// UV coord
+			//vt++;
 			sscanf(&buff[2], "%f %f", &a, &b);
 
-			uvs = (Vector*)realloc(uvs, sizeof(Vector) * vt);
+			//uvs = (Vector*)realloc(uvs, sizeof(Vector) * vt);
 			uvs[vt - 1] = { a, b, 0 };
 
 			m->uvs = (Vector*)realloc(m->uvs, sizeof(Vector) * vt);
 		}
 		else if (buff[0] == 'v' && buff[1] == 'n') {
 			// Vertex normal
-			vn++;
+			//vn++;
 
 			sscanf(&buff[2], "%f %f %f", &a, &b, &c);
 
-			norms = (Vector*)realloc(norms, sizeof(Vector) * vn);
-			m->vnorms = (Vector*)realloc(m->vnorms, sizeof(Vector) * vn);
+			//norms = (Vector*)realloc(norms, sizeof(Vector) * vn);
+			//m->vnorms = (Vector*)realloc(m->vnorms, sizeof(Vector) * vn);
 
 			norms[vn - 1] = { a, b, c };
 		}
 		else if (buff[0] == 'f' && buff[1] == ' ') {
 			// Face
-			f++;
+			//f++;
 
 			// FORMAT: vert index/uv index/normal index x3
 			sscanf(&buff[2], "%d/%d/%d %d/%d/%d %d/%d/%d", &f1v, &f1t, &f1n, &f2v, &f2t, &f2n, &f3v, &f3t, &f3n);
 
-			m->triangles = (Triangle*)realloc(m->triangles, sizeof(Triangle) * f);
+			//m->triangles = (Triangle*)realloc(m->triangles, sizeof(Triangle) * f);
 			m->triangles[f - 1] = { {f1v - 1, f2v - 1, f3v - 1} };
 
 			m->vnorms[f1v - 1] = norms[f1n - 1];
