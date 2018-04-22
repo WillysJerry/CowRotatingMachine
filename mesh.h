@@ -23,7 +23,7 @@ typedef struct _Mesh {
 	unsigned int vbo, ibo, vao;
 
 	Material material;
-	Vector *uvs;
+	Vector2D *uvs;
 } Mesh;
 
 typedef struct _Scene {

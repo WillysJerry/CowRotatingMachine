@@ -84,10 +84,10 @@ Mesh* loadObj(const char* filepath) {
 
 	m->vertices = (Vector*)malloc(sizeof(Vector) * vAlloc);
 	m->vnorms = (Vector*)malloc(sizeof(Vector) * nAlloc);
-	m->uvs = (Vector*)malloc(sizeof(Vector) * uAlloc);
+	m->uvs = (Vector2D*)malloc(sizeof(Vector2D) * uAlloc);
 	m->triangles = (Triangle*)malloc(sizeof(Triangle) * tAlloc);
 	Vector* norms = (Vector*)malloc(sizeof(Vector) * nAlloc);
-	Vector* uvs = (Vector*)malloc(sizeof(Vector) * uAlloc);
+	Vector2D* uvs = (Vector2D*)malloc(sizeof(Vector2D) * uAlloc);
 
 	while (!feof(fp)) {
 		fgets(buff, 200, fp);
@@ -109,13 +109,13 @@ Mesh* loadObj(const char* filepath) {
 			vt++;
 			if (vt > uAlloc) {
 				uAlloc += 100;
-				m->uvs = (Vector*)realloc(m->uvs, sizeof(Vector) * uAlloc);
-				uvs = (Vector*)realloc(uvs, sizeof(Vector) * uAlloc);
+				m->uvs = (Vector2D*)realloc(m->uvs, sizeof(Vector2D) * uAlloc);
+				uvs = (Vector2D*)realloc(uvs, sizeof(Vector2D) * uAlloc);
 			}
 
 			sscanf(&buff[2], "%f %f", &a, &b);
 
-			uvs[vt - 1] = { a, b, 0 };
+			uvs[vt - 1] = { a, b };
 		}
 		else if (buff[0] == 'v' && buff[1] == 'n') {
 			// Vertex normal
@@ -144,28 +144,45 @@ Mesh* loadObj(const char* filepath) {
 
 			m->triangles[f - 1] = { {f1v - 1, f2v - 1, f3v - 1} };
 
-			m->vnorms[f1v - 1] = norms[f1n - 1];
-			m->vnorms[f2v - 1] = norms[f2n - 1];
-			m->vnorms[f3v - 1] = norms[f3n - 1];
+			m->vnorms[f1v - 1].x = norms[f1n - 1].x;
+			m->vnorms[f1v - 1].y = norms[f1n - 1].y;
+			m->vnorms[f1v - 1].z = norms[f1n - 1].z;
 
-			m->uvs[f1v - 1] = uvs[f1t - 1];
-			m->uvs[f2v - 1] = uvs[f2t - 1];
-			m->uvs[f3v - 1] = uvs[f3t - 1];
+			m->vnorms[f2v - 1].x = norms[f2n - 1].x;
+			m->vnorms[f2v - 1].y = norms[f2n - 1].y;
+			m->vnorms[f2v - 1].z = norms[f2n - 1].z;
+
+			m->vnorms[f3v - 1].x = norms[f3n - 1].x;
+			m->vnorms[f3v - 1].y = norms[f3n - 1].y;
+			m->vnorms[f3v - 1].z = norms[f3n - 1].z;
+
+
+			m->uvs[f1v - 1].x = uvs[f1t - 1].x;
+			m->uvs[f1v - 1].y = uvs[f1t - 1].y;
+
+			m->uvs[f2v - 1].x = uvs[f2t - 1].x;
+			m->uvs[f2v - 1].y = uvs[f2t - 1].y;
+
+			m->uvs[f3v - 1].x = uvs[f3t - 1].x;
+			m->uvs[f3v - 1].y = uvs[f3t - 1].y;
+
 		}
 	}
 
 	// Trim excess memory
 	m->vertices = (Vector*)realloc(m->vertices, sizeof(Vector) * v);
 	m->vnorms = (Vector*)realloc(m->vnorms, sizeof(Vector) * vn);
-	m->uvs = (Vector*)realloc(m->uvs, sizeof(Vector) * vt);
+	m->uvs = (Vector2D*)realloc(m->uvs, sizeof(Vector2D) * vt);
 	m->triangles = (Triangle*)realloc(m->triangles, sizeof(Triangle) * f);
 
-	// Maybe free temp norms and uvs here
-
+	free(norms);
+	free(uvs);
 
 	m->nt = f;
 	m->nv = v;
 
 	printf("Done loading mesh %s.\n", filepath);
+
+	fclose(fp);
 	return m;
 }
