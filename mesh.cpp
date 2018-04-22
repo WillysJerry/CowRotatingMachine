@@ -79,6 +79,19 @@ void insertModel(Mesh **list, int nv, float * vArr, int nt, int * tArr, Material
 	*list = mesh;	
 }
 
+void insertMesh(Mesh** list, Mesh* mesh, Material material, float scale) {
+
+	//calculateMeshNormals(mesh);
+
+	mesh->translation = { 0, 0, 0 };
+	mesh->rotation = { 0, 0, 0 };
+	mesh->scale = { scale, scale, scale };
+	mesh->material = material;
+
+	mesh->next = *list;
+	*list = mesh;
+}
+
 Matrix LocalToWorld(Vector t, Vector r, Vector s) {
 	Matrix T = Translate(t.x, t.y, t.z);
 	Matrix Rx = RotateX(r.x);

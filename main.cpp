@@ -156,9 +156,13 @@ int main(int argc, char **argv) {
 		1.0f					// Shininess
 	};
 
-	insertModel(&scene->meshes, cow.nov, cow.verts, cow.nof, cow.faces, matRed, 20.0);
+
+
+
+	/*insertModel(&scene->meshes, cow.nov, cow.verts, cow.nof, cow.faces, matRed, 20.0);
 	scene->meshes->rotation = { 0, 0, 80 };
-	scene->meshes->translation = { -2, 0, 0 };
+	scene->meshes->translation = { -2, 0, 0 };*/
+
 	//insertModelFromFile(&meshList, "./models/Goat.OBJ");
 	//insertModelFromFile(&scene->meshes, "./models/m16.OBJ");
 	//scene->meshes->scale = { 1.25f, 1.25f, 1.25f };
@@ -213,7 +217,12 @@ int main(int argc, char **argv) {
 
 	//insertModel(&meshList, teapot.nov, teapot.verts, teapot.nof, teapot.faces, 1.0);
 	
-	
+
+	Mesh* goat = loadObj("models/goat.obj");
+	insertMesh(&scene->meshes, goat, matRed, 4.0);
+	scene->meshes->translation = { 0, 0, 0 };
+
+
 	init();
 	glutMainLoop();
 

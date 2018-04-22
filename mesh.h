@@ -23,6 +23,7 @@ typedef struct _Mesh {
 	unsigned int vbo, ibo, vao;
 
 	Material material;
+	Vector *uvs;
 } Mesh;
 
 typedef struct _Scene {
@@ -34,6 +35,7 @@ extern Scene *scene;
 extern Mesh *activeMesh;
 
 void insertModel(Mesh ** objlist, int nv, float * vArr, int nt, int * tArr, Material mat, float scale = 1.0);
+void insertMesh(Mesh** list, Mesh* mesh, Material material, float scale);
 Matrix LocalToWorld(Vector t, Vector r, Vector s);
 int insertModelFromFile(Mesh **list, const char* filename, Material mat);
 #endif

@@ -8,7 +8,9 @@
 #include <glew.h>
 #include <freeglut.h>
 #include <stdio.h>
+#include "mesh.h"
 
 GLint loadBMP(const char* filepath);
+Mesh* loadObj(const char* filepath);
 
 #endif

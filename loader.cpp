@@ -64,3 +64,76 @@ GLint loadBMP(const char* filepath) {
 	return textureID;
 
 }
+
+Mesh* loadObj(const char* filepath) {
+	FILE* fp = fopen(filepath, "rb");
+	if(!fp) {
+		printf("Obj file could not be opened.\n");
+		return NULL;
+	}
+
+	Mesh* m = (Mesh*)malloc(sizeof(Mesh));
+	m->vertices = NULL;
+	m->vnorms = NULL;
+	m->uvs = NULL;
+	m->triangles = NULL;
+
+	char buff[200];
+	int v = 0, vt = 0, vn = 0, f = 0;
+	float a, b, c;
+	int f1x, f1y, f1z, f2x, f2y, f2z, f3x, f3y, f3z;
+
+	Vector* norms = NULL;
+
+	while (!feof(fp)) {
+		fgets(buff, 200, fp);
+
+		if (buff[0] == 'v' && buff[1] == ' ') {
+			// Vertex
+			v++;
+			sscanf(&buff[2], "%f %f %f", &a, &b, &c);
+
+			m->vertices = (Vector*)realloc(m->vertices, sizeof(Vector) * v);
+			m->vertices[v - 1] = { a, b, c };
+		}
+		else if (buff[0] == 'v' && buff[1] == 't') {
+			// UV coord
+			vt++;
+			sscanf(&buff[2], "%f %f", &a, &b);
+
+			m->uvs = (Vector*)realloc(m->uvs, sizeof(Vector) * vt);
+			m->uvs[vt - 1] = { a, b, 0};
+		}
+		else if (buff[0] == 'v' && buff[1] == 'n') {
+			// Vertex normal
+			vn++;
+
+			sscanf(&buff[2], "%f %f %f", &a, &b, &c);
+
+			norms = (Vector*)realloc(norms, sizeof(Vector) * vn);
+			m->vnorms = (Vector*)realloc(m->vnorms, sizeof(Vector) * vn);
+
+			norms[vn - 1] = { a, b, c };
+		}
+		else if (buff[0] == 'f' && buff[1] == ' ') {
+			// Face
+			f++;
+
+			// FORMAT: vert index/uv index/normal index x3
+			sscanf(&buff[2], "%d/%d/%d %d/%d/%d %d/%d/%d", &f1x, &f1y, &f1z, &f2x, &f2y, &f2z, &f3x, &f3y, &f3z);
+
+			m->triangles = (Triangle*)realloc(m->triangles, sizeof(Triangle) * f);
+			m->triangles[f - 1] = { {f1x - 1, f2x - 1, f3x - 1} };
+
+			m->vnorms[f1x - 1] = norms[f1z - 1];
+			m->vnorms[f2x - 1] = norms[f2z - 1];
+			m->vnorms[f3x - 1] = norms[f3z - 1];
+		}
+	}
+
+	m->nt = f;
+	m->nv = v;
+
+	printf("Done loading mesh %s.\n", filepath);
+	return m;
+}
