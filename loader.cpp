@@ -73,18 +73,21 @@ Mesh* loadObj(const char* filepath) {
 	}
 
 	Mesh* m = (Mesh*)malloc(sizeof(Mesh));
-	m->vertices = NULL;
-	m->vnorms = NULL;
-	m->uvs = NULL;
-	m->triangles = NULL;
+
 
 	char buff[200];
 	int v = 0, vt = 0, vn = 0, f = 0;
 	float a, b, c;
 	int f1v, f1t, f1n, f2v, f2t, f2n, f3v, f3t, f3n;
+	
+	int vAlloc = 100, nAlloc = 100, uAlloc = 100, tAlloc = 100;
 
-	Vector* norms = NULL;
-	Vector* uvs = NULL;
+	m->vertices = (Vector*)malloc(sizeof(Vector) * vAlloc);
+	m->vnorms = (Vector*)malloc(sizeof(Vector) * nAlloc);
+	m->uvs = (Vector*)malloc(sizeof(Vector) * uAlloc);
+	m->triangles = (Triangle*)malloc(sizeof(Triangle) * tAlloc);
+	Vector* norms = (Vector*)malloc(sizeof(Vector) * nAlloc);
+	Vector* uvs = (Vector*)malloc(sizeof(Vector) * uAlloc);
 
 	while (!feof(fp)) {
 		fgets(buff, 200, fp);
@@ -92,31 +95,53 @@ Mesh* loadObj(const char* filepath) {
 		if (buff[0] == 'v' && buff[1] == ' ') {
 			// Vertex
 			v++;
+			if (v > vAlloc) {
+				vAlloc += 100;
+				m->vertices = (Vector*)realloc(m->vertices, sizeof(Vector) * vAlloc);
+			}
+
 			sscanf(&buff[2], "%f %f %f", &a, &b, &c);
 
-			m->vertices = (Vector*)realloc(m->vertices, sizeof(Vector) * v);
+			//m->vertices = (Vector*)realloc(m->vertices, sizeof(Vector) * v);
+
+
 			m->vertices[v - 1] = { a, b, c };
 		}
 		else if (buff[0] == 'v' && buff[1] == 't') {
 			// UV coord
 			vt++;
+			if (vt > uAlloc) {
+				uAlloc += 100;
+				m->uvs = (Vector*)realloc(m->uvs, sizeof(Vector) * uAlloc);
+				uvs = (Vector*)realloc(uvs, sizeof(Vector) * uAlloc);
+			}
+
 			sscanf(&buff[2], "%f %f", &a, &b);
 
-			uvs = (Vector*)realloc(uvs, sizeof(Vector) * vt);
+			//uvs = (Vector*)realloc(uvs, sizeof(Vector) * vt);
 			uvs[vt - 1] = { a, b, 0 };
 
-			m->uvs = (Vector*)realloc(m->uvs, sizeof(Vector) * vt);
+			//m->uvs = (Vector*)realloc(m->uvs, sizeof(Vector) * vt);
+
+
 		}
 		else if (buff[0] == 'v' && buff[1] == 'n') {
 			// Vertex normal
 			vn++;
+			if (vn > nAlloc) {
+				nAlloc += 100;
+
+				norms = (Vector*)realloc(norms, sizeof(Vector) * nAlloc);
+				m->vnorms = (Vector*)realloc(m->vnorms, sizeof(Vector) * nAlloc);
+			}
 
 			sscanf(&buff[2], "%f %f %f", &a, &b, &c);
 
-			norms = (Vector*)realloc(norms, sizeof(Vector) * vn);
-			m->vnorms = (Vector*)realloc(m->vnorms, sizeof(Vector) * vn);
+
 
 			norms[vn - 1] = { a, b, c };
+
+
 		}
 		else if (buff[0] == 'f' && buff[1] == ' ') {
 			// Face
@@ -125,7 +150,10 @@ Mesh* loadObj(const char* filepath) {
 			// FORMAT: vert index/uv index/normal index x3
 			sscanf(&buff[2], "%d/%d/%d %d/%d/%d %d/%d/%d", &f1v, &f1t, &f1n, &f2v, &f2t, &f2n, &f3v, &f3t, &f3n);
 
-			m->triangles = (Triangle*)realloc(m->triangles, sizeof(Triangle) * f);
+			if (f > tAlloc) {
+				m->triangles = (Triangle*)realloc(m->triangles, sizeof(Triangle) * tAlloc);
+			}
+
 			m->triangles[f - 1] = { {f1v - 1, f2v - 1, f3v - 1} };
 
 			m->vnorms[f1v - 1] = norms[f1n - 1];
@@ -137,6 +165,15 @@ Mesh* loadObj(const char* filepath) {
 			m->uvs[f3v - 1] = uvs[f3t - 1];
 		}
 	}
+
+	// Trim excess memory
+	m->vertices = (Vector*)realloc(m->vertices, sizeof(Vector) * v);
+	m->vnorms = (Vector*)realloc(m->vnorms, sizeof(Vector) * vn);
+	m->uvs = (Vector*)realloc(m->uvs, sizeof(Vector) * vt);
+	m->triangles = (Triangle*)realloc(m->triangles, sizeof(Triangle) * f);
+
+	// Maybe free temp norms and uvs here
+
 
 	m->nt = f;
 	m->nv = v;

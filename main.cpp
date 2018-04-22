@@ -218,7 +218,7 @@ int main(int argc, char **argv) {
 	//insertModel(&meshList, teapot.nov, teapot.verts, teapot.nof, teapot.faces, 1.0);
 	
 
-	Mesh* goat = loadObj("models/goat.obj");
+	Mesh* goat = loadObj("models/cube.obj");
 	insertMesh(&scene->meshes, goat, matRed, 4.0);
 	scene->meshes->translation = { 0, 0, 0 };
 
