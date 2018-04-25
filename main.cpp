@@ -219,8 +219,8 @@ int main(int argc, char **argv) {
 
 	//insertModel(&meshList, teapot.nov, teapot.verts, teapot.nof, teapot.faces, 1.0);
 	
-
-	Mesh* goat = loadObj("models/goat.obj", 100, 100);
+	//										verts  norms  uvs    faces
+	Mesh* goat = loadObj("models/goat.obj", 71595, 71595, 71595, 23865); //If no values filled in, default values are used loadObj("file") is a valid call
 	insertMesh(&scene->meshes, goat, matWhite, 4.0);
 	scene->meshes->translation = { 0, 0, 0 };
 
