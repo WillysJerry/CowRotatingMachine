@@ -74,7 +74,7 @@ void main()
     for(int i = 0; i < NR_LIGHTS; i++) {
         result += calcPointLight(lights[i], norm, FragPos, viewDir);
     }
-    //Color = vec4(result, 1.0);
+    Color = vec4(result, 1.0);
     UV = vUVs;
     gl_Position = projection * view * vec4(FragPos, 1.0);
 }
