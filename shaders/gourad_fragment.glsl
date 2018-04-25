@@ -4,11 +4,11 @@ out vec4 FragColor;
 in vec4 Color;  
 in vec2 UV;
 
-uniform sampler2D texture;
+uniform sampler2D tex;
 
 void main()
 {
-    FragColor = vec4(texture( texture, UV ).rgb, 1);
+    FragColor = vec4(texture( tex, UV ).rgb, 1);
 
     //FragColor = Color;
 } 

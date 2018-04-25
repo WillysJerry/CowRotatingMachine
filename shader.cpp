@@ -75,7 +75,7 @@ void prepareMesh(Mesh *mesh, GLuint shader) {
 	int sizeVerts = mesh->nv * 3 * sizeof(float);
 	int sizeCols = mesh->nv * 3 * sizeof(float);
 	int sizeTris = mesh->nt * 3 * sizeof(int);
-	int sizeUVs = mesh->nv * sizeof(float);
+	int sizeUVs = mesh->nv * 2 * sizeof(float);
 
 	// For storage of state and other buffer objects needed for vertex specification
 	glGenVertexArrays(1, &mesh->vao);
@@ -107,7 +107,7 @@ void prepareMesh(Mesh *mesh, GLuint shader) {
 
 	GLint vUVs = glGetAttribLocation(shader, "vUVs");
 	glEnableVertexAttribArray(vUVs);
-	glVertexAttribPointer(vUVs, 2, GL_FLOAT, GL_FALSE, 0, (void *)(mesh->nv * 3 * sizeof(float)));
+	glVertexAttribPointer(vUVs, 2, GL_FLOAT, GL_FALSE, 0, (void *)(mesh->nv * 2 * sizeof(float)));
 
 	glBindVertexArray(0);
 
@@ -202,7 +202,7 @@ void renderMesh(Mesh *mesh, Matrix V, Matrix P, Matrix PV) {
 		light = light->next;
 	}
 
-	GLint loc_TEX = glGetUniformLocation(player->shader->program, "texture");
+	GLint loc_TEX = glGetUniformLocation(player->shader->program, "tex");
 	glUniform1i(loc_TEX, 0);
 	glActiveTexture(GL_TEXTURE0 + 0);
 	glBindTexture(GL_TEXTURE_2D, mat.texture);

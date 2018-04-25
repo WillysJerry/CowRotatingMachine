@@ -86,8 +86,12 @@ Mesh* loadObj(const char* filepath, unsigned int vsize, unsigned int nsize) {
 	m->vnorms = (Vector*)malloc(sizeof(Vector) * nAlloc);
 	m->uvs = (Vector2D*)malloc(sizeof(Vector2D) * uAlloc);
 	m->triangles = (Triangle*)malloc(sizeof(Triangle) * tAlloc);
+
+	Vector* verts = (Vector*)malloc(sizeof(Vector) * vAlloc);
 	Vector* norms = (Vector*)malloc(sizeof(Vector) * nAlloc);
 	Vector2D* uvs = (Vector2D*)malloc(sizeof(Vector2D) * uAlloc);
+
+	int vi = 0, vni = 0, vti = 0;
 
 	while (!feof(fp)) {
 		fgets(buff, 200, fp);
@@ -98,11 +102,12 @@ Mesh* loadObj(const char* filepath, unsigned int vsize, unsigned int nsize) {
 			if (v > vAlloc) {
 				vAlloc += 1000;
 				m->vertices = (Vector*)realloc(m->vertices, sizeof(Vector) * vAlloc);
+				verts = (Vector*)realloc(verts, sizeof(Vector) * vAlloc);
 			}
 
 			sscanf(&buff[2], "%f %f %f", &a, &b, &c);
 
-			m->vertices[v - 1] = { a, b, c };
+			verts[v - 1] = { a, b, c };
 		}
 		else if (buff[0] == 'v' && buff[1] == 't') {
 			// UV coord
@@ -143,9 +148,22 @@ Mesh* loadObj(const char* filepath, unsigned int vsize, unsigned int nsize) {
 				m->triangles = (Triangle*)realloc(m->triangles, sizeof(Triangle) * tAlloc);
 			}
 
-			m->triangles[f - 1] = { {f1v - 1, f2v - 1, f3v - 1} };
+			//m->triangles[f - 1] = { {f1v - 1, f2v - 1, f3v - 1} };
+			m->triangles[f - 1] = { { vi, vi + 1, vi + 2 } };
 
-			m->vnorms[f1v - 1].x = norms[f1n - 1].x;
+			memcpy(&(m->vertices[vi++]), &(verts[f1v - 1]), sizeof(Vector));
+			memcpy(&(m->vertices[vi++]), &(verts[f2v - 1]), sizeof(Vector));
+			memcpy(&(m->vertices[vi++]), &(verts[f3v - 1]), sizeof(Vector));
+
+			memcpy(&(m->vnorms[vni++]), &(norms[f1n - 1]), sizeof(Vector));
+			memcpy(&(m->vnorms[vni++]), &(norms[f2n - 1]), sizeof(Vector));
+			memcpy(&(m->vnorms[vni++]), &(norms[f3n - 1]), sizeof(Vector));
+
+			memcpy(&(m->uvs[vti++]), &(uvs[f1t - 1]), sizeof(Vector2D));
+			memcpy(&(m->uvs[vti++]), &(uvs[f2t - 1]), sizeof(Vector2D));
+			memcpy(&(m->uvs[vti++]), &(uvs[f3t - 1]), sizeof(Vector2D));
+
+			/*m->vnorms[f1v - 1].x = norms[f1n - 1].x;
 			m->vnorms[f1v - 1].y = norms[f1n - 1].y;
 			m->vnorms[f1v - 1].z = norms[f1n - 1].z;
 
@@ -155,32 +173,33 @@ Mesh* loadObj(const char* filepath, unsigned int vsize, unsigned int nsize) {
 
 			m->vnorms[f3v - 1].x = norms[f3n - 1].x;
 			m->vnorms[f3v - 1].y = norms[f3n - 1].y;
-			m->vnorms[f3v - 1].z = norms[f3n - 1].z;
+			m->vnorms[f3v - 1].z = norms[f3n - 1].z;*/
 
 
-			m->uvs[f1v - 1].x = uvs[f1t - 1].x;
+			/*m->uvs[f1v - 1].x = uvs[f1t - 1].x;
 			m->uvs[f1v - 1].y = uvs[f1t - 1].y;
 
 			m->uvs[f2v - 1].x = uvs[f2t - 1].x;
 			m->uvs[f2v - 1].y = uvs[f2t - 1].y;
 
 			m->uvs[f3v - 1].x = uvs[f3t - 1].x;
-			m->uvs[f3v - 1].y = uvs[f3t - 1].y;
+			m->uvs[f3v - 1].y = uvs[f3t - 1].y;*/
 
 		}
 	}
 
 	// Trim excess memory
-	m->vertices = (Vector*)realloc(m->vertices, sizeof(Vector) * v);
+	/*m->vertices = (Vector*)realloc(m->vertices, sizeof(Vector) * v);
 	m->vnorms = (Vector*)realloc(m->vnorms, sizeof(Vector) * vn);
 	m->uvs = (Vector2D*)realloc(m->uvs, sizeof(Vector2D) * vt);
-	m->triangles = (Triangle*)realloc(m->triangles, sizeof(Triangle) * f);
+	m->triangles = (Triangle*)realloc(m->triangles, sizeof(Triangle) * f);*/
 
 	free(norms);
 	free(uvs);
+	free(verts);
 
 	m->nt = f;
-	m->nv = v;
+	m->nv = vi - 1;
 
 	printf("Done loading mesh %s.\n", filepath);
 
