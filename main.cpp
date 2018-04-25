@@ -220,7 +220,7 @@ int main(int argc, char **argv) {
 	//insertModel(&meshList, teapot.nov, teapot.verts, teapot.nof, teapot.faces, 1.0);
 	
 
-	Mesh* goat = loadObj("models/Orange_blend/Orange_cycles.obj", 100000, 100000);
+	Mesh* goat = loadObj("models/goat.obj", 100, 100);
 	insertMesh(&scene->meshes, goat, matWhite, 4.0);
 	scene->meshes->translation = { 0, 0, 0 };
 

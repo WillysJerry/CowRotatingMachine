@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "loader.h"
 
 GLint loadBMP(const char* filepath) {
@@ -72,15 +73,15 @@ Mesh* loadObj(const char* filepath, unsigned int vsize, unsigned int nsize) {
 		return NULL;
 	}
 
-	Mesh* m = (Mesh*)malloc(sizeof(Mesh));
+	Mesh* m = (Mesh*)calloc(1, sizeof(Mesh));
 
 
 	char buff[200];
-	int v = 0, vt = 0, vn = 0, f = 0;
+	unsigned int v = 0, vt = 0, vn = 0, f = 0;
 	float a, b, c;
-	int f1v, f1t, f1n, f2v, f2t, f2n, f3v, f3t, f3n;
+	unsigned int f1v, f1t, f1n, f2v, f2t, f2n, f3v, f3t, f3n;
 	
-	int vAlloc = vsize, nAlloc = nsize, uAlloc = vsize, tAlloc = nsize;
+	unsigned int vAlloc = vsize, nAlloc = nsize, uAlloc = vsize, tAlloc = nsize;
 
 	m->vertices = (Vector*)malloc(sizeof(Vector) * vAlloc);
 	m->vnorms = (Vector*)malloc(sizeof(Vector) * nAlloc);
@@ -99,7 +100,7 @@ Mesh* loadObj(const char* filepath, unsigned int vsize, unsigned int nsize) {
 		if (buff[0] == 'v' && buff[1] == ' ') {
 			// Vertex
 			v++;
-			if (v > vAlloc) {
+			if (v >= vAlloc) {
 				vAlloc += 1000;
 				m->vertices = (Vector*)realloc(m->vertices, sizeof(Vector) * vAlloc);
 				verts = (Vector*)realloc(verts, sizeof(Vector) * vAlloc);
@@ -112,27 +113,27 @@ Mesh* loadObj(const char* filepath, unsigned int vsize, unsigned int nsize) {
 		else if (buff[0] == 'v' && buff[1] == 't') {
 			// UV coord
 			vt++;
-			if (vt > uAlloc) {
+			if (vt >= uAlloc) {
 				uAlloc += 1000;
 				m->uvs = (Vector2D*)realloc(m->uvs, sizeof(Vector2D) * uAlloc);
 				uvs = (Vector2D*)realloc(uvs, sizeof(Vector2D) * uAlloc);
 			}
 
-			sscanf(&buff[2], "%f %f", &a, &b);
+			sscanf(&buff[3], "%f %f", &a, &b);
 
 			uvs[vt - 1] = { a, b };
 		}
 		else if (buff[0] == 'v' && buff[1] == 'n') {
 			// Vertex normal
 			vn++;
-			if (vn > nAlloc) {
+			if (vn >= nAlloc) {
 				nAlloc += 1000;
 
 				norms = (Vector*)realloc(norms, sizeof(Vector) * nAlloc);
 				m->vnorms = (Vector*)realloc(m->vnorms, sizeof(Vector) * nAlloc);
 			}
 
-			sscanf(&buff[2], "%f %f %f", &a, &b, &c);
+			sscanf(&buff[3], "%f %f %f", &a, &b, &c);
 
 			norms[vn - 1] = { a, b, c };
 		}
@@ -143,9 +144,26 @@ Mesh* loadObj(const char* filepath, unsigned int vsize, unsigned int nsize) {
 			// FORMAT: vert index/uv index/normal index x3
 			sscanf(&buff[2], "%d/%d/%d %d/%d/%d %d/%d/%d", &f1v, &f1t, &f1n, &f2v, &f2t, &f2n, &f3v, &f3t, &f3n);
 
-			if (f > tAlloc) {
+			if (f >= tAlloc) {
+				printf("f: %d, tAlloc: %d", f, tAlloc);
 				tAlloc += 1000;
+				printf(", new tAlloc: %d, Size: %d\n", tAlloc, sizeof(Triangle));
 				m->triangles = (Triangle*)realloc(m->triangles, sizeof(Triangle) * tAlloc);
+			}
+
+			if (vi >= vAlloc - 3) {
+				vAlloc += 1000;
+				m->vertices = (Vector*)realloc(m->vertices, sizeof(Vector) * vAlloc);
+			}
+
+			if (vni >= nAlloc - 3) {
+				nAlloc += 1000;
+				m->vnorms = (Vector*)realloc(m->vnorms, sizeof(Vector) * nAlloc);
+			}
+
+			if (vti >= uAlloc - 3) {
+				uAlloc += 1000;
+				m->uvs = (Vector2D*)realloc(m->uvs, sizeof(Vector2D) * uAlloc);
 			}
 
 			//m->triangles[f - 1] = { {f1v - 1, f2v - 1, f3v - 1} };
