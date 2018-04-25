@@ -20,8 +20,10 @@ struct Light {
 
 in vec3 vPos;
 in vec3 vNorm;
+in vec2 vUVs;
 
 out vec4 Color;
+out vec2 UV;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -30,6 +32,8 @@ uniform mat4 projection;
 uniform Material material;
 uniform Light lights[NR_LIGHTS];
 uniform vec3 viewPos; 
+uniform sampler2D texture;
+
 
 vec3 calcPointLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     // ambient
@@ -70,7 +74,7 @@ void main()
     for(int i = 0; i < NR_LIGHTS; i++) {
         result += calcPointLight(lights[i], norm, FragPos, viewDir);
     }
-    Color = vec4(result, 1.0);
-
+    //Color = vec4(result, 1.0);
+    UV = vUVs;
     gl_Position = projection * view * vec4(FragPos, 1.0);
 }

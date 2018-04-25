@@ -75,6 +75,7 @@ void prepareMesh(Mesh *mesh, GLuint shader) {
 	int sizeVerts = mesh->nv * 3 * sizeof(float);
 	int sizeCols = mesh->nv * 3 * sizeof(float);
 	int sizeTris = mesh->nt * 3 * sizeof(int);
+	int sizeUVs = mesh->nv * sizeof(float);
 
 	// For storage of state and other buffer objects needed for vertex specification
 	glGenVertexArrays(1, &mesh->vao);
@@ -83,9 +84,11 @@ void prepareMesh(Mesh *mesh, GLuint shader) {
 	// Allocate VBO and load mesh data (vertices and normals)
 	glGenBuffers(1, &mesh->vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeVerts + sizeCols, NULL, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeVerts + sizeCols + sizeUVs, NULL, GL_STATIC_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeVerts, (void *)mesh->vertices);
 	glBufferSubData(GL_ARRAY_BUFFER, sizeVerts, sizeCols, (void *)mesh->vnorms);
+	glBufferSubData(GL_ARRAY_BUFFER, sizeVerts + sizeCols, sizeUVs, (void *)mesh->uvs);
+
 
 	// Allocate index buffer and load mesh indices
 	glGenBuffers(1, &mesh->ibo);
@@ -101,6 +104,10 @@ void prepareMesh(Mesh *mesh, GLuint shader) {
 	GLint vNorm = glGetAttribLocation(shader, "vNorm");
 	glEnableVertexAttribArray(vNorm);
 	glVertexAttribPointer(vNorm, 3, GL_FLOAT, GL_FALSE, 0, (void *)(mesh->nv * 3 * sizeof(float)));
+
+	GLint vUVs = glGetAttribLocation(shader, "vUVs");
+	glEnableVertexAttribArray(vUVs);
+	glVertexAttribPointer(vUVs, 2, GL_FLOAT, GL_FALSE, 0, (void *)(mesh->nv * 3 * sizeof(float)));
 
 	glBindVertexArray(0);
 
@@ -194,6 +201,12 @@ void renderMesh(Mesh *mesh, Matrix V, Matrix P, Matrix PV) {
 		glUniform1f(loc_LATT, light->attenuation);
 		light = light->next;
 	}
+
+	GLint loc_TEX = glGetUniformLocation(player->shader->program, "texture");
+	glUniform1i(loc_TEX, 0);
+	glActiveTexture(GL_TEXTURE0 + 0);
+	glBindTexture(GL_TEXTURE_2D, mat.texture);
+
 
 
 	// Select current resources 

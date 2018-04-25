@@ -130,7 +130,7 @@ int main(int argc, char **argv) {
 
 	// Insert the 3D models you want in your scene here in a linked list of meshes
 	// Note that "meshList" is a pointer to the first mesh and new meshes are added to the front of the list
-	GLint texture = loadBMP("resources/bump.bmp");
+	GLint texture = loadBMP("resources/wood.bmp");
 
 	Material matRed = {
 		{ 0.1f, 0.1f, 0.1f },	// Ambient
@@ -158,7 +158,7 @@ int main(int argc, char **argv) {
 
 
 
-
+	/*
 	insertModel(&scene->meshes, cow.nov, cow.verts, cow.nof, cow.faces, matRed, 20.0);
 	scene->meshes->rotation = { 0, 0, 80 };
 	scene->meshes->translation = { -1, 0, 2 };
@@ -183,7 +183,7 @@ int main(int argc, char **argv) {
 	scene->meshes->rotation = { 0, -60, 0 };
 
 	//insertModel(&meshList, knot.nov, knot.verts, knot.nof, knot.faces, 0.5);
-
+	*/
 	PointLight pl =
 	{
 		{ 5, 10, 3 },
@@ -207,6 +207,7 @@ int main(int argc, char **argv) {
 	pl.next = &pl2;
 
 	scene->pointLights = &pl;
+	/*
 	insertModel(&scene->meshes, sphere.nov, sphere.verts, sphere.nof, sphere.faces, matWhite, 1.0);
 	scene->meshes->translation = scene->pointLights->pos;
 	scene->meshes->scale = { -1, -1, -1 };
@@ -214,12 +215,13 @@ int main(int argc, char **argv) {
 	insertModel(&scene->meshes, sphere.nov, sphere.verts, sphere.nof, sphere.faces, matWhite, 1.0);
 	scene->meshes->translation = scene->pointLights->next->pos;
 	scene->meshes->scale = { -1, -1, -1 };
+	*/
 
 	//insertModel(&meshList, teapot.nov, teapot.verts, teapot.nof, teapot.faces, 1.0);
 	
 
 	Mesh* goat = loadObj("models/goat.obj", 40000, 40000);
-	insertMesh(&scene->meshes, goat, matWhite, 4.0);
+	insertMesh(&scene->meshes, goat, matRed, 4.0);
 	scene->meshes->translation = { 0, 0, 0 };
 
 
