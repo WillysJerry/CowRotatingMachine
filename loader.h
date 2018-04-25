@@ -11,6 +11,6 @@
 #include "mesh.h"
 
 GLint loadBMP(const char* filepath);
-Mesh* loadObj(const char* filepath);
+Mesh* loadObj(const char* filepath, unsigned int vsize, unsigned int nsize);
 
 #endif

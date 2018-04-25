@@ -78,11 +78,11 @@ void cleanUp(void) {
 // Include data for some triangle meshes (hard coded in struct variables)
 #include "./models/mesh_bunny.h"
 #include "./models/mesh_cow.h"
-#include "./models/mesh_cube.h"
+//#include "./models/mesh_cube.h"
 #include "./models/mesh_frog.h"
-#include "./models/mesh_knot.h"
+//#include "./models/mesh_knot.h"
 #include "./models/mesh_sphere.h"
-#include "./models/mesh_teapot.h"
+//#include "./models/mesh_teapot.h"
 #include "./models/mesh_triceratops.h"
 
 
@@ -159,9 +159,9 @@ int main(int argc, char **argv) {
 
 
 
-	/*insertModel(&scene->meshes, cow.nov, cow.verts, cow.nof, cow.faces, matRed, 20.0);
+	insertModel(&scene->meshes, cow.nov, cow.verts, cow.nof, cow.faces, matRed, 20.0);
 	scene->meshes->rotation = { 0, 0, 80 };
-	scene->meshes->translation = { -2, 0, 0 };*/
+	scene->meshes->translation = { -1, 0, 2 };
 
 	//insertModelFromFile(&meshList, "./models/Goat.OBJ");
 	//insertModelFromFile(&scene->meshes, "./models/m16.OBJ");
@@ -218,8 +218,8 @@ int main(int argc, char **argv) {
 	//insertModel(&meshList, teapot.nov, teapot.verts, teapot.nof, teapot.faces, 1.0);
 	
 
-	Mesh* goat = loadObj("models/cube.obj");
-	insertMesh(&scene->meshes, goat, matRed, 4.0);
+	Mesh* goat = loadObj("models/goat.obj", 40000, 40000);
+	insertMesh(&scene->meshes, goat, matWhite, 4.0);
 	scene->meshes->translation = { 0, 0, 0 };
 
 

@@ -65,7 +65,7 @@ GLint loadBMP(const char* filepath) {
 
 }
 
-Mesh* loadObj(const char* filepath) {
+Mesh* loadObj(const char* filepath, unsigned int vsize, unsigned int nsize) {
 	FILE* fp = fopen(filepath, "rb");
 	if(!fp) {
 		printf("Obj file could not be opened.\n");
@@ -80,7 +80,7 @@ Mesh* loadObj(const char* filepath) {
 	float a, b, c;
 	int f1v, f1t, f1n, f2v, f2t, f2n, f3v, f3t, f3n;
 	
-	int vAlloc = 100, nAlloc = 100, uAlloc = 100, tAlloc = 100;
+	int vAlloc = vsize, nAlloc = nsize, uAlloc = vsize, tAlloc = nsize;
 
 	m->vertices = (Vector*)malloc(sizeof(Vector) * vAlloc);
 	m->vnorms = (Vector*)malloc(sizeof(Vector) * nAlloc);
@@ -96,7 +96,7 @@ Mesh* loadObj(const char* filepath) {
 			// Vertex
 			v++;
 			if (v > vAlloc) {
-				vAlloc += 100;
+				vAlloc += 1000;
 				m->vertices = (Vector*)realloc(m->vertices, sizeof(Vector) * vAlloc);
 			}
 
@@ -108,7 +108,7 @@ Mesh* loadObj(const char* filepath) {
 			// UV coord
 			vt++;
 			if (vt > uAlloc) {
-				uAlloc += 100;
+				uAlloc += 1000;
 				m->uvs = (Vector2D*)realloc(m->uvs, sizeof(Vector2D) * uAlloc);
 				uvs = (Vector2D*)realloc(uvs, sizeof(Vector2D) * uAlloc);
 			}
@@ -121,7 +121,7 @@ Mesh* loadObj(const char* filepath) {
 			// Vertex normal
 			vn++;
 			if (vn > nAlloc) {
-				nAlloc += 100;
+				nAlloc += 1000;
 
 				norms = (Vector*)realloc(norms, sizeof(Vector) * nAlloc);
 				m->vnorms = (Vector*)realloc(m->vnorms, sizeof(Vector) * nAlloc);
@@ -139,6 +139,7 @@ Mesh* loadObj(const char* filepath) {
 			sscanf(&buff[2], "%d/%d/%d %d/%d/%d %d/%d/%d", &f1v, &f1t, &f1n, &f2v, &f2t, &f2n, &f3v, &f3t, &f3n);
 
 			if (f > tAlloc) {
+				tAlloc += 1000;
 				m->triangles = (Triangle*)realloc(m->triangles, sizeof(Triangle) * tAlloc);
 			}
 
