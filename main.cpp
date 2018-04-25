@@ -184,29 +184,34 @@ int main(int argc, char **argv) {
 
 	//insertModel(&meshList, knot.nov, knot.verts, knot.nof, knot.faces, 0.5);
 	*/
-	PointLight pl =
-	{
-		{ 5, 10, 3 },
-		{0.1f, 0.02f, 0.02f},
-		{0.7f, 0.7f, 0.7f},
-		{1, 1, 1},
-		0.002f,
-		NULL
-	};
+	//PointLight pl =
+	//{
+	//	{ 5, 10, 3 },
+	//	{0.1f, 0.02f, 0.02f},
+	//	{0.7f, 0.7f, 0.7f},
+	//	{1, 1, 1},
+	//	0.002f,
+	//	NULL
+	//};
 
-	PointLight pl2 =
-	{
-		{ -8, 7, 3 },
-		{ 0.02f, 0.1f, 0.02f},
-		{0.7f, 0.7f, 0.7f},
-		{1, 1, 1},
-		0.002f,
-		NULL
-	};
+	//PointLight pl2 =
+	//{
+	//	{ -8, 7, 3 },
+	//	{ 0.02f, 0.1f, 0.02f},
+	//	{0.7f, 0.7f, 0.7f},
+	//	{1, 1, 1},
+	//	0.002f,
+	//	NULL
+	//};
 
-	pl.next = &pl2;
+	//pl.next = &pl2;
 
-	scene->pointLights = &pl;
+	//scene->pointLights = &pl;
+
+
+	addPointLight(&scene->pointLights, { 5, 10, 3 }, { 0.1f, 0.02f, 0.02f });
+	addPointLight(&scene->pointLights, { -8, 7, 3 });
+
 	/*
 	insertModel(&scene->meshes, sphere.nov, sphere.verts, sphere.nof, sphere.faces, matWhite, 1.0);
 	scene->meshes->translation = scene->pointLights->pos;

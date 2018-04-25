@@ -13,4 +13,6 @@ typedef struct _PointLight{
 	_PointLight *next;
 } PointLight;
 
+void addPointLight(PointLight **list, Vector pos, Vector ambient = { 0.1f, 0.1f, 0.1f }, Vector diffuse = { 0.7f, 0.7f, 0.7f }, Vector specular = { 1, 1, 1 }, float attenuation = 0.002f);
+
 #endif
