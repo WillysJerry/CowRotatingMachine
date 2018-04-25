@@ -199,7 +199,7 @@ Mesh* loadObj(const char* filepath, unsigned int vsize, unsigned int nsize) {
 	free(verts);
 
 	m->nt = f;
-	m->nv = vi - 1;
+	m->nv = vi;
 
 	printf("Done loading mesh %s.\n", filepath);
 
