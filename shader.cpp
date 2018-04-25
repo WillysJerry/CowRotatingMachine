@@ -107,7 +107,7 @@ void prepareMesh(Mesh *mesh, GLuint shader) {
 
 	GLint vUVs = glGetAttribLocation(shader, "vUVs");
 	glEnableVertexAttribArray(vUVs);
-	glVertexAttribPointer(vUVs, 2, GL_FLOAT, GL_FALSE, 0, (void *)(mesh->nv * 2 * sizeof(float)));
+	glVertexAttribPointer(vUVs, 2, GL_FLOAT, GL_FALSE, 0, (void *)(sizeVerts + sizeCols));
 
 	glBindVertexArray(0);
 

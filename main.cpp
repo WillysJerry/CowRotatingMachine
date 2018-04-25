@@ -130,7 +130,7 @@ int main(int argc, char **argv) {
 
 	// Insert the 3D models you want in your scene here in a linked list of meshes
 	// Note that "meshList" is a pointer to the first mesh and new meshes are added to the front of the list
-	GLint texture = loadBMP("resources/nice-image.bmp");
+	GLint texture = loadBMP("models/Orange_blend/Color.bmp");
 
 	Material matRed = {
 		{ 0.1f, 0.1f, 0.1f },	// Ambient
@@ -152,7 +152,7 @@ int main(int argc, char **argv) {
 		{ 0.1f, 0.1f, 0.1f },	// Ambient
 		{ 1.0f, 1.0f, 1.0f },	// Diffuse
 		{ 1.0f, 1.0f, 1.0f },	// Specular
-		0,
+		texture,
 		1.0f					// Shininess
 	};
 
@@ -220,8 +220,8 @@ int main(int argc, char **argv) {
 	//insertModel(&meshList, teapot.nov, teapot.verts, teapot.nof, teapot.faces, 1.0);
 	
 
-	Mesh* goat = loadObj("models/goat.obj", 100000, 100000);
-	insertMesh(&scene->meshes, goat, matRed, 4.0);
+	Mesh* goat = loadObj("models/Orange_blend/Orange_cycles.obj", 100000, 100000);
+	insertMesh(&scene->meshes, goat, matWhite, 4.0);
 	scene->meshes->translation = { 0, 0, 0 };
 
 

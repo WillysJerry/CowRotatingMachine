@@ -259,3 +259,9 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/models/Banana
+/models/LibertyStatue
+/models/Orange
+/models/Avent.obj
+/models/Banana.obj
+/models/maya.obj

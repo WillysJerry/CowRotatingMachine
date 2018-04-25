@@ -32,7 +32,7 @@ uniform mat4 projection;
 uniform Material material;
 uniform Light lights[NR_LIGHTS];
 uniform vec3 viewPos; 
-uniform sampler2D texture;
+uniform sampler2D tex;
 
 
 vec3 calcPointLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir) {
