@@ -1,7 +1,38 @@
-﻿#include "algebra.h"
+﻿#include <stdio.h>
+#include "algebra.h"
 #include "player.h"
 
 Player *player = (Player*)calloc(1, sizeof(Player));
+
+void moveCamera(int moved) {
+	Camera *cam = player->cam;
+
+	if (!moved)
+		glutTimerFunc(1000 / 30, moveCamera, 0);
+
+	if (player->cameraMovement.x + player->cameraMovement.y == 1) { //Move in x-axis
+		if (player->cameraMovement.x == 1) {
+			cam->position = Subtract(cam->position, ScalarVecMul(0.2f, CrossProduct(Normalize(Homogenize(MatVecMul(MatMatMul(RotateY(Deg2Rad(-cam->rotation.y)), RotateX(Deg2Rad(-cam->rotation.x))), { 0, 0, -1 }))), Normalize(Homogenize(MatVecMul(RotateZ(Deg2Rad(-cam->rotation.z)), { 0, 1, 0 }))))));
+		}
+		else if (player->cameraMovement.y == 1) {
+			cam->position = Add(cam->position, ScalarVecMul(0.2f, CrossProduct(Normalize(Homogenize(MatVecMul(MatMatMul(RotateY(Deg2Rad(-cam->rotation.y)), RotateX(Deg2Rad(-cam->rotation.x))), { 0, 0, -1 }))), Normalize(Homogenize(MatVecMul(RotateZ(Deg2Rad(-cam->rotation.z)), { 0, 1, 0 }))))));
+		}
+		moved = 1;
+	}
+
+	if (player->cameraMovement.z + player->cameraMovement.w == 1) { // Move in z-axis
+		if (player->cameraMovement.z == 1) {
+			cam->position = Add(cam->position, ScalarVecMul(0.2f, Normalize(Homogenize(MatVecMul(MatMatMul(RotateY(Deg2Rad(-cam->rotation.y)), RotateX(Deg2Rad(-cam->rotation.x))), { 0, 0, -1 })))));
+		}
+		else if (player->cameraMovement.w == 1) {
+			cam->position = Subtract(cam->position, ScalarVecMul(0.2f, Normalize(Homogenize(MatVecMul(MatMatMul(RotateY(Deg2Rad(-cam->rotation.y)), RotateX(Deg2Rad(-cam->rotation.x))), { 0, 0, -1 })))));
+		}
+		moved = 1;
+	}
+
+	if (moved)
+		glutPostRedisplay();
+}
 
 void display(void) {
 	static Matrix V, P, PV;

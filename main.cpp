@@ -85,7 +85,16 @@ void cleanUp(void) {
 //#include "./models/mesh_teapot.h"
 #include "./models/mesh_triceratops.h"
 
-
+//Please, for the love of God, don't use this!
+void idleFunc() {
+	if (player->passMouse) {
+		if (   player->cameraMovement.x == 1
+			|| player->cameraMovement.y == 1
+			|| player->cameraMovement.z == 1
+			|| player->cameraMovement.w == 1)
+			glutPostRedisplay();
+	}
+}
 
 int main(int argc, char **argv) {
 
@@ -111,6 +120,7 @@ int main(int argc, char **argv) {
 	glutDisplayFunc(display);
 	glutReshapeFunc(changeSize);
 	glutKeyboardFunc(keypress);
+	glutKeyboardUpFunc(keyUp);
 	glutPassiveMotionFunc(NULL);
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 

@@ -6,5 +6,6 @@
 #include "player.h"
 
 void passiveMouseMotion(int x, int y);
+void keyUp(unsigned char key, int x, int y);
 void keypress(unsigned char key, int x, int y);
 #endif

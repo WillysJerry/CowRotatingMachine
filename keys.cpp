@@ -22,9 +22,28 @@ void passiveMouseMotion(int x, int y) {
 	}
 }
 
+void keyUp(unsigned char key, int x, int y) {
+	if (player->passMouse) {
+		switch (key) {
+		case 'w':
+			player->cameraMovement.z = 0;
+			break;
+		case 'a':
+			player->cameraMovement.x = 0;
+			break;
+		case 's':
+			player->cameraMovement.w = 0;
+			break;
+		case 'd':
+			player->cameraMovement.y = 0;
+			break;
+		}
+	}
+}
+
 void keypress(unsigned char key, int x, int y) {
 	Camera *cam = player->cam;
-	
+
 	switch (key) {
 		// Camera controls
 	case 'Q': // Rotate camera counter-clockwise
@@ -42,7 +61,7 @@ void keypress(unsigned char key, int x, int y) {
 		if (!player->passMouse)
 			cam->position.z += 0.2f;
 		else
-			cam->position = Add(cam->position, ScalarVecMul(0.2f, Normalize(Homogenize(MatVecMul(MatMatMul(RotateY(Deg2Rad(-cam->rotation.y)), RotateX(Deg2Rad(-cam->rotation.x))), { 0, 0, -1 })))));
+			player->cameraMovement.z = 1;
 		break;
 	case 'A': // Move camera to the left
 		cam->rotation.z -= 1.0f;
@@ -51,7 +70,7 @@ void keypress(unsigned char key, int x, int y) {
 		if (!player->passMouse)
 			cam->position.x -= 0.2f;
 		else
-			cam->position = Subtract(cam->position, ScalarVecMul(0.2f, CrossProduct(Normalize(Homogenize(MatVecMul(MatMatMul(RotateY(Deg2Rad(-cam->rotation.y)), RotateX(Deg2Rad(-cam->rotation.x))), { 0, 0, -1 }))), Normalize(Homogenize(MatVecMul(RotateZ(Deg2Rad(-cam->rotation.z)), { 0, 1, 0 }))))));
+			player->cameraMovement.x = 1;
 		break;
 	case 'S': // Move camera backwards
 		cam->rotation.x -= 1.0f;
@@ -60,7 +79,7 @@ void keypress(unsigned char key, int x, int y) {
 		if (!player->passMouse)
 			cam->position.z -= 0.2f;
 		else
-			cam->position = Subtract(cam->position, ScalarVecMul(0.2f, Normalize(Homogenize(MatVecMul(MatMatMul(RotateY(Deg2Rad(-cam->rotation.y)), RotateX(Deg2Rad(-cam->rotation.x))), { 0, 0, -1 })))));
+			player->cameraMovement.w = 1;
 		break;
 	case 'D': // Move camera to the right
 		cam->rotation.z += 1.0;
@@ -69,7 +88,7 @@ void keypress(unsigned char key, int x, int y) {
 		if (!player->passMouse)
 			cam->position.x += 0.2f;
 		else
-			cam->position = Add(cam->position, ScalarVecMul(0.2f, CrossProduct(Normalize(Homogenize(MatVecMul(MatMatMul(RotateY(Deg2Rad(-cam->rotation.y)), RotateX(Deg2Rad(-cam->rotation.x))), { 0, 0, -1 }))), Normalize(Homogenize(MatVecMul(RotateZ(Deg2Rad(-cam->rotation.z)), { 0, 1, 0 }))))));
+			player->cameraMovement.y = 1;
 		break;
 	case 'Z': // Move camera upwards
 	case 'z':
@@ -138,10 +157,12 @@ void keypress(unsigned char key, int x, int y) {
 		if (!player->passMouse) {
 			player->passMouse = 1;
 			glutPassiveMotionFunc(passiveMouseMotion);
+			moveCamera(0);
 		}
 		else {
 			player->passMouse = 0;
 			glutPassiveMotionFunc(NULL);
+			moveCamera(1);
 		}
 		break;
 	case '7':

@@ -25,10 +25,12 @@ typedef struct _Player {
 	int screen_width, screen_height;
 	_Shader *shader;
 	int shaderMode = 0, viewMode = 0, projMode = 0, passMouse = 0;
+	HomVector cameraMovement = { 0, 0, 0, 0 };
 } Player;
 
 extern Player *player;
 
 void renderMesh(Mesh *mesh, Matrix V, Matrix P, Matrix PV);
+void moveCamera(int value);
 void display(void);
 #endif
