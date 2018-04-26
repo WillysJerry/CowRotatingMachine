@@ -4,28 +4,43 @@
 
 Player *player = (Player*)calloc(1, sizeof(Player));
 
+Vector Deg2RadVec(Vector input) {
+	return { Deg2Rad(input.x), Deg2Rad(input.y), Deg2Rad(input.z) };
+}
+
 void moveCamera(int moved) {
-	Camera *cam = player->cam;
+	static Camera *cam = player->cam;
+	static Matrix rz, ry, rx;
+	static Vector gaze, up, rotation;
+
+	if (player->cameraMovement.x == 1 || player->cameraMovement.y == 1 || player->cameraMovement.z == 1 || player->cameraMovement.w == 1) {
+		rotation = Deg2RadVec(cam->rotation);
+		rz = RotateZ(-rotation.z);
+		ry = RotateY(-rotation.y);
+		rx = RotateX(-rotation.x);
+		gaze = Normalize(Homogenize(MatVecMul(MatMatMul(ry, rx), { 0, 0, -1 })));
+		up = Normalize(Homogenize(MatVecMul(rz, { 0, 1, 0 })));
+	}
 
 	if (!moved)
 		glutTimerFunc(1000 / 30, moveCamera, 0);
 
 	if (player->cameraMovement.x + player->cameraMovement.y == 1) { //Move in x-axis
 		if (player->cameraMovement.x == 1) {
-			cam->position = Subtract(cam->position, ScalarVecMul(0.2f, CrossProduct(Normalize(Homogenize(MatVecMul(MatMatMul(RotateY(Deg2Rad(-cam->rotation.y)), RotateX(Deg2Rad(-cam->rotation.x))), { 0, 0, -1 }))), Normalize(Homogenize(MatVecMul(RotateZ(Deg2Rad(-cam->rotation.z)), { 0, 1, 0 }))))));
+			cam->position = Subtract(cam->position, ScalarVecMul(0.1f, CrossProduct(gaze, up)));
 		}
 		else if (player->cameraMovement.y == 1) {
-			cam->position = Add(cam->position, ScalarVecMul(0.2f, CrossProduct(Normalize(Homogenize(MatVecMul(MatMatMul(RotateY(Deg2Rad(-cam->rotation.y)), RotateX(Deg2Rad(-cam->rotation.x))), { 0, 0, -1 }))), Normalize(Homogenize(MatVecMul(RotateZ(Deg2Rad(-cam->rotation.z)), { 0, 1, 0 }))))));
+			cam->position = Add(cam->position, ScalarVecMul(0.1f, CrossProduct(gaze, up)));
 		}
 		moved = 1;
 	}
 
 	if (player->cameraMovement.z + player->cameraMovement.w == 1) { // Move in z-axis
 		if (player->cameraMovement.z == 1) {
-			cam->position = Add(cam->position, ScalarVecMul(0.2f, Normalize(Homogenize(MatVecMul(MatMatMul(RotateY(Deg2Rad(-cam->rotation.y)), RotateX(Deg2Rad(-cam->rotation.x))), { 0, 0, -1 })))));
+			cam->position = Add(cam->position, ScalarVecMul(0.1f, gaze));
 		}
 		else if (player->cameraMovement.w == 1) {
-			cam->position = Subtract(cam->position, ScalarVecMul(0.2f, Normalize(Homogenize(MatVecMul(MatMatMul(RotateY(Deg2Rad(-cam->rotation.y)), RotateX(Deg2Rad(-cam->rotation.x))), { 0, 0, -1 })))));
+			cam->position = Subtract(cam->position, ScalarVecMul(0.1f, gaze));
 		}
 		moved = 1;
 	}
@@ -42,12 +57,13 @@ void display(void) {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
 
-	float a = Deg2Rad(cam->rotation.x), b = Deg2Rad(cam->rotation.y), c = Deg2Rad(cam->rotation.z);
+	//float a = Deg2Rad(cam->rotation.x), b = Deg2Rad(cam->rotation.y), c = Deg2Rad(cam->rotation.z);
+	Vector rotation = Deg2RadVec(cam->rotation);
 	Vector pos = { -cam->position.x, -cam->position.y, -cam->position.z };
 
-	Matrix rz = RotateZ(-c);
-	Matrix ry = RotateY(-b);
-	Matrix rx = RotateX(-a);
+	Matrix rz = RotateZ(-rotation.z);
+	Matrix ry = RotateY(-rotation.y);
+	Matrix rx = RotateX(-rotation.x);
 	Matrix t = Translate(pos.x, pos.y, pos.z);
 
 
