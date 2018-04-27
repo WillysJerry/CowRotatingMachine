@@ -2,6 +2,7 @@
 #include "shader.h"
 #include "algebra.h"
 #include <stdio.h>
+#include <string.h>
 
 void passiveMouseMotion(int x, int y) {
 	static int centerX = player->screen_width / 2;
@@ -42,6 +43,7 @@ void keyUp(unsigned char key, int x, int y) {
 }
 
 void keypress(unsigned char key, int x, int y) {
+	char meshName[] = "Current mesh";
 	Camera *cam = player->cam;
 
 	switch (key) {
@@ -124,6 +126,14 @@ void keypress(unsigned char key, int x, int y) {
 	case 'l':
 		activeMesh->translation.x += 0.2f;
 		break;
+	case 'G': // Move Mesh up
+	case 'g':
+		activeMesh->translation.y += 0.2f;
+		break;
+	case 'H': // Move Mesh down
+	case 'h':
+		activeMesh->translation.y -= 0.2f;
+		break;
 	case 'T': // Move Mesh backwards
 	case 't':
 		activeMesh->scale.x += 0.2f;
@@ -168,9 +178,16 @@ void keypress(unsigned char key, int x, int y) {
 	case '7':
 		changeShader();
 		break;
-	//case '8': // Toggle between bounce and static
-	//	bounceMode = (bounceMode + 1) % 2;
-	//	break;
+	case '5':
+		PrintVector(meshName, cam->position);
+		PrintVector(meshName, cam->rotation);
+		break;
+	case '8':
+		//bounceMode = (bounceMode + 1) % 2;
+		PrintVector(meshName, activeMesh->translation);
+		PrintVector(meshName, activeMesh->rotation);
+		PrintVector(meshName, activeMesh->scale);
+		break;
 	case '9': // Disable faces
 		player->shaderMode = (player->shaderMode + 1) % 2;
 		break;

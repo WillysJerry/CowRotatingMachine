@@ -36,7 +36,7 @@ void init(void) {
 		player->shader->shaderFiles[0] = shprgs[i][0];
 		player->shader->shaderFiles[1] = shprgs[i][1];
 		
-		if (i == 0) {
+		if (i == slen - 1) {
 			readShaderFile(shprgs[i][0], vs);
 			readShaderFile(shprgs[i][1], fs);
 			head = player->shader;
@@ -76,40 +76,33 @@ void cleanUp(void) {
 }
 
 // Include data for some triangle meshes (hard coded in struct variables)
-#include "./models/mesh_bunny.h"
-#include "./models/mesh_cow.h"
+//#include "./models/mesh_bunny.h"
+//#include "./models/mesh_cow.h"
 //#include "./models/mesh_cube.h"
-#include "./models/mesh_frog.h"
+//#include "./models/mesh_frog.h"
 //#include "./models/mesh_knot.h"
-#include "./models/mesh_sphere.h"
+//#include "./models/mesh_sphere.h"
 //#include "./models/mesh_teapot.h"
-#include "./models/mesh_triceratops.h"
-
-//Please, for the love of God, don't use this!
-void idleFunc() {
-	if (player->passMouse) {
-		if (   player->cameraMovement.x == 1
-			|| player->cameraMovement.y == 1
-			|| player->cameraMovement.z == 1
-			|| player->cameraMovement.w == 1)
-			glutPostRedisplay();
-	}
-}
+//#include "./models/mesh_triceratops.h"
 
 int main(int argc, char **argv) {
 
 	static Camera camera =
 	{
-		{ 0, 0, 20 },	//Position
-		{ 0, 0, 0 },	//Rotation
+		{ -3.5f, -4.75f, 22.7f },	//Position
+		{ 4.4f, 6.6f, 0 },	//Rotation
 		30,				//Fov
 		10,				//Near plane
 		10000			//Far plane
 	};
 
+
+	//Setup player
 	player->cam = &camera;
 	player->screen_width = 1024;
 	player->screen_height = 768;
+	player->viewMode = 1;
+	player->projMode = 1;
 	player->shader = NULL;
 
 	// Setup freeGLUT	
@@ -231,7 +224,7 @@ int main(int argc, char **argv) {
 
 	//insertModel(&meshList, teapot.nov, teapot.verts, teapot.nof, teapot.faces, 1.0);
 	
-	GLint texCabin = loadBMP("models/WoodenCabin/WoodCabinDif.bmp");
+	GLuint texCabin = loadTGA("models/WoodenCabin/WoodCabinDif.tga");
 
 	Material matCabin = {
 		{ 0.1f, 0.1f, 0.1f },	// Ambient
@@ -241,12 +234,11 @@ int main(int argc, char **argv) {
 		10.0f					// Shininess
 	};
 
-	Mesh* meshCabin = loadObj("models/WoodenCabin/WoodenCabinObj.obj", 8439, 8439, 8439, 2813);
+	Mesh* meshCabin = loadObj("models/WoodenCabin/WoodenCabinObj.obj", 8439, 2813);
 	insertMesh(&scene->meshes, meshCabin, matCabin, 0.5);
 	scene->meshes->translation = { 0, -15, 5 };
 
-
-	GLint texMarty = loadBMP("models/Marty/Marty.bmp");
+	GLuint texMarty = loadTGA("models/Marty/Marty.tga");
 
 	Material matMarty = {
 		{ 0.1f, 0.1f, 0.1f },	// Ambient
@@ -256,12 +248,36 @@ int main(int argc, char **argv) {
 		10.0f					// Shininess
 	};
 
-	Mesh* meshMarty = loadObj("models/Marty.obj", 5793, 5793, 5793, 1931);
+	Mesh* meshMarty = loadObj("models/Marty.obj", 5793, 1931);
 	insertMesh(&scene->meshes, meshMarty, matMarty, 3.0);
 	scene->meshes->translation = { 4, -10.35f, -7 };
 	scene->meshes->rotation = { 0, -43, 0 };
 
 
+	GLuint texPallet = loadTGA("models/Pallet_CM.tga");
+
+	Material matPallet = {
+		{ 0.1f, 0.1f, 0.1f },	// Ambient
+		{ 0.7f, 0.7f, 0.7f },	// Diffuse
+		{ 1.0f, 1.0f, 1.0f },	// Specular
+		texPallet,
+		5.0f					// Shininess
+	};
+
+	Mesh* meshPallet = loadObj("models/Pallet.obj", 615, 205);
+	insertMesh(&scene->meshes, meshPallet, matPallet, 6.0);
+	scene->meshes->translation = { -8.4f, -12.35f, -8.4f };
+	scene->meshes->rotation = { 0, -1, 0 };
+
+	meshPallet = loadObj("models/Pallet.obj", 615, 205);
+	insertMesh(&scene->meshes, meshPallet, matPallet, 6.0);
+	scene->meshes->translation = { -8.4f, -11.35f, -8.4f };
+	scene->meshes->rotation = { 0, -5, 0 };
+
+	meshPallet = loadObj("models/Pallet.obj", 615, 205);
+	insertMesh(&scene->meshes, meshPallet, matPallet, 6.0);
+	scene->meshes->translation = { -8.4f, -11.15f, -4.8f };
+	scene->meshes->rotation = { 22, -2, 0 };
 
 	addPointLight(&scene->pointLights, { 0, 2, -5 });
 	addPointLight(&scene->pointLights, { -5, 20, 35 }, { 0.2f, 0.2f, 0.2f }, { 1.4f, 1.4f, 1.4f }, { 2, 2, 2 }, 0.002f);

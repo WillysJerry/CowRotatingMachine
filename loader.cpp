@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include "loader.h"
 
-GLint loadBMP(const char* filepath) {
+GLuint loadBMP(const char* filepath) {
 
 	// Data read from the header of the BMP file
 	unsigned char header[54]; // Each BMP file begins by a 54-bytes header
@@ -66,7 +66,191 @@ GLint loadBMP(const char* filepath) {
 
 }
 
-Mesh* loadObj(const char* filepath, unsigned int vsize, unsigned int nsize, unsigned int usize, unsigned int tsize, unsigned int stepsize) {
+struct TGA {
+	GLubyte header[6];
+	GLuint imageSize;
+	GLuint imageWidth;
+	GLuint imageHeight;
+	GLuint bytesPerPixel;
+	GLuint type;
+};
+
+GLubyte *loadUncompressedTGA(FILE* fp, struct TGA *tga)
+{
+	// Allocate Memory
+	GLubyte *data = (GLubyte *)malloc(tga->imageSize);
+	if (data == NULL)
+	{
+		printf("Error: Memory allocation failed in loadUncompressedTGA.");
+		return NULL;
+	}
+
+	if (fread(data, 1, tga->imageSize, fp) != tga->imageSize)
+	{
+		printf("Error: Failed to read data in loadUncompressedTGA.");
+		return NULL;
+	}
+
+	// Start The Loop
+	for (GLuint i = 0; i < (int)tga->imageSize; i += tga->bytesPerPixel)
+	{
+		// 1st Byte XOR 3rd Byte XOR 1st Byte XOR 3rd Byte
+		data[i] ^= data[i + 2] ^= data[i] ^= data[i + 2];
+	}
+
+	return data;
+}
+
+
+//http://nehe.gamedev.net/tutorial/loading_compressed_and_uncompressed_tgas/22001/
+GLubyte *loadCompressedTGA(FILE* fp, struct TGA *tga) {
+
+	// Allocate Memory
+	GLubyte *data = (GLubyte *)malloc(tga->imageSize);
+	if (data == NULL)
+	{
+		printf("Error: Memory allocation failed in loadCompressedTGA.");
+		return NULL;
+	}
+
+	GLuint pixelcount = tga->imageHeight * tga->imageWidth; // Number Of Pixels In The Image
+	GLuint currentpixel = 0;            // Current Pixel We Are Reading From Data
+	GLuint currentbyte = 0;            // Current Byte We Are Writing Into Imagedata
+									   // Storage For 1 Pixel
+	GLubyte * colorbuffer = (GLubyte *)malloc(tga->bytesPerPixel);
+
+	do
+	{
+		GLubyte chunkheader = 0;            // Variable To Store The Value Of The Id Chunk
+		if (fread(&chunkheader, sizeof(GLubyte), 1, fp) == 0)  // Attempt To Read The Chunk's Header
+		{
+			printf("Error: Failed to read header in loadCompressedTGA.");
+			return NULL;
+		}
+		if (chunkheader < 128)                // If The Chunk Is A 'RAW' Chunk
+		{
+			chunkheader++;
+
+			// Start Pixel Reading Loop
+			for (short counter = 0; counter < chunkheader; counter++)
+			{
+				// Try To Read 1 Pixel
+				if (fread(colorbuffer, 1, tga->bytesPerPixel, fp) != tga->bytesPerPixel)
+				{
+					printf("Error: Failed to read RAW pixel in loadCompressedTGA.");
+					return NULL;
+				}
+				data[currentbyte] = colorbuffer[2];        // Write The 'R' Byte
+				data[currentbyte + 1] = colorbuffer[1]; // Write The 'G' Byte
+				data[currentbyte + 2] = colorbuffer[0]; // Write The 'B' Byte
+				if (tga->bytesPerPixel == 4)                  // If It's A 32bpp Image...
+				{
+					data[currentbyte + 3] = colorbuffer[3];    // Write The 'A' Byte
+				}
+				// Increment The Byte Counter By The Number Of Bytes In A Pixel
+				currentbyte += tga->bytesPerPixel;
+				currentpixel++;                 // Increment The Number Of Pixels By 1
+			}
+		}
+		else                        // If It's An RLE Header
+		{
+			chunkheader -= 127;         // Subtract 127 To Get Rid Of The ID Bit
+										// Read The Next Pixel
+			if (fread(colorbuffer, 1, tga->bytesPerPixel, fp) != tga->bytesPerPixel)
+			{
+				printf("Error: Failed to read RLE pixel in loadCompressedTGA.");
+				return false;
+			}
+			// Start The Loop
+			for (short counter = 0; counter < chunkheader; counter++)
+			{
+				// Copy The 'R' Byte
+				data[currentbyte] = colorbuffer[2];
+				// Copy The 'G' Byte
+				data[currentbyte + 1] = colorbuffer[1];
+				// Copy The 'B' Byte
+				data[currentbyte + 2] = colorbuffer[0];
+				if (tga->bytesPerPixel == 4)      // If It's A 32bpp Image
+				{
+					// Copy The 'A' Byte
+					data[currentbyte + 3] = colorbuffer[3];
+				}
+				currentbyte += tga->bytesPerPixel;   // Increment The Byte Counter
+				currentpixel++;             // Increment The Pixel Counter
+			}
+		}
+	} while (currentpixel < pixelcount);    // More Pixels To Read? ... Start Loop Over
+	fclose(fp);               // Close File
+
+	return data;
+}
+
+GLuint loadTGA(const char* filepath)
+{
+	FILE* fp = fopen(filepath, "rb");
+
+	if (!fp)
+		return NULL;
+
+	// Read the header of the TGA, compare it with the known headers for compressed and uncompressed TGAs
+	unsigned char header[18];
+	fread(header, sizeof(unsigned char) * 18, 1, fp);
+
+	struct TGA tga;
+
+	tga.imageWidth = header[13] * 256 + header[12];
+	tga.imageHeight = header[15] * 256 + header[14];
+	tga.bytesPerPixel = header[16] / 8;
+
+	if (tga.bytesPerPixel == 3)    // If 24bit (3*8)
+		tga.type = GL_RGB;
+	else							// else it's 32 bit
+		tga.type = GL_RGBA;
+
+	tga.imageSize = (tga.bytesPerPixel * tga.imageWidth * tga.imageHeight);
+
+	// check whether width, height an BitsPerPixel are valid
+	if ((tga.imageWidth <= 0) || (tga.imageHeight <= 0) || ((tga.bytesPerPixel != 1) && (tga.bytesPerPixel != 3) && (tga.bytesPerPixel != 4)))
+	{
+		fclose(fp);
+		return NULL;
+	}
+
+	GLubyte *data = NULL;
+	// call the appropriate loader-routine
+	if (header[2] == 2)
+	{
+		data = loadUncompressedTGA(fp, &tga);
+	}
+	else if (header[2] == 10)
+	{
+		data = loadCompressedTGA(fp, &tga);
+	}
+	else
+	{
+		fclose(fp);
+		return NULL;
+	}
+
+	fclose(fp);
+
+	GLuint textureID;
+	glGenTextures(1, &textureID);
+
+	// "Bind" the newly created texture : all future texture functions will modify this texture
+	glBindTexture(GL_TEXTURE_2D, textureID);
+
+	// Give the image to OpenGL
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tga.imageWidth, tga.imageHeight, 0, tga.type, GL_UNSIGNED_BYTE, data);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	printf("Loaded image %s\n", filepath);
+	return textureID;
+}
+
+Mesh* loadObj(const char* filepath, unsigned int vsize, unsigned int tsize, unsigned int stepsize) {
 	FILE* fp = fopen(filepath, "rb");
 	if(!fp) {
 		printf("Obj file could not be opened.\n");
@@ -81,7 +265,7 @@ Mesh* loadObj(const char* filepath, unsigned int vsize, unsigned int nsize, unsi
 	float a, b, c;
 	unsigned int f1v, f1t, f1n, f2v, f2t, f2n, f3v, f3t, f3n;
 	
-	unsigned int vAlloc = vsize, nAlloc = nsize, uAlloc = usize, tAlloc = tsize;
+	unsigned int vAlloc = vsize, nAlloc = vsize, uAlloc = vsize, tAlloc = tsize;
 
 	m->vertices = (Vector*)malloc(sizeof(Vector) * vAlloc);
 	m->vnorms = (Vector*)malloc(sizeof(Vector) * nAlloc);
@@ -226,8 +410,8 @@ Mesh* loadObj(const char* filepath, unsigned int vsize, unsigned int nsize, unsi
 
 	if (reallocated)
 		printf("Reallocated mesh \"%s\".\n\tVertices: %d\n\tNormals: %d\n\tUVs: %d\n\tTriangles: %d\n", filepath, vi, vni, vti, f);
-
-	printf("Done loading mesh %s.\n", filepath);
+	else
+		printf("Loaded mesh %s. Vertices: %d, faces: %d.\n", filepath, vi, f);
 
 	fclose(fp);
 	return m;
