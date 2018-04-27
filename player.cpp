@@ -27,20 +27,20 @@ void moveCamera(int moved) {
 
 	if (player->cameraMovement.x + player->cameraMovement.y == 1) { //Move in x-axis
 		if (player->cameraMovement.x == 1) {
-			cam->position = Subtract(cam->position, ScalarVecMul(0.1f, CrossProduct(gaze, up)));
+			cam->position = Subtract(cam->position, ScalarVecMul(0.2f, CrossProduct(gaze, up)));
 		}
 		else if (player->cameraMovement.y == 1) {
-			cam->position = Add(cam->position, ScalarVecMul(0.1f, CrossProduct(gaze, up)));
+			cam->position = Add(cam->position, ScalarVecMul(0.2f, CrossProduct(gaze, up)));
 		}
 		moved = 1;
 	}
 
 	if (player->cameraMovement.z + player->cameraMovement.w == 1) { // Move in z-axis
 		if (player->cameraMovement.z == 1) {
-			cam->position = Add(cam->position, ScalarVecMul(0.1f, gaze));
+			cam->position = Add(cam->position, ScalarVecMul(0.2f, gaze));
 		}
 		else if (player->cameraMovement.w == 1) {
-			cam->position = Subtract(cam->position, ScalarVecMul(0.1f, gaze));
+			cam->position = Subtract(cam->position, ScalarVecMul(0.2f, gaze));
 		}
 		moved = 1;
 	}

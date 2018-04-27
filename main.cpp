@@ -140,31 +140,31 @@ int main(int argc, char **argv) {
 
 	// Insert the 3D models you want in your scene here in a linked list of meshes
 	// Note that "meshList" is a pointer to the first mesh and new meshes are added to the front of the list
-	GLint texture = loadBMP("models/Orange_blend/Color.bmp");
+	//GLint texture = loadBMP("models/WoodenCabin/WoodCabinDif.bmp");
 
-	Material matRed = {
-		{ 0.1f, 0.1f, 0.1f },	// Ambient
-		{ 0.7f, 0.1f, 0.1f },	// Diffuse
-		{ 1.0f, 1.0f, 1.0f },	// Specular
-		texture,
-		20.0f					// Shininess
-	};
+	//Material matRed = {
+	//	{ 0.1f, 0.1f, 0.1f },	// Ambient
+	//	{ 0.7f, 0.1f, 0.1f },	// Diffuse
+	//	{ 1.0f, 1.0f, 1.0f },	// Specular
+	//	texture,
+	//	20.0f					// Shininess
+	//};
 
-	Material matBlue = {
-		{ 0.1f, 0.1f, 0.1f },	// Ambient
-		{ 0.1f, 0.1f, 0.7f },	// Diffuse
-		{ 1.0f, 1.0f, 1.0f },	// Specular
-		texture,
-		20.8f					// Shininess
-	};
+	//Material matBlue = {
+	//	{ 0.1f, 0.1f, 0.1f },	// Ambient
+	//	{ 0.1f, 0.1f, 0.7f },	// Diffuse
+	//	{ 1.0f, 1.0f, 1.0f },	// Specular
+	//	texture,
+	//	20.8f					// Shininess
+	//};
 
-	Material matWhite = {
-		{ 0.1f, 0.1f, 0.1f },	// Ambient
-		{ 1.0f, 1.0f, 1.0f },	// Diffuse
-		{ 1.0f, 1.0f, 1.0f },	// Specular
-		texture,
-		1.0f					// Shininess
-	};
+	//Material matWhite = {
+	//	{ 0.1f, 0.1f, 0.1f },	// Ambient
+	//	{ 1.0f, 1.0f, 1.0f },	// Diffuse
+	//	{ 1.0f, 1.0f, 1.0f },	// Specular
+	//	texture,
+	//	1.0f					// Shininess
+	//};
 
 
 
@@ -219,9 +219,6 @@ int main(int argc, char **argv) {
 	//scene->pointLights = &pl;
 
 
-	addPointLight(&scene->pointLights, { 5, 10, 3 }, { 0.1f, 0.02f, 0.02f });
-	addPointLight(&scene->pointLights, { -8, 7, 3 });
-
 	/*
 	insertModel(&scene->meshes, sphere.nov, sphere.verts, sphere.nof, sphere.faces, matWhite, 1.0);
 	scene->meshes->translation = scene->pointLights->pos;
@@ -234,10 +231,45 @@ int main(int argc, char **argv) {
 
 	//insertModel(&meshList, teapot.nov, teapot.verts, teapot.nof, teapot.faces, 1.0);
 	
-	//										verts  norms  uvs    faces
-	Mesh* goat = loadObj("models/goat.obj", 71595, 71595, 71595, 23865); //If no values filled in, default values are used loadObj("file") is a valid call
-	insertMesh(&scene->meshes, goat, matWhite, 4.0);
-	scene->meshes->translation = { 0, 0, 0 };
+	GLint texCabin = loadBMP("models/WoodenCabin/WoodCabinDif.bmp");
+
+	Material matCabin = {
+		{ 0.1f, 0.1f, 0.1f },	// Ambient
+		{ 0.7f, 0.7f, 0.7f },	// Diffuse
+		{ 1.0f, 1.0f, 1.0f },	// Specular
+		texCabin,
+		10.0f					// Shininess
+	};
+
+	Mesh* meshCabin = loadObj("models/WoodenCabin/WoodenCabinObj.obj", 8439, 8439, 8439, 2813);
+	insertMesh(&scene->meshes, meshCabin, matCabin, 0.5);
+	scene->meshes->translation = { 0, -15, 5 };
+
+
+	GLint texMarty = loadBMP("models/Marty/Marty.bmp");
+
+	Material matMarty = {
+		{ 0.1f, 0.1f, 0.1f },	// Ambient
+		{ 0.7f, 0.7f, 0.7f },	// Diffuse
+		{ 1.0f, 1.0f, 1.0f },	// Specular
+		texMarty,
+		10.0f					// Shininess
+	};
+
+	Mesh* meshMarty = loadObj("models/Marty.obj", 5793, 5793, 5793, 1931);
+	insertMesh(&scene->meshes, meshMarty, matMarty, 3.0);
+	scene->meshes->translation = { 4, -10.35f, -7 };
+	scene->meshes->rotation = { 0, -43, 0 };
+
+
+
+	addPointLight(&scene->pointLights, { 0, 2, -5 });
+	addPointLight(&scene->pointLights, { -5, 20, 35 }, { 0.2f, 0.2f, 0.2f }, { 1.4f, 1.4f, 1.4f }, { 2, 2, 2 }, 0.002f);
+
+
+	//Mesh* goat = loadObj("models/WoodenCabin/WoodenCabinObj.obj", 71595, 71595, 71595, 23865); //If no values filled in, default values are used loadObj("file") is a valid call
+	//insertMesh(&scene->meshes, goat, matWhite, 0.5);
+	//scene->meshes->translation = { 0, 0, 0 };
 
 
 	init();
