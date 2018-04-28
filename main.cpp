@@ -32,21 +32,21 @@ void init(void) {
 
 	Shader *head = NULL;
 	player->shader = (Shader*)malloc(sizeof(Shader));
+	head = player->shader;
 	do {
 		player->shader->shaderFiles[0] = shprgs[i][0];
 		player->shader->shaderFiles[1] = shprgs[i][1];
-		
 		if (i == slen - 1) {
 			readShaderFile(shprgs[i][0], vs);
 			readShaderFile(shprgs[i][1], fs);
-			head = player->shader;
 			player->shader->program = prepareShaderProgram(vs, fs);
 		}
 		if (i == slen - 1)
 			player->shader->next = head;
-		else
+		else {
 			player->shader->next = (Shader*)malloc(sizeof(Shader));
-		player->shader = player->shader->next;
+			player->shader = player->shader->next;
+		}
 		i++;
 	} while (i < slen);
 
@@ -278,6 +278,26 @@ int main(int argc, char **argv) {
 	insertMesh(&scene->meshes, meshPallet, matPallet, 6.0);
 	scene->meshes->translation = { -8.4f, -11.15f, -4.8f };
 	scene->meshes->rotation = { 22, -2, 0 };
+
+	GLuint texOrange = loadTGA("models/Orange_blend/Color.tga");
+
+	Material matOrange = {
+		{ 0.1f, 0.1f, 0.1f },	// Ambient
+		{ 0.7f, 0.7f, 0.7f },	// Diffuse
+		{ 1.0f, 1.0f, 1.0f },	// Specular
+		texOrange,
+		5.0f					// Shininess
+	};
+
+	Mesh* meshOrange = loadObj("models/Orange_blend/Orange_cycles.obj", 4515, 1505);
+	insertMesh(&scene->meshes, meshOrange, matOrange, 0.4);
+	scene->meshes->translation = { -7.8f, -9.95f, -9.4f };
+	scene->meshes->rotation = { 0, 1, 0 };
+
+	meshOrange = loadObj("models/Orange_blend/Orange_cycles.obj", 4515, 1505);
+	insertMesh(&scene->meshes, meshOrange, matOrange, 0.4);
+	scene->meshes->translation = { -0.6f, -4.55f, -2.1f };
+	scene->meshes->rotation = { 0, 160, 40 };
 
 	addPointLight(&scene->pointLights, { 0, 2, -5 });
 	addPointLight(&scene->pointLights, { -5, 20, 35 }, { 0.2f, 0.2f, 0.2f }, { 1.4f, 1.4f, 1.4f }, { 2, 2, 2 }, 0.002f);
