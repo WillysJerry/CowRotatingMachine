@@ -24,7 +24,8 @@ void init(void) {
 								{ "shaders/default_vertex.glsl", "shaders/cartoon_fragment.glsl" }, //Cartoon
 								{ "shaders/cartoonphong_vertex.glsl", "shaders/cartoonphong_fragment.glsl" },	// Lit cartoon 420 blaze it
 								{ "shaders/light_vertex.glsl", "shaders/light_fragment.glsl" },		//Light
-								{ "shaders/gourad_vertex.glsl", "shaders/gourad_fragment.glsl"}		//Gourad
+								{ "shaders/gourad_vertex.glsl", "shaders/gourad_fragment.glsl"},	//Gourad
+								{ "shaders/phong_vertex.glsl", "shaders/phong_fragment.glsl" }		//Phong with textures
 							   };
 	static const char * vs[1];
 	static const char * fs[1];
