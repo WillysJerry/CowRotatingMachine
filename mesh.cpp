@@ -186,3 +186,45 @@ int insertModelFromFile(Mesh **list, const char* filename, Material material) {
 	*list = mesh;
 	return 0;
 }
+
+
+// Computes mesh tangents and bitangents based on:
+// http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-13-normal-mapping/#computing-the-tangents-and-bitangents
+void computeTangentBasis(Mesh* mesh) {
+	free(mesh->tangents);
+	free(mesh->bitangents);
+
+	mesh->tangents = (Vector*)malloc(sizeof(Vector) * mesh->nv);
+	mesh->bitangents = (Vector*)malloc(sizeof(Vector) * mesh->nv);
+
+	for (int i = 0; i < mesh->nv; i += 3) {
+		Vector v0 = mesh->vertices[i + 0];
+		Vector v1 = mesh->vertices[i + 1];
+		Vector v2 = mesh->vertices[i + 2];
+
+		Vector uv0 = Vector{ mesh->uvs[i + 0].x, mesh->uvs[i + 0].y, 0 };
+		Vector uv1 = Vector{ mesh->uvs[i + 1].x, mesh->uvs[i + 1].y, 0 };
+		Vector uv2 = Vector{ mesh->uvs[i + 2].x, mesh->uvs[i + 2].y, 0 };
+
+		Vector deltaPos1 = Subtract(v1, v0);
+		Vector deltaPos2 = Subtract(v2, v0);
+
+		Vector deltaUV1 = Subtract(uv1, uv0);
+		Vector deltaUV2 = Subtract(uv2, uv0);
+
+		float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+		Vector tangent = ScalarVecMul(r, Subtract(ScalarVecMul(deltaUV2.y, deltaPos1), ScalarVecMul(deltaUV1.y, deltaPos2)));
+		Vector bitangent = ScalarVecMul(r, Subtract(ScalarVecMul(deltaUV1.x, deltaPos2), ScalarVecMul(deltaUV2.x, deltaPos1)));
+		
+
+		mesh->tangents[i + 0] = Vector{ tangent.x, tangent.y, tangent.z };
+		mesh->tangents[i + 1] = Vector{ tangent.x, tangent.y, tangent.z };
+		mesh->tangents[i + 2] = Vector{ tangent.x, tangent.y, tangent.z };
+
+		mesh->bitangents[i + 0] = Vector{ bitangent.x, bitangent.y, bitangent.z };
+		mesh->bitangents[i + 1] = Vector{ bitangent.x, bitangent.y, bitangent.z };
+		mesh->bitangents[i + 2] = Vector{ bitangent.x, bitangent.y, bitangent.z };
+	}
+
+	mesh->normalMapped = true;
+}

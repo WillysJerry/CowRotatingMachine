@@ -24,6 +24,12 @@ typedef struct _Mesh {
 
 	Material material;
 	Vector2D *uvs;
+
+	bool normalMapped = false;		// This should be true if the mesh has a normal map.
+									// Should be able to define different VBO's if this is true
+
+	Vector* tangents;				// Tangents for normal mapping
+	Vector* bitangents;				// Bitangents for normal mapping
 } Mesh;
 
 typedef struct _Scene {
@@ -38,4 +44,5 @@ void insertModel(Mesh ** objlist, int nv, float * vArr, int nt, int * tArr, Mate
 void insertMesh(Mesh** list, Mesh* mesh, Material material, float scale);
 Matrix LocalToWorld(Vector t, Vector r, Vector s);
 int insertModelFromFile(Mesh **list, const char* filename, Material mat);
+void computeTangentBasis(Mesh* mesh);
 #endif
